@@ -1,150 +1,127 @@
 """
-OceanEye Backend v3 — Real-Time Maritime Intelligence Platform
-FastAPI + Claude AI + aisstream.io WebSocket + Global Fishing Watch
+OceanEye Backend v4 — Production
+FastAPI + PostgreSQL + Claude AI + AIS Stream + Global Fishing Watch
+
+Cambios respecto a v3:
+- Elimina DEMO_VESSELS hardcodeados → todas las queries van a PostgreSQL
+- Elimina /config (no se exponen API keys al cliente)
+- CORS restrictivo: solo FRONTEND_URL
+- Rate limiting via slowapi
+- API Key auth opcional (dev) / obligatorio (prod)
+- /health endpoint para Cloud Run
+- /alerts endpoint para alertas en tiempo real
+- Chat agent consulta DB real, no lista estática
 """
 
 import os
 import json
-import math
-import random
-import logging
 import asyncio
-from datetime import datetime, timedelta
+import logging
+from datetime import datetime, timezone, timedelta
+from typing import Optional
 
 import httpx
 import anthropic
-from fastapi import FastAPI, HTTPException, Request
+import asyncpg
+from fastapi import FastAPI, HTTPException, Request, Depends, Security
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import APIKeyHeader
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# ─── Config ────────────────────────────────────────────────────────────────────
+# ── Config ────────────────────────────────────────────────────────────────────
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
-GFW_API_TOKEN = os.getenv("GFW_API_TOKEN", "")
-AIS_STREAM_KEY = os.getenv("AIS_STREAM_KEY", "")
-GFW_BASE_URL = "https://gateway.api.globalfishingwatch.org/v3"
-PORT = int(os.getenv("PORT", 8000))
+GFW_API_TOKEN     = os.getenv("GFW_API_TOKEN", "")
+DATABASE_URL      = os.getenv("DATABASE_URL", "").replace(
+                        "postgresql+asyncpg://", "postgresql://"
+                    )
+FRONTEND_URL      = os.getenv("FRONTEND_URL", "https://oceaneye-three.vercel.app")
+INTERNAL_API_KEY  = os.getenv("INTERNAL_API_KEY", "")
+ENVIRONMENT       = os.getenv("ENVIRONMENT", "production")
+GFW_BASE_URL      = "https://gateway.api.globalfishingwatch.org/v3"
+PORT              = int(os.getenv("PORT", 8000))
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("oceaneye")
 
-# ─── Demo Vessels ──────────────────────────────────────────────────────────────
-DEMO_VESSELS = [
-    {
-        "mmsi": "577317000", "name": "Bao Feng", "flag": "Vanuatu",
-        "vessel_type": "Squid Jigger",
-        "gfw_id": "2b0234f60-0239-e83b-dfc8-101c4055faf4",
-        "lat": -46.5, "lon": -59.2, "heading": 215,
-        "risk_score": 97, "risk_label": "critical",
-        "events_summary": "Fined $1.260M for illegal fishing in Argentina EEZ Jan 2026",
-        "loitering_count": 98, "port_visits": 0, "ais_gaps": 14,
-        "avg_speed": 2.1, "zone": "South Atlantic – Argentina EEZ border",
-        "known_violations": ["Fined $1.260M (Jan 2026)", "AIS manipulation", "Unauthorized EEZ entry"],
-        "trail": [{"lat":-45.8,"lon":-58.0},{"lat":-46.0,"lon":-58.5},{"lat":-46.2,"lon":-58.9},{"lat":-46.4,"lon":-59.1},{"lat":-46.5,"lon":-59.2}],
-        "trips": 5, "ais_transmissions": 172163,
-    },
-    {
-        "mmsi": "577038000", "name": "Hai Xing 2", "flag": "Vanuatu",
-        "vessel_type": "Trawler",
-        "gfw_id": "ad7b81e13-3729-c048-6dab-791e202f21c0",
-        "lat": -45.8, "lon": -62.1, "heading": 165,
-        "risk_score": 94, "risk_label": "critical",
-        "events_summary": "2025 vessel, first voyage = illegal fishing Argentina EEZ. 88 loitering events. 0 port visits. Suspected IUU fleet member.",
-        "loitering_count": 88, "port_visits": 0, "ais_gaps": 9,
-        "avg_speed": 1.8, "zone": "South Atlantic – Argentina EEZ",
-        "known_violations": ["Illegal fishing in EEZ (2025)", "Zero port compliance", "Fleet coordination suspected"],
-        "trail": [{"lat":-44.9,"lon":-61.2},{"lat":-45.1,"lon":-61.5},{"lat":-45.4,"lon":-61.8},{"lat":-45.6,"lon":-62.0},{"lat":-45.8,"lon":-62.1}],
-    },
-    {
-        "mmsi": "412329686", "name": "Lu Qing Yuan Yu 205", "flag": "China",
-        "vessel_type": "Squid Jigger",
-        "gfw_id": "c69320602-2c89-eb82-150f-bb70fa6ced91",
-        "lat": -44.5, "lon": -56.0, "heading": 280,
-        "risk_score": 92, "risk_label": "critical",
-        "events_summary": "343 high seas encounters — transshipment network. Illegal mapping of Continental Shelf",
-        "loitering_count": 42, "port_visits": 2, "ais_gaps": 5,
-        "avg_speed": 3.4, "zone": "South Atlantic – Agujero Azul",
-        "known_violations": ["343 high seas encounters", "Illegal continental shelf mapping"],
-        "trail": [{"lat":-44.0,"lon":-55.0},{"lat":-44.1,"lon":-55.3},{"lat":-44.3,"lon":-55.6},{"lat":-44.4,"lon":-55.8},{"lat":-44.5,"lon":-56.0}],
-        "fishing_hours": 50878, "encounters": 343, "trips": 36, "ais_transmissions": 3359672,
-    },
-    {
-        "mmsi": "412549383", "name": "Lu Rong Yuan Yu 668", "flag": "China",
-        "vessel_type": "Squid Jigger", "gfw_id": "demo-lurongyuanyu-668",
-        "lat": -43.2, "lon": -58.7, "heading": 190,
-        "risk_score": 88, "risk_label": "critical",
-        "events_summary": "Fled Coast Guard GC-27 refusing boarding Apr 2020",
-        "loitering_count": 35, "port_visits": 0, "ais_gaps": 8,
-        "avg_speed": 3.8, "zone": "South Atlantic – EEZ boundary",
-        "known_violations": ["Fled Coast Guard GC-27 (Apr 2020)"],
-        "trail": [{"lat":-42.5,"lon":-58.0},{"lat":-42.7,"lon":-58.2},{"lat":-42.9,"lon":-58.4},{"lat":-43.1,"lon":-58.6},{"lat":-43.2,"lon":-58.7}],
-        "fishing_hours": 15309, "encounters": 30, "trips": 15, "mpas_violated": 3,
-    },
-    {
-        "mmsi": "416002790", "name": "Shun Li 8", "flag": "Taiwan",
-        "vessel_type": "Longliner", "gfw_id": "demo-shunli-8",
-        "lat": -47.1, "lon": -60.5, "heading": 135,
-        "risk_score": 65, "risk_label": "suspicious",
-        "events_summary": "Suspected transshipment activity. 28 loitering events. 1 port visit in 6 months.",
-        "loitering_count": 28, "port_visits": 1, "ais_gaps": 3,
-        "avg_speed": 4.2, "zone": "South Atlantic – High Seas",
-        "known_violations": ["Suspected transshipment", "Minimal port compliance"],
-        "trail": [{"lat":-46.4,"lon":-59.6},{"lat":-46.6,"lon":-59.9},{"lat":-46.8,"lon":-60.1},{"lat":-47.0,"lon":-60.3},{"lat":-47.1,"lon":-60.5}],
-    },
-    {
-        "mmsi": "601234567", "name": "Mar del Plata VII", "flag": "Argentina",
-        "vessel_type": "Trawler", "gfw_id": "demo-mardelplata-7",
-        "lat": -42.8, "lon": -57.3, "heading": 45,
-        "risk_score": 15, "risk_label": "normal",
-        "events_summary": "Licensed Argentine fishing vessel. Regular port visits. No AIS gaps. Full compliance.",
-        "loitering_count": 5, "port_visits": 12, "ais_gaps": 0,
-        "avg_speed": 6.5, "zone": "Argentina EEZ – Licensed",
-        "known_violations": [],
-        "trail": [{"lat":-42.3,"lon":-56.8},{"lat":-42.4,"lon":-56.9},{"lat":-42.6,"lon":-57.1},{"lat":-42.7,"lon":-57.2},{"lat":-42.8,"lon":-57.3}],
-    },
-    {
-        "mmsi": "601987654", "name": "Esperanza Sur", "flag": "Argentina",
-        "vessel_type": "Longliner", "gfw_id": "demo-esperanza-sur",
-        "lat": -44.0, "lon": -61.0, "heading": 320,
-        "risk_score": 22, "risk_label": "normal",
-        "events_summary": "Compliant vessel with full documentation. Regular schedule. All AIS active.",
-        "loitering_count": 8, "port_visits": 10, "ais_gaps": 0,
-        "avg_speed": 7.1, "zone": "Argentina EEZ – Licensed",
-        "known_violations": [],
-        "trail": [{"lat":-43.4,"lon":-60.5},{"lat":-43.5,"lon":-60.6},{"lat":-43.7,"lon":-60.8},{"lat":-43.9,"lon":-60.9},{"lat":-44.0,"lon":-61.0}],
-    },
-    {
-        "mmsi": "538007430", "name": "Oryong 373", "flag": "South Korea",
-        "vessel_type": "Trawler", "gfw_id": "demo-oryong-373",
-        "lat": -45.3, "lon": -55.8, "heading": 250,
-        "risk_score": 48, "risk_label": "normal",
-        "events_summary": "Moderate activity near Falklands. Licensed in adjacent zone. Previous incident in 2016.",
-        "loitering_count": 18, "port_visits": 5, "ais_gaps": 1,
-        "avg_speed": 5.0, "zone": "South Atlantic – Falklands adjacent",
-        "known_violations": ["Minor infraction 2016 (resolved)"],
-        "trail": [{"lat":-44.8,"lon":-55.0},{"lat":-44.9,"lon":-55.2},{"lat":-45.1,"lon":-55.4},{"lat":-45.2,"lon":-55.6},{"lat":-45.3,"lon":-55.8}],
-    },
-]
+# ── Rate limiter ──────────────────────────────────────────────────────────────
+limiter = Limiter(key_func=get_remote_address)
 
+# ── Security ──────────────────────────────────────────────────────────────────
+api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
+async def verify_api_key(key: Optional[str] = Security(api_key_header)):
+    """
+    En development: sin restricciones.
+    En production: requiere X-API-Key header válido si INTERNAL_API_KEY está configurado.
+    """
+    if ENVIRONMENT == "development":
+        return True
+    if not INTERNAL_API_KEY:
+        return True
+    if key != INTERNAL_API_KEY:
+        raise HTTPException(status_code=403, detail="Invalid or missing API key")
+    return True
+
+# ── DB Pool ───────────────────────────────────────────────────────────────────
+db_pool: Optional[asyncpg.Pool] = None
+
+async def get_pool() -> asyncpg.Pool:
+    if db_pool is None:
+        raise HTTPException(status_code=503, detail="Database unavailable — check DATABASE_URL")
+    return db_pool
+
+# ── FastAPI App ───────────────────────────────────────────────────────────────
 app = FastAPI(
     title="OceanEye API",
-    description="Real-time maritime intelligence — v3",
-    version="3.0.0",
+    description="Real-time maritime intelligence — IUU fishing detection — South Atlantic EEZ",
+    version="4.0.0",
+    docs_url="/docs" if ENVIRONMENT == "development" else None,
+    redoc_url=None,
 )
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=[FRONTEND_URL, "http://localhost:3000"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST"],
+    allow_headers=["X-API-Key", "Content-Type"],
 )
 
+# ── Lifecycle ─────────────────────────────────────────────────────────────────
+@app.on_event("startup")
+async def startup():
+    global db_pool
+    if DATABASE_URL:
+        try:
+            db_pool = await asyncpg.create_pool(
+                DATABASE_URL,
+                min_size=2,
+                max_size=10,
+                command_timeout=30,
+            )
+            logger.info("✅ PostgreSQL pool ready")
+        except Exception as e:
+            logger.error(f"DB connection failed: {e}")
+    else:
+        logger.warning("⚠️  DATABASE_URL not set — running without persistence")
 
-# ─── Models ────────────────────────────────────────────────────────────────────
+
+@app.on_event("shutdown")
+async def shutdown():
+    if db_pool:
+        await db_pool.close()
+
+
+# ── Pydantic Models ───────────────────────────────────────────────────────────
 class VesselData(BaseModel):
     mmsi: str
     name: str
@@ -171,147 +148,39 @@ class ExportRequest(BaseModel):
     claude_report: dict
 
 
-def get_claude_client():
+# ── Claude helper ─────────────────────────────────────────────────────────────
+def get_claude() -> anthropic.Anthropic:
     if not ANTHROPIC_API_KEY:
-        raise HTTPException(status_code=500, detail="ANTHROPIC_API_KEY not configured")
+        raise HTTPException(status_code=503, detail="AI service not configured")
     return anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
 
-# ─── Tool execution ───────────────────────────────────────────────────────────
-def execute_tool(tool_name: str, tool_input: dict) -> str:
-    if tool_name == "get_vessels":
-        return json.dumps(DEMO_VESSELS, ensure_ascii=False)
-    elif tool_name == "search_by_flag":
-        flag = tool_input.get("flag", "").lower()
-        results = [v for v in DEMO_VESSELS if v["flag"].lower() == flag]
-        if not results:
-            return json.dumps({"message": f"No vessels found with flag '{flag}'", "available_flags": list(set(v["flag"] for v in DEMO_VESSELS))})
-        return json.dumps(results, ensure_ascii=False)
-    elif tool_name == "get_zone_summary":
-        critical = [v for v in DEMO_VESSELS if v["risk_score"] >= 75]
-        suspicious = [v for v in DEMO_VESSELS if 50 <= v["risk_score"] < 75]
-        normal = [v for v in DEMO_VESSELS if v["risk_score"] < 50]
-        return json.dumps({
-            "zone": "South Atlantic – Argentina EEZ Region",
-            "total_vessels": len(DEMO_VESSELS),
-            "threat_level": "HIGH" if len(critical) >= 2 else "MODERATE",
-            "critical_count": len(critical), "suspicious_count": len(suspicious), "normal_count": len(normal),
-            "flags_present": list(set(v["flag"] for v in DEMO_VESSELS)),
-            "avg_risk_score": round(sum(v["risk_score"] for v in DEMO_VESSELS) / len(DEMO_VESSELS), 1),
-            "top_threats": [{"name": v["name"], "flag": v["flag"], "risk": v["risk_score"], "summary": v["events_summary"]} for v in critical],
-            "ais_stream_active": True,
-            "live_vessels_count": 0,
-            "total_ais_messages": 0,
-        }, ensure_ascii=False)
-    return json.dumps({"error": f"Unknown tool: {tool_name}"})
+SYSTEM_PROMPT = """You are OceanEye, a maritime intelligence analyst specializing in IUU fishing detection.
+Monitored Area: South Atlantic — Argentina EEZ Border (200-220 nautical miles)
 
-
-CHAT_TOOLS = [
-    {
-        "name": "get_vessels",
-        "description": "Get all tracked vessels with positions, risk scores, activity indicators, and event summaries.",
-        "input_schema": {"type": "object", "properties": {"zone": {"type": "string", "default": "south_atlantic"}}, "required": []},
-    },
-    {
-        "name": "search_by_flag",
-        "description": "Search vessels by flag state (country). E.g. 'China', 'Vanuatu', 'Argentina'.",
-        "input_schema": {"type": "object", "properties": {"flag": {"type": "string"}}, "required": ["flag"]},
-    },
-    {
-        "name": "get_zone_summary",
-        "description": "Get threat assessment: risk levels, vessel counts, top threats, AIS stream status, IUU hotspots.",
-        "input_schema": {"type": "object", "properties": {}, "required": []},
-    },
-]
-
-SYSTEM_PROMPT = """You are an OceanEye maritime intelligence analyst.
-Monitored Area: South Atlantic — Argentina EEZ Border (Mile 200-220)
-
-Critical Context:
-- The Chinese fleet accounts for 66% of all AIS gap events at the EEZ border
-- +600,000 hours of unbroadcasted fishing documented (dark vessels)
-- Gaps are concentrated exactly between miles 200-220
+Key Context:
+- Chinese fleet accounts for 66% of AIS gap events at the EEZ border
+- +600,000 hours of unbroadcasted fishing documented annually (dark vessels)
+- Gaps concentrated at miles 200-220 — deliberate EEZ evasion pattern
 - Operation Mare Nostrum I active (Argentine Navy, 2025/2026)
-- The Blue Hole (43°-47°S): maximum squid concentration zone
+- The Blue Hole (43-47S): maximum squid concentration zone
 
-Always respond in English. Be direct. Never say 'it could be' — 
-take a firm position based on data."""
+Rules: Always respond in English. Be direct. Use data. Never say "could be" — take a firm position."""
 
 CHAT_SYSTEM_PROMPT = SYSTEM_PROMPT + """
 
-Always use tools to fetch data before answering. Be specific with MMSI, coordinates, risk scores.
-Respond ONLY in English. Use markdown for clarity."""
+Always call tools before answering. Cite MMSI, coordinates, risk scores.
+Use markdown. Respond only in English."""
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# ENDPOINTS
-# ═══════════════════════════════════════════════════════════════════════════════
-
-@app.get("/")
-async def root():
-    return {
-        "app": "OceanEye API",
-        "version": "3.0",
-        "status": "online",
-        "timestamp": datetime.utcnow().isoformat()
-    }
-
-@app.get("/config")
-async def get_client_config():
-    return {"ais_stream_key": AIS_STREAM_KEY}
-
-async def get_claude_risk(v: dict):
-    def _call():
-        client = get_claude_client()
-        prompt = f"Given these data, calculate the risk score. Respond ONLY with JSON:\n{{\"risk_score\": int, \"risk_label\": \"CRITICAL|HIGH|MEDIUM|LOW\", \"risk_color\": \"#ef4444|#f97316|#f59e0b|#22c55e\"}}\nData: {json.dumps(v)}"
-        try:
-            resp = client.messages.create(
-                model="claude-sonnet-4-20250514",
-                max_tokens=150,
-                messages=[{"role": "user", "content": prompt}]
-            )
-            text = resp.content[0].text.strip()
-            # clean json
-            if "{" in text: text = "{" + text.split("{", 1)[1]
-            if "}" in text: text = text.rsplit("}", 1)[0] + "}"
-            return json.loads(text)
-        except Exception as e:
-            return None
-
-    result = await asyncio.to_thread(_call)
-    v_copy = v.copy()
-    if result and isinstance(result, dict) and "risk_score" in result:
-        v_copy["risk_score"] = result.get("risk_score", v.get("risk_score", 0))
-        v_copy["risk_label"] = result.get("risk_label", v.get("risk_label", "UNKNOWN"))
-        v_copy["risk_color"] = result.get("risk_color", "#94a3b8")
-        v_copy["claude_ai_score"] = True
-    else:
-        v_copy["claude_ai_score"] = False
-    return v_copy
-
-@app.get("/vessels")
-async def get_vessels(zone: str = "south_atlantic"):
-    tasks = [get_claude_risk(v) for v in DEMO_VESSELS]
-    results = await asyncio.gather(*tasks)
-    return {"vessels": results, "source": "demo_data_with_claude_risk"}
-
-
-@app.get("/vessel/{mmsi}/events")
-async def get_vessel_events(mmsi: str):
-    """Fetch real events from GFW API for a specific vessel."""
-    vessel = next((v for v in DEMO_VESSELS if v["mmsi"] == mmsi), None)
-
-    if not vessel or not GFW_API_TOKEN:
-        return {"events": [], "source": "not_available"}
-
-    gfw_id = vessel.get("gfw_id", "")
-    if gfw_id.startswith("demo-"):
-        return {"events": [], "source": "demo_vessel"}
-
+# ── GFW Enrichment ────────────────────────────────────────────────────────────
+async def enrich_from_gfw(mmsi: str, gfw_id: str) -> dict:
+    """Enriquece perfil con eventos reales de Global Fishing Watch"""
+    if not GFW_API_TOKEN or not gfw_id or gfw_id.startswith("demo-"):
+        return {}
     headers = {"Authorization": f"Bearer {GFW_API_TOKEN}"}
     end_date = datetime.now().strftime("%Y-%m-%d")
     start_date = (datetime.now() - timedelta(days=90)).strftime("%Y-%m-%d")
-
     try:
         async with httpx.AsyncClient(timeout=15.0) as client:
             resp = await client.get(
@@ -321,96 +190,323 @@ async def get_vessel_events(mmsi: str):
                     "datasets[0]": "public-global-loitering-events:latest",
                     "datasets[1]": "public-global-gaps-events:latest",
                     "datasets[2]": "public-global-fishing-events:latest",
+                    "datasets[3]": "public-global-port-visits-events:latest",
                     "start-date": start_date,
                     "end-date": end_date,
-                    "limit": 50,
+                    "limit": 100,
                 },
                 headers=headers,
             )
             if resp.status_code == 200:
-                data = resp.json()
-                return {"events": data.get("entries", data if isinstance(data, list) else []), "source": "gfw_api"}
-            else:
-                logger.warning(f"GFW events {resp.status_code}: {resp.text[:200]}")
-                return {"events": [], "source": "gfw_error", "status": resp.status_code}
+                events = resp.json().get("entries", [])
+                return {
+                    "loitering_count": sum(1 for e in events if e.get("type") == "LOITERING"),
+                    "ais_gaps": sum(1 for e in events if e.get("type") == "GAP"),
+                    "port_visits": sum(1 for e in events if e.get("type") == "PORT_VISIT"),
+                    "gfw_enriched": True,
+                }
     except Exception as e:
-        logger.warning(f"GFW events error: {e}")
-        return {"events": [], "source": "error"}
+        logger.warning(f"GFW enrichment failed for {mmsi}: {e}")
+    return {}
+
+
+# ── Vessel trail from DB ───────────────────────────────────────────────────────
+async def get_vessel_trail(pool: asyncpg.Pool, mmsi: str, limit: int = 15) -> list:
+    rows = await pool.fetch(
+        """
+        SELECT lat, lon
+        FROM vessel_positions
+        WHERE mmsi = $1
+        ORDER BY timestamp DESC
+        LIMIT $2
+        """,
+        mmsi, limit,
+    )
+    return [{"lat": r["lat"], "lon": r["lon"]} for r in reversed(rows)]
+
+
+# ── Chat tools — queries a DB real ────────────────────────────────────────────
+async def execute_tool_db(
+    tool_name: str, tool_input: dict, pool: Optional[asyncpg.Pool]
+) -> str:
+    if pool is None:
+        return json.dumps({"error": "Database not available"})
+
+    if tool_name == "get_vessels":
+        rows = await pool.fetch(
+            """
+            SELECT mmsi, name, flag, vessel_type, gfw_id,
+                   last_lat, last_lon, last_heading, last_speed,
+                   loitering_count, port_visits, ais_gaps,
+                   risk_score, risk_label, risk_color,
+                   events_summary, zone, known_violations,
+                   last_seen, updated_at
+            FROM vessel_profiles
+            ORDER BY risk_score DESC
+            LIMIT 50
+            """
+        )
+        vessels = []
+        for r in rows:
+            v = dict(r)
+            try:
+                v["known_violations"] = json.loads(v.get("known_violations") or "[]")
+            except Exception:
+                v["known_violations"] = []
+            for k in ["last_seen", "updated_at"]:
+                if isinstance(v.get(k), datetime):
+                    v[k] = v[k].isoformat()
+            vessels.append(v)
+        return json.dumps(vessels, ensure_ascii=False, default=str)
+
+    elif tool_name == "search_by_flag":
+        flag = tool_input.get("flag", "").strip()
+        rows = await pool.fetch(
+            "SELECT * FROM vessel_profiles "
+            "WHERE LOWER(flag) = LOWER($1) ORDER BY risk_score DESC",
+            flag,
+        )
+        result = []
+        for r in rows:
+            v = dict(r)
+            for k in ["last_seen", "updated_at"]:
+                if isinstance(v.get(k), datetime):
+                    v[k] = v[k].isoformat()
+            result.append(v)
+        return json.dumps(result, ensure_ascii=False, default=str)
+
+    elif tool_name == "get_zone_summary":
+        rows = await pool.fetch(
+            "SELECT risk_score, flag, zone FROM vessel_profiles"
+        )
+        profiles = [dict(r) for r in rows]
+        total = len(profiles)
+        critical   = sum(1 for p in profiles if p["risk_score"] >= 75)
+        suspicious = sum(1 for p in profiles if 50 <= p["risk_score"] < 75)
+        normal     = sum(1 for p in profiles if p["risk_score"] < 50)
+        avg = round(
+            sum(p["risk_score"] for p in profiles) / total, 1
+        ) if total else 0
+        flags = list(set(p["flag"] for p in profiles if p["flag"]))
+        return json.dumps({
+            "zone": "South Atlantic – Argentina EEZ Region",
+            "total_vessels_tracked": total,
+            "threat_level": "HIGH" if critical >= 2 else "MODERATE",
+            "critical_count": critical,
+            "suspicious_count": suspicious,
+            "normal_count": normal,
+            "flags_present": flags,
+            "avg_risk_score": avg,
+            "data_source": "live_database",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }, ensure_ascii=False)
+
+    return json.dumps({"error": f"Unknown tool: {tool_name}"})
+
+
+CHAT_TOOLS = [
+    {
+        "name": "get_vessels",
+        "description": "Get all tracked vessels from live database: positions, risk scores, "
+                       "loitering counts, AIS gaps, port visits.",
+        "input_schema": {"type": "object", "properties": {}, "required": []},
+    },
+    {
+        "name": "search_by_flag",
+        "description": "Search vessels by flag state (ISO 3-letter code or country name). "
+                       "E.g. 'CHN', 'VUT', 'ARG', 'China'.",
+        "input_schema": {
+            "type": "object",
+            "properties": {"flag": {"type": "string"}},
+            "required": ["flag"],
+        },
+    },
+    {
+        "name": "get_zone_summary",
+        "description": "Get live threat assessment: risk distribution, vessel counts, "
+                       "flags present, avg risk score from live database.",
+        "input_schema": {"type": "object", "properties": {}, "required": []},
+    },
+]
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# ENDPOINTS
+# ══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/")
+async def root():
+    return {
+        "app": "OceanEye API",
+        "version": "4.0",
+        "status": "online",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+@app.get("/health")
+async def health():
+    """Health check endpoint para Cloud Run y load balancers"""
+    db_ok = db_pool is not None
+    return {
+        "status": "healthy" if db_ok else "degraded",
+        "database": "connected" if db_ok else "disconnected",
+        "ai": "configured" if ANTHROPIC_API_KEY else "missing",
+        "gfw": "configured" if GFW_API_TOKEN else "missing",
+        "ais_worker": "external_process",
+        "version": "4.0.0",
+    }
+
+
+@app.get("/vessels")
+@limiter.limit("60/minute")
+async def get_vessels(
+    request: Request,
+    zone: str = "south_atlantic",
+    pool: asyncpg.Pool = Depends(get_pool),
+    _: bool = Depends(verify_api_key),
+):
+    """Retorna todos los barcos trackeados de la DB, ordenados por risk_score DESC"""
+    rows = await pool.fetch(
+        """
+        SELECT vp.*
+        FROM vessel_profiles vp
+        ORDER BY risk_score DESC
+        LIMIT 100
+        """
+    )
+    vessels = []
+    for row in rows:
+        v = dict(row)
+        try:
+            v["known_violations"] = json.loads(v.get("known_violations") or "[]")
+        except Exception:
+            v["known_violations"] = []
+        for k in ["last_seen", "updated_at"]:
+            if isinstance(v.get(k), datetime):
+                v[k] = v[k].isoformat()
+        v["trail"] = await get_vessel_trail(pool, v["mmsi"], 10)
+        # Normalizar nombres para compatibilidad con frontend existente
+        v["lat"]      = v.pop("last_lat", 0.0)
+        v["lon"]      = v.pop("last_lon", 0.0)
+        v["heading"]  = v.pop("last_heading", 0)
+        v["avg_speed"] = v.pop("last_speed", 0.0)
+        vessels.append(v)
+
+    return {
+        "vessels": vessels,
+        "total": len(vessels),
+        "source": "live_database",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+@app.get("/vessel/{mmsi}/events")
+@limiter.limit("20/minute")
+async def get_vessel_events(
+    request: Request,
+    mmsi: str,
+    pool: asyncpg.Pool = Depends(get_pool),
+    _: bool = Depends(verify_api_key),
+):
+    """Retorna eventos reales de Global Fishing Watch para un barco específico"""
+    row = await pool.fetchrow(
+        "SELECT gfw_id FROM vessel_profiles WHERE mmsi=$1", mmsi
+    )
+    if not row:
+        raise HTTPException(status_code=404, detail="Vessel not found")
+
+    gfw_data = await enrich_from_gfw(mmsi, row["gfw_id"])
+    return {
+        "mmsi": mmsi,
+        "gfw_enrichment": gfw_data,
+        "source": "gfw_api" if gfw_data.get("gfw_enriched") else "not_available",
+    }
 
 
 @app.post("/analyze")
-async def analyze_vessel(request: AnalyzeRequest):
-    vessel = request.vessel_data
+@limiter.limit("20/minute")
+async def analyze_vessel(
+    request: Request,
+    body: AnalyzeRequest,
+    _: bool = Depends(verify_api_key),
+):
+    """Claude AI risk analysis para un barco dado sus métricas"""
+    v = body.vessel_data
     prompt = SYSTEM_PROMPT + f"""
 
-Analizá este barco y generá un informe JSON estructurado.
+Analyze this vessel and return a structured JSON intelligence report.
 
-Datos del barco:
-- MMSI: {vessel.mmsi} | Vessel Name: {vessel.name} | Flag: {vessel.flag}
-- Loitering count: {vessel.loitering_count} | Port visits: {vessel.port_visits}
-- AIS gaps: {vessel.ais_gaps} | Avg Speed: {vessel.avg_speed} kn | Zone: {vessel.zone}
+Vessel Data:
+- MMSI: {v.mmsi} | Name: {v.name} | Flag: {v.flag}
+- Loitering count: {v.loitering_count} | Port visits: {v.port_visits}
+- AIS gaps: {v.ais_gaps} | Avg Speed: {v.avg_speed} kn | Zone: {v.zone}
 
-Criterios: loitering>30=suspicious, ports=0=evasion, AIS gaps>3=dark vessel, speed<3kn=trawling.
-If you consider the risk score is LOW (<40), the "summary" MUST strictly include the phrase: "No signs of illegal activity detected. Operating pattern within normal parameters."
+Criteria: loitering>30=suspicious, ports=0=evasion, AIS gaps>3=dark vessel, speed<3kn=trawling.
+If risk LOW (<40): summary MUST include "No signs of illegal activity detected."
 
-Respond SOLO with a valid JSON, no extra text, no markdown, matching this exact structure:
+Respond ONLY with valid JSON — no markdown, no extra text:
 {{
-  "risk_score": <int>,
+  "risk_score": <0-100>,
   "risk_label": "<CRITICAL|HIGH|MEDIUM|LOW>",
   "risk_color": "<#ef4444|#f97316|#f59e0b|#22c55e>",
   "summary": "<2-3 english sentences>",
-  "red_flags": ["<list>", "<of>", "<behaviors>"],
-  "most_suspicious": "<the most suspicious trait in 1 sentence>",
-  "recommendation": "<concrete action to take>"
+  "red_flags": ["<flag1>", "<flag2>", "<flag3>"],
+  "most_suspicious": "<single finding>",
+  "recommendation": "<action>"
 }}"""
 
-    def call_claude(content: str):
-        client = get_claude_client()
+    def _call(content: str) -> str:
+        client = get_claude()
         msg = client.messages.create(
-            model="claude-sonnet-4-20250514", max_tokens=1024,
-            messages=[{"role": "user", "content": content}]
+            model="claude-sonnet-4-20250514",
+            max_tokens=1024,
+            messages=[{"role": "user", "content": content}],
         )
         t = msg.content[0].text.strip()
         if t.startswith("```"):
             t = t.split("```")[1]
-            if t.startswith("json"): t = t[4:]
+            if t.startswith("json"):
+                t = t[4:]
             t = t.strip()
         return t
 
     try:
-        text = call_claude(prompt)
+        text = await asyncio.to_thread(_call, prompt)
         try:
             return json.loads(text)
         except json.JSONDecodeError:
-            # Retry once
-            retry_prompt = text + "\n\nError: Invalid JSON. Respondé SOLO con JSON válido, sin texto extra, sin markdown."
-            text2 = call_claude(retry_prompt)
+            text2 = await asyncio.to_thread(
+                _call, text + "\n\nError: return ONLY valid JSON, no extra text."
+            )
             return json.loads(text2)
-            
     except json.JSONDecodeError:
         return {
-            "risk_score": 50,
-            "risk_label": "MEDIUM",
-            "risk_color": "#f59e0b",
-            "summary": "No se pudo codificar el JSON correctamente.",
-            "red_flags": [],
-            "most_suspicious": "Análisis fallido",
-            "recommendation": "Revisión manual"
+            "risk_score": 50, "risk_label": "MEDIUM", "risk_color": "#f59e0b",
+            "summary": "Analysis parsing error — manual review required.",
+            "red_flags": [], "most_suspicious": "Parse failure",
+            "recommendation": "Manual review",
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/chat")
-async def chat_with_agent(request: ChatRequest):
-    # Chat logic identical to before
+@limiter.limit("30/minute")
+async def chat_with_agent(
+    request: Request,
+    body: ChatRequest,
+    pool: asyncpg.Pool = Depends(get_pool),
+    _: bool = Depends(verify_api_key),
+):
+    """Conversational agent con acceso a datos reales de la DB"""
     try:
-        user_message = request.message
-        history = [{"role": m.role, "content": m.content} for m in request.conversation_history[-8:]]
-        
-        messages = history + [{"role": "user", "content": user_message}]
-        
-        client = get_claude_client()
+        history = [
+            {"role": m.role, "content": m.content}
+            for m in body.conversation_history[-8:]
+        ]
+        messages = history + [{"role": "user", "content": body.message}]
+        client = get_claude()
         response = client.messages.create(
             model="claude-sonnet-4-20250514",
             max_tokens=1024,
@@ -418,7 +514,7 @@ async def chat_with_agent(request: ChatRequest):
             messages=messages,
             tools=CHAT_TOOLS,
         )
-        
+
         tools_used = []
         for _ in range(3):
             if response.stop_reason != "tool_use":
@@ -427,74 +523,142 @@ async def chat_with_agent(request: ChatRequest):
             for block in response.content:
                 if block.type == "tool_use":
                     tools_used.append({"name": block.name, "params": block.input})
-                    tool_results.append({"type": "tool_result", "tool_use_id": block.id, "content": execute_tool(block.name, block.input)})
-
+                    result = await execute_tool_db(block.name, block.input, pool)
+                    tool_results.append({
+                        "type": "tool_result",
+                        "tool_use_id": block.id,
+                        "content": result,
+                    })
             messages.append({"role": "assistant", "content": response.content})
             messages.append({"role": "user", "content": tool_results})
-            response = client.messages.create(model="claude-sonnet-4-20250514", max_tokens=2048, system=CHAT_SYSTEM_PROMPT, tools=CHAT_TOOLS, messages=messages)
+            response = client.messages.create(
+                model="claude-sonnet-4-20250514",
+                max_tokens=2048,
+                system=CHAT_SYSTEM_PROMPT,
+                tools=CHAT_TOOLS,
+                messages=messages,
+            )
 
         reply = "".join(b.text for b in response.content if b.type == "text")
         return {"reply": reply, "tools_used": tools_used or None}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @app.post("/export")
-async def generate_export(request: ExportRequest):
-    v = request.vessel_data
-    cr = request.claude_report
-    now_utc = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')
-    
-    prompt = f"""Generate a plain text report for the vessel {v.get('name')}.
-Replace brackets with provided data keeping this exact format:
+@limiter.limit("10/minute")
+async def generate_export(
+    request: Request,
+    body: ExportRequest,
+    _: bool = Depends(verify_api_key),
+):
+    v = body.vessel_data
+    cr = body.claude_report
+    now_utc = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+
+    prompt = f"""Generate this exact plain text intelligence report:
 
 OCEANEYE — MARITIME INTELLIGENCE REPORT
 Generated: {now_utc}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 VESSEL: {v.get('name')} | MMSI: {v.get('mmsi')} | FLAG: {v.get('flag')}
-RISK SCORE: {v.get('risk_score', '0')}/100 — {str(v.get('risk_label', 'UNKNOWN')).upper()}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+RISK SCORE: {v.get('risk_score', 0)}/100 — {str(v.get('risk_label', 'UNKNOWN')).upper()}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ANALYSIS: {cr.get('summary', '')}
 RED FLAGS:
 {chr(10).join(['- ' + str(rf) for rf in cr.get('red_flags', [])])}
 MOST SUSPICIOUS: {cr.get('most_suspicious', '')}
 RECOMMENDED ACTION: {cr.get('recommendation', '')}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Powered by Claude AI (Anthropic) + Global Fishing Watch"""
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Source: OceanEye v4 | AIS Stream + Global Fishing Watch + Claude AI (Anthropic)
+Real-time vessel tracking — South Atlantic EEZ Monitoring"""
 
     def _call():
-        client = get_claude_client()
+        client = get_claude()
         msg = client.messages.create(
-            model="claude-sonnet-4-20250514", max_tokens=1024,
-            messages=[{"role": "user", "content": prompt}]
+            model="claude-sonnet-4-20250514",
+            max_tokens=1024,
+            messages=[{"role": "user", "content": prompt}],
         )
         return msg.content[0].text.strip()
-    
+
     try:
         text = await asyncio.to_thread(_call)
         return {"report": text}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @app.post("/briefing")
-async def generate_briefing():
-    zone_data = execute_tool("get_zone_summary", {})
+@limiter.limit("10/minute")
+async def generate_briefing(
+    request: Request,
+    pool: asyncpg.Pool = Depends(get_pool),
+    _: bool = Depends(verify_api_key),
+):
+    """Daily intelligence briefing generado con datos reales de la DB"""
+    zone_data = await execute_tool_db("get_zone_summary", {}, pool)
     prompt = SYSTEM_PROMPT + f"""
 
-Generate a concise DAILY INTELLIGENCE BRIEFING.
+Generate a DAILY INTELLIGENCE BRIEFING based on LIVE database data.
 
 Data: {zone_data}
 
-Format: 1. THREAT LEVEL (1 line) 2. KEY FINDINGS (2-3 bullets) 3. IMMEDIATE ACTIONS (1-2 bullets)
-Under 150 words. Authoritative, direct. Use markdown. No headers."""
+Format:
+1. THREAT LEVEL (1 line)
+2. KEY FINDINGS (2-3 bullets)
+3. IMMEDIATE ACTIONS (1-2 bullets)
+
+Under 150 words. Authoritative tone. Markdown. No headers."""
+
+    def _call():
+        client = get_claude()
+        msg = client.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=512,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        return msg.content[0].text.strip()
 
     try:
-        client = get_claude_client()
-        msg = client.messages.create(model="claude-sonnet-4-20250514", max_tokens=512, messages=[{"role": "user", "content": prompt}])
-        return {"briefing": msg.content[0].text.strip(), "generated_at": datetime.now().isoformat(), "ais_active": True}
+        text = await asyncio.to_thread(_call)
+        return {
+            "briefing": text,
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "data_source": "live_database",
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.get("/alerts")
+@limiter.limit("30/minute")
+async def get_alerts(
+    request: Request,
+    limit: int = 20,
+    acknowledged: bool = False,
+    pool: asyncpg.Pool = Depends(get_pool),
+    _: bool = Depends(verify_api_key),
+):
+    """Retorna alertas automáticas generadas por el worker AIS"""
+    rows = await pool.fetch(
+        """
+        SELECT id, mmsi, vessel_name, alert_type, severity,
+               description, lat, lon, created_at, acknowledged
+        FROM alerts
+        WHERE acknowledged = $1
+        ORDER BY created_at DESC
+        LIMIT $2
+        """,
+        acknowledged, limit,
+    )
+    alerts = []
+    for r in rows:
+        a = dict(r)
+        if isinstance(a.get("created_at"), datetime):
+            a["created_at"] = a["created_at"].isoformat()
+        alerts.append(a)
+    return {"alerts": alerts, "total": len(alerts)}
 
 
 if __name__ == "__main__":
