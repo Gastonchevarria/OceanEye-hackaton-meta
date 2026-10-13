@@ -952,6 +952,33 @@ async def dispatch_naval_alert_endpoint(
         "message": f"Despacho táctico {dispatch_id} transmitido con éxito al Comando de Operaciones Navales (ARA/PNA)."
     }
 
+# ── Onboarding Guided Tour IP State Tracker ──────────────────────────────────
+SEEN_TUTORIAL_IPS = set()
+
+@app.get("/api/v1/tour/status")
+async def get_tour_status(request: Request):
+    """
+    Returns whether the guided onboarding tour should be automatically displayed
+    for the requesting client IP (True on first visit, False once completed).
+    """
+    client_ip = request.headers.get("x-forwarded-for", "").split(",")[0].strip()
+    if not client_ip and request.client:
+        client_ip = request.client.host
+    should_show = (client_ip not in SEEN_TUTORIAL_IPS) if client_ip else True
+    return {"client_ip": client_ip, "should_show_tour": should_show}
+
+@app.post("/api/v1/tour/complete")
+async def complete_tour(request: Request):
+    """
+    Records that the client IP has viewed or completed the guided onboarding tour.
+    """
+    client_ip = request.headers.get("x-forwarded-for", "").split(",")[0].strip()
+    if not client_ip and request.client:
+        client_ip = request.client.host
+    if client_ip:
+        SEEN_TUTORIAL_IPS.add(client_ip)
+    return {"client_ip": client_ip, "recorded": True}
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", 8000)))

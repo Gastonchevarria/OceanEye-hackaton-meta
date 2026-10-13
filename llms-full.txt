@@ -52,6 +52,13 @@ Hash = SHA-256(canonical_evidence_json)
 Signature = Ed25519_Sign(Private_Key, Hash)
 Clave Pública Oficial: 585ea4596b1cf29c3f1221793ed34ab6f56e4a3d9b97a9f967d3b16d6e3e062a
 
+#### H. Visión Artificial Profunda: ResNet-18 Dual-Stream (ONNX)
+- Entrada Bicanal: Canales normalizados sigma0_VV y sigma0_VH (64x64 px).
+- Dataset de Entrenamiento: LS-SSDD (4.466 escenas Sentinel-1, 1.542 muestras independientes de test).
+- Métricas Empíricas de Test: Precision 97.22% · Recall 96.05% · F1-Score 96.63% · Accuracy 94.94%.
+- Doble Cabeza: is_vessel vs sea_clutter (Binary Cross-Entropy) + Regresión de eslora del buque (Smooth L1 Loss).
+- Despliegue: ONNX Runtime en CPU, latencia 14 ms por blanco en Cloud Run ($0.00 en reposo).
+
 ---
 
 ### 3. Resultados Cuantitativos del Benchmark de Referencia
