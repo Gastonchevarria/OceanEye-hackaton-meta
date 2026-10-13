@@ -3,6 +3,8 @@
 ## Proyecto de Investigación Científica, Teledetección y Soberanía Tecnológica del Mar Argentino
 - Investigador Principal: Ing. Químico Gastón Chevarria
 - Filiación: Investigador Independiente · Especialista en Arquitectura de Sistemas de IA (UTN FRVM · UNSAM)
+- Contacto Investigador: gaston@oceaneye-ai.com
+- Correspondencia Institucional: contacto@oceaneye-ai.com
 - Antecedente: «Clasificación y Monitoreo de Parámetros de Calidad de Agua en la Franja Costera del Río de la Plata mediante Modelos de Machine Learning (Ministerio de Ambiente y Desarrollo Sostenible)»
 - Repositorio Público de Evaluación: https://github.com/Gastonchevarria/oceaneye-evaluation
 - Consola Táctica Operativa: https://oceaneye-ai.com/app
