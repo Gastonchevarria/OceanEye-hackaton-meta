@@ -516,23 +516,115 @@
         .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
         .legend-line { width: 16px; height: 2px; flex-shrink: 0; }
 
-        /* FLOATING VESSEL HUD (Appears when vessel is clicked) */
-        #floatingVesselHud {
-            position: absolute;
-            top: 60px;
-            right: 16px;
-            width: 360px;
-            background: rgba(10, 14, 23, 0.96);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 210, 254, 0.35);
-            border-radius: 8px;
-            padding: 14px;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.75);
-            z-index: 1000;
-            display: none;
-            animation: fadeIn 0.2s ease-out;
+        /* WAR ROOM 3-COLUMN LAYOUT */
+        #viewLiveMap {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
         }
-        @keyframes fadeIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+        #map-container {
+            flex: 1;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* RIGHT FORENSIC PANEL (Column 3 of War Room) */
+        #rightForensicPanel {
+            width: 380px;
+            min-width: 380px;
+            height: 100%;
+            background: rgba(8, 11, 18, 0.98);
+            backdrop-filter: blur(24px);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            z-index: 1000;
+            padding: 16px;
+            transition: margin-right 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        #rightForensicPanel::-webkit-scrollbar { width: 3px; }
+        #rightForensicPanel::-webkit-scrollbar-thumb { background: rgba(0, 210, 254, 0.25); border-radius: 3px; }
+        #rightForensicPanel.collapsed {
+            margin-right: -380px;
+        }
+        .right-panel-toggle-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 32px;
+            height: 32px;
+            background: rgba(10, 14, 23, 0.94);
+            border: 1px solid var(--border-cyan);
+            border-radius: 6px;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.6);
+            transition: all var(--transition);
+        }
+        .right-panel-toggle-btn:hover {
+            background: #111723;
+            color: #fff;
+            box-shadow: 0 0 16px rgba(0, 210, 254, 0.5);
+        }
+        .badge-evidence-certified {
+            font-size: 9px;
+            font-weight: 800;
+            color: #00d2fe;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: inline-block;
+            background: rgba(0, 210, 254, 0.12);
+            border: 1px solid var(--border-cyan);
+            padding: 2px 7px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+        }
+        .panel-vessel-title {
+            font-size: 16px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: -0.3px;
+            margin: 2px 0;
+        }
+        .panel-vessel-sub {
+            font-size: 11px;
+            color: #94a3b8;
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 12px;
+        }
+        .panel-sar-chip-box {
+            background: #020408;
+            border: 1px solid rgba(0, 210, 254, 0.3);
+            border-radius: 6px;
+            padding: 8px;
+            margin-bottom: 12px;
+        }
+        .panel-box-label {
+            font-size: 9px;
+            font-weight: 800;
+            color: #38bdf8;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+        }
+        .panel-crypto-box {
+            background: #04060a;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px 10px;
+            margin-bottom: 10px;
+        }
         .hud-header {
             display: flex;
             justify-content: space-between;
@@ -1029,13 +1121,8 @@
             </div>
 
             <!-- Guided Tour Button (Hermes Recommendation) -->
-            <button class="header-btn" id="headerTourBtn" onclick="startGuidedTour()" style="background:rgba(0,210,254,0.12);border-color:rgba(0,210,254,0.4);color:#38bdf8;" title="Iniciar recorrido explicativo paso a paso">
-                🧭 Guía Paso a Paso
-            </button>
-
-            <!-- Mission Hero Toggle Button -->
-            <button class="header-btn" id="headerMissionBtn" onclick="toggleMissionHero(true)" title="Ver contexto de la misión y objetivos soberanos">
-                ℹ️ Misión
+            <button class="header-btn" id="headerTourBtn" onclick="startGuidedTour()" style="background:rgba(0,210,254,0.15);border-color:#00d2fe;color:#00d2fe;box-shadow:0 0 12px rgba(0,210,254,0.3);font-weight:800;" title="Iniciar recorrido guiado paso a paso">
+                🧭 Tutorial Paso a Paso
             </button>
 
             <!-- Natural Audio Briefing Button -->
@@ -1086,67 +1173,8 @@
                 </div>
             </aside>
 
-            <!-- Map Container -->
+            <!-- Map Container (Columna 2 de Sala de Guerra) -->
             <div id="map-container">
-
-                <!-- ════════════════════════════════════════════════════════════════════
-                     MISSION BRIEFING HERO SECTION (Hermes / BBVA Leonardo Presentation)
-                     ════════════════════════════════════════════════════════════════════ -->
-                <div id="missionHeroSection" class="collapsed">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                        <span style="font-size:10px;font-weight:800;letter-spacing:1.2px;color:#fca5a5;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);padding:3px 10px;border-radius:100px;display:inline-flex;align-items:center;gap:6px;">
-                            <span class="pulse-beacon"></span> VIGILANCIA SATELITAL CONTINUA · ATLÁNTICO SUDOCCIDENTAL (MILLA 201 ZEE ARGENTINA)
-                        </span>
-                        <button onclick="toggleMissionHero(false)" class="btn-secondary" style="padding:3px 9px;font-size:10px;" title="Minimizar panel informativo">
-                            ✕ Minimizar
-                        </button>
-                    </div>
-
-                    <h1 style="font-size:22px;font-weight:900;color:#ffffff;letter-spacing:-0.6px;margin:4px 0 8px;line-height:1.2;">
-                        Inteligencia Satelital Soberana contra la Pesca Ilegal (Milla 201)
-                    </h1>
-
-                    <p style="font-size:12px;color:#cbd5e1;line-height:1.55;max-width:860px;margin:0 0 10px;">
-                        Cada noche, flotas pesqueras extranjeras apagan sus transpondedores AIS para ingresar clandestinamente a la Zona Económica Exclusiva Argentina y saquear el calamar Illex en el Agujero Azul. OceanEye procesa <strong>Radar de Apertura Sintética (Sentinel-1 SAR en banda C)</strong> para atravesar niebla y noche patagónica, aislar buques oscuros mediante física electromagnética y generar dossiers con firma criptográfica asimétrica Ed25519 con plena validez judicial federal.
-                    </p>
-
-                    <!-- 3 Live Impact KPIs -->
-                    <div class="hero-kpis-grid">
-                        <div class="hero-kpi-card">
-                            <span class="hero-kpi-val" id="heroDarkVesselsKpi">12</span>
-                            <span class="hero-kpi-lbl">Buques Oscuros Aislados</span>
-                        </div>
-                        <div class="hero-kpi-card">
-                            <span class="hero-kpi-val">10 m/px</span>
-                            <span class="hero-kpi-lbl">Resolución Sentinel-1 SAR</span>
-                        </div>
-                        <div class="hero-kpi-card">
-                            <span class="hero-kpi-val">Sub-40 ms</span>
-                            <span class="hero-kpi-lbl">Triage Determinista LAYA</span>
-                        </div>
-                    </div>
-
-                    <!-- 3 CTAs -->
-                    <div class="hero-actions-row">
-                        <button class="btn-primary" onclick="toggleMissionHero(false)">
-                            <span style="font-size:13px;">🗺️</span> Explorar Mapa Táctico
-                        </button>
-                        <button class="btn-pdf-export" onclick="focusCriticalVesselInDossier()">
-                            <span style="font-size:14px;">⚖️</span> Ver Caso de Infracción Certificado (LU RONG YU 588)
-                        </button>
-                        <button class="btn-secondary" onclick="startGuidedTour()">
-                            <span style="font-size:13px;">🧭</span> Guía Interactiva Paso a Paso
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Compact Trigger Bar (Visible when Hero is collapsed) -->
-                <div class="hero-compact-bar visible" id="heroCompactBar">
-                    <button class="hero-compact-btn" onclick="toggleMissionHero(true)" title="Expandir briefing de misión y contexto">
-                        <span>🛰️</span> Misión Soberana Milla 201 · Expandir Briefing ▾
-                    </button>
-                </div>
-
                 <div id="map"></div>
 
                 <!-- Top Left Layer Filters -->
@@ -1172,45 +1200,10 @@
                     </button>
                 </div>
 
-                <!-- Floating Vessel HUD (Visible upon selection, no permanent rigid sidebar) -->
-                <div id="floatingVesselHud">
-                    <div class="hud-header">
-                        <div>
-                            <div class="hud-title" id="hudVesselName">LU RONG YU 588 (DARK-001)</div>
-                            <div style="font-size:10px;color:#94a3b8;font-family:monospace;" id="hudVesselFlag">🇨🇳 China · MMSI: 412001928</div>
-                        </div>
-                        <button class="hud-close-btn" onclick="closeVesselHud()">✕</button>
-                    </div>
-                    <div class="hud-grid">
-                        <div class="hud-item">
-                            <div class="hud-item-label">Nivel de Riesgo</div>
-                            <div class="hud-item-val" id="hudRiskScore" style="color:#ef4444;">98/100 (CRÍTICO)</div>
-                        </div>
-                        <div class="hud-item">
-                            <div class="hud-item-label">Distancia a ZEE</div>
-                            <div class="hud-item-val" id="hudDistanceEez" style="color:#ef4444;">15.20 NM (Incursión)</div>
-                        </div>
-                        <div class="hud-item">
-                            <div class="hud-item-label">Velocidad / Rumbo</div>
-                            <div class="hud-item-val" id="hudSpeedHeading">8.8 kn · 148°</div>
-                        </div>
-                        <div class="hud-item">
-                            <div class="hud-item-label">Cortes AIS (Gaps)</div>
-                            <div class="hud-item-val" id="hudAisGaps">12 cortes</div>
-                        </div>
-                    </div>
-                    <div style="font-size:10.5px;color:#cbd5e1;line-height:1.4;margin-bottom:12px;" id="hudSummaryText">
-                        Apagado sistemático de transpondedor AIS en el Agujero Azul frente a la Milla 201. Eco de radar Sentinel-1 SAR confirmado sin correlación en AISStream.
-                    </div>
-                    <div style="display:flex;gap:6px;">
-                        <button class="btn-primary" style="flex:1;" onclick="openSelectedInDossier()">
-                            ⚖️ Ver Dossier Forense
-                        </button>
-                        <button class="btn-danger" onclick="dispatchNavalAlert()">
-                            🚨 Alerta ARA/PNA
-                        </button>
-                    </div>
-                </div>
+                <!-- Button to Toggle Right Forensic Panel if user wants 100% full map -->
+                <button class="right-panel-toggle-btn" onclick="toggleRightPanel()" id="rightPanelToggleBtn" title="Colapsar/Expandir Panel Pericial">
+                    ⚖️
+                </button>
 
                 <!-- Discreet Bottom-Left Collapsible Legend -->
                 <div class="legend-drawer" id="legendDrawer">
@@ -1235,6 +1228,92 @@
                 </div>
 
             </div>
+
+            <!-- ════════════════════════════════════════════════════════════════════
+                 COLUMN 3: RIGHT FORENSIC EVIDENCE & CRYPTOGRAPHIC DOSSIER PANEL (380px)
+                 ════════════════════════════════════════════════════════════════════ -->
+            <aside id="rightForensicPanel">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:12px;">
+                    <div>
+                        <span class="badge-evidence-certified">⚖️ EVIDENCIA JUDICIAL CRIPTOGRÁFICA</span>
+                        <h2 class="panel-vessel-title" id="panelVesselName">LU RONG YU 588</h2>
+                        <div class="panel-vessel-sub" id="panelVesselFlag">🇨🇳 China · MMSI: 412001928</div>
+                    </div>
+                    <button onclick="toggleRightPanel()" title="Minimizar panel derecho" style="background:none;border:none;color:#94a3b8;font-size:14px;cursor:pointer;padding:4px;">✕</button>
+                </div>
+
+                <div style="margin-bottom:12px;">
+                    <button class="btn-pdf-export" onclick="downloadForensicPdf()" style="width:100%;justify-content:center;padding:9px 14px;font-size:11.5px;" title="Descargar documento judicial pericial A4 en PDF">
+                        📥 Descargar Dossier Oficial (PDF Certificado)
+                    </button>
+                </div>
+
+                <!-- Recorte Radar Sentinel-1 SAR (Grayscale Bragg) -->
+                <div class="panel-sar-chip-box">
+                    <div class="panel-box-label">
+                        <span>RECORTE SENTINEL-1 SAR (DUAL-POL)</span>
+                        <span style="color:#10b981;font-weight:700;">RESNET-18: 92.3% P(BUQUE)</span>
+                    </div>
+                    <canvas id="sarChipCanvasWarRoom" width="340" height="120" style="width:100%;height:120px;display:block;background:#020408;border-radius:4px;"></canvas>
+                </div>
+
+                <!-- Telemetría de Posición Orbital -->
+                <div class="hud-grid" style="margin-bottom:10px;">
+                    <div class="hud-item">
+                        <div class="hud-item-label">Coordenadas WGS84</div>
+                        <div class="hud-item-val" id="panelWgs84Coords">-45.1603°S, -59.9586°W</div>
+                    </div>
+                    <div class="hud-item">
+                        <div class="hud-item-label">Distancia ZEE Milla 200</div>
+                        <div class="hud-item-val" id="panelDistanceEez" style="color:#ef4444;">15.20 NM (Incursión)</div>
+                    </div>
+                    <div class="hud-item">
+                        <div class="hud-item-label">Dimensiones Estimadas</div>
+                        <div class="hud-item-val" id="panelDimensions">Eslora: 41.5m · Manga: 10.0m</div>
+                    </div>
+                    <div class="hud-item">
+                        <div class="hud-item-label">Firma Radar (RCS / SNR)</div>
+                        <div class="hud-item-val" id="panelRcsVal" style="color:#00d2fe;">RCS: +51.6 dB</div>
+                    </div>
+                </div>
+
+                <!-- Cadena de Custodia SHA-256 -->
+                <div class="panel-crypto-box">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                        <span style="font-size:9px;font-weight:800;color:#38bdf8;text-transform:uppercase;">🔐 Hash SHA-256 Inmutable</span>
+                        <button onclick="copyDossierHash()" class="btn-secondary" style="padding:1px 6px;font-size:9px;">Copiar</button>
+                    </div>
+                    <div id="panelSha256Box" style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#e2e8f0;word-break:break-all;">
+                        8ce0d8dbf7ffa1c35f2161bf89dc3cfbdab36f9c0919c2d9a6c2faaf0072a921
+                    </div>
+                </div>
+
+                <!-- Firma Digital Asimétrica LAYA (Ed25519) -->
+                <div class="panel-crypto-box" style="border-color:rgba(6,182,212,0.3);margin-bottom:12px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                        <span style="font-size:9px;font-weight:800;color:#22d3ee;text-transform:uppercase;">🛡️ Firma Ed25519 (LAYA)</span>
+                        <span style="font-size:8.5px;color:#10b981;font-weight:700;">● Cloud Secret Manager</span>
+                    </div>
+                    <div id="panelLayaSigBox" style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#22d3ee;word-break:break-all;">
+                        KT+N5kXyR0KDRkRff37SS5l7BNJV5o0B+m5ATvldl3lwudy1MamVRM4aLBIx/5tXFyxjKRX54GMCdn3ofNOfCw==
+                    </div>
+                    <div style="margin-top:6px;display:flex;gap:6px;align-items:center;">
+                        <button id="btnVerifySignatureWarRoom" onclick="verifyLiveLayaSignature()" class="btn-primary" style="padding:3px 8px;font-size:9px;background:#0284c7;">
+                            🔍 Verificar en Servidor
+                        </button>
+                        <span id="panelVerificationResult" style="font-size:9px;font-weight:700;"></span>
+                    </div>
+                </div>
+
+                <!-- Marco Jurídico Soberano -->
+                <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:9px;margin-bottom:12px;font-size:10.5px;color:#cbd5e1;line-height:1.45;">
+                    <strong style="color:#fca5a5;">Infracción Tipificada:</strong> Ley 24.922 Art. 51 (Pesca clandestina en ZEE) y CONVEMAR Art. 56/73. Competencia del Fuero Federal de Comodoro Rivadavia.
+                </div>
+
+                <button class="btn-danger" onclick="dispatchNavalAlert()" style="width:100%;justify-content:center;padding:8px 12px;font-size:11px;">
+                    🚨 Despachar Interdicción ARA Bouchard
+                </button>
+            </aside>
         </section>
 
         <!-- ════════════════════════════════════════════════════════════════════════
@@ -2024,24 +2103,52 @@
         }).addTo(map);
         uncertaintyEllipseLayer.bindTooltip(`🎯 Elipse Cinemática (CEP ±${(radiusM/1852).toFixed(2)} NM)`, {sticky: true});
 
-        // Show Floating HUD
-        const hud = document.getElementById('floatingVesselHud');
-        if (hud) {
-            hud.style.display = 'block';
-            document.getElementById('hudVesselName').textContent = v.name;
-            document.getElementById('hudVesselFlag').textContent = `${v.flag} · MMSI: ${v.mmsi}`;
-            document.getElementById('hudRiskScore').textContent = `${v.risk_score}/100`;
-            document.getElementById('hudRiskScore').style.color = col;
-            document.getElementById('hudDistanceEez').textContent = `${(v.distance_to_eez_nm !== undefined && v.distance_to_eez_nm !== null) ? v.distance_to_eez_nm : '15.20'} NM`;
-            document.getElementById('hudSpeedHeading').textContent = `${v.avg_speed || 0} kn · ${v.heading || 0}°`;
-            document.getElementById('hudAisGaps').textContent = `${v.ais_gaps || 0} cortes`;
-            document.getElementById('hudSummaryText').textContent = v.events_summary || '';
+        // Update War Room Right Forensic Panel
+        updateRightForensicPanel(v);
+    }
+
+    function toggleRightPanel() {
+        const p = document.getElementById('rightForensicPanel');
+        if (!p) return;
+        p.classList.toggle('collapsed');
+        setTimeout(() => { if (map) map.invalidateSize(); }, 260);
+    }
+
+    function updateRightForensicPanel(v) {
+        if (!v) return;
+        const panel = document.getElementById('rightForensicPanel');
+        if (panel && panel.classList.contains('collapsed')) {
+            panel.classList.remove('collapsed');
+            setTimeout(() => { if (map) map.invalidateSize(); }, 260);
         }
+
+        const nameEl = document.getElementById('panelVesselName');
+        const flagEl = document.getElementById('panelVesselFlag');
+        const coordsEl = document.getElementById('panelWgs84Coords');
+        const distEl = document.getElementById('panelDistanceEez');
+        const dimsEl = document.getElementById('panelDimensions');
+        const rcsEl = document.getElementById('panelRcsVal');
+
+        if (nameEl) nameEl.textContent = v.name || 'LU RONG YU 588';
+        if (flagEl) flagEl.textContent = `${v.flag || '🇨🇳 China'} · MMSI: ${v.mmsi || '412001928'}`;
+        if (coordsEl && v.lat && v.lon) coordsEl.textContent = `${v.lat.toFixed(4)}°S, ${v.lon.toFixed(4)}°W`;
+        if (distEl) {
+            const d = v.distance_to_eez_nm !== undefined && v.distance_to_eez_nm !== null ? v.distance_to_eez_nm : 15.20;
+            distEl.textContent = `${Math.abs(d).toFixed(2)} NM (${d < 0 ? 'Incursión ZEE' : 'Límite Exterior'})`;
+            distEl.style.color = d < 0 ? '#ef4444' : '#10b981';
+        }
+        if (dimsEl) dimsEl.textContent = `Eslora: ${v.length_meters || 41.5}m · Manga: ${v.beam_meters || 10.0}m`;
+        if (rcsEl) rcsEl.textContent = `RCS: +${v.rcs_db || 51.6} dB`;
+
+        // Render Bragg canvas for War Room panel
+        drawSarChipCanvas('sarChipCanvasWarRoom', {
+            radar_cross_section_db: v.rcs_db || 51.6,
+            estimated_dimensions: { length_meters: v.length_meters || 41.5, beam_meters: v.beam_meters || 10.0 }
+        });
     }
 
     function closeVesselHud() {
-        const hud = document.getElementById('floatingVesselHud');
-        if (hud) hud.style.display = 'none';
+        toggleRightPanel();
         if (uncertaintyEllipseLayer && map) {
             map.removeLayer(uncertaintyEllipseLayer);
             uncertaintyEllipseLayer = null;
@@ -2433,12 +2540,29 @@
         document.getElementById('dossierSha256Box').textContent = dossierData.chain_of_custody_hash_sha256;
         document.getElementById('dossierLayaSigBox').textContent = dossierData.laya_ed25519_certificate?.ed25519_signature_base64 || 'Ed25519 SEALED';
 
+        // Also update War Room right panel
+        const pCoords = document.getElementById('panelWgs84Coords');
+        if (pCoords) pCoords.textContent = `${coords.latitude.toFixed(4)}°S, ${coords.longitude.toFixed(4)}°W`;
+        const pDist = document.getElementById('panelDistanceEez');
+        if (pDist) pDist.textContent = `${Math.abs(dossierData.distance_to_eez_nm).toFixed(2)} NM (${dossierData.distance_to_eez_nm < 0 ? 'Incursión ZEE' : 'Límite Exterior'})`;
+        const pDims = document.getElementById('panelDimensions');
+        if (pDims) pDims.textContent = `Eslora: ${dossierData.estimated_dimensions.length_meters}m | Manga: ${dossierData.estimated_dimensions.beam_meters}m`;
+        const pRcs = document.getElementById('panelRcsVal');
+        if (pRcs) pRcs.textContent = `RCS: +${dossierData.radar_cross_section_db} dB`;
+        const pSha = document.getElementById('panelSha256Box');
+        if (pSha) pSha.textContent = dossierData.chain_of_custody_hash_sha256;
+        const pSig = document.getElementById('panelLayaSigBox');
+        if (pSig) pSig.textContent = dossierData.laya_ed25519_certificate?.ed25519_signature_base64 || 'Ed25519 SEALED';
+
         drawSarChipCanvas('sarChipCanvas', dossierData);
+        drawSarChipCanvas('sarChipCanvasWarRoom', dossierData);
     }
 
     async function verifyLiveLayaSignature() {
         const btn = document.getElementById('btnVerifySignature');
+        const btnPanel = document.getElementById('btnVerifySignatureWarRoom');
         const resBox = document.getElementById('layaVerificationResult');
+        const resBoxPanel = document.getElementById('panelVerificationResult');
         const cert = window.currentLoadedDossier?.laya_ed25519_certificate;
 
         if (!cert) {
@@ -2446,7 +2570,8 @@
             return;
         }
 
-        btn.textContent = "Verificando...";
+        if (btn) btn.textContent = "Verificando...";
+        if (btnPanel) btnPanel.textContent = "Verificando...";
         try {
             const resp = await fetch(`${API_BASE}/api/v1/sar/laya/verify`, {
                 method: 'POST',
@@ -2454,76 +2579,103 @@
                 body: JSON.stringify(cert)
             });
             const v = await resp.json();
-            resBox.style.display = 'inline-block';
+            if (resBox) resBox.style.display = 'inline-block';
+            if (resBoxPanel) resBoxPanel.style.display = 'inline-block';
             if (v.is_valid) {
-                resBox.style.color = '#10b981';
-                resBox.innerHTML = `✅ VÁLIDA (${v.verification_latency_ms}ms)`;
+                const msg = `✅ VÁLIDA (${v.verification_latency_ms}ms)`;
+                if (resBox) { resBox.style.color = '#10b981'; resBox.innerHTML = msg; }
+                if (resBoxPanel) { resBoxPanel.style.color = '#10b981'; resBoxPanel.innerHTML = msg; }
                 showToast(`Firma LAYA y SHA-256 matemáticamente verificados (${v.verification_latency_ms}ms)`, '🛡️');
             } else {
-                resBox.style.color = '#ef4444';
-                resBox.innerHTML = '❌ ALTERADA / NO COINCIDE';
+                const msg = '❌ ALTERADA';
+                if (resBox) { resBox.style.color = '#ef4444'; resBox.innerHTML = msg; }
+                if (resBoxPanel) { resBoxPanel.style.color = '#ef4444'; resBoxPanel.innerHTML = msg; }
                 showToast('Alerta pericial: Datos alterados', '⚠️');
             }
         } catch(e) {
             console.error("Error al verificar firma:", e);
-            resBox.style.display = 'inline-block';
-            resBox.style.color = '#f59e0b';
-            resBox.textContent = 'Error de conexión';
+            if (resBox) { resBox.style.display = 'inline-block'; resBox.style.color = '#f59e0b'; resBox.textContent = 'Error de conexión'; }
+            if (resBoxPanel) { resBoxPanel.style.display = 'inline-block'; resBoxPanel.style.color = '#f59e0b'; resBoxPanel.textContent = 'Error de conexión'; }
         } finally {
-            btn.textContent = "🔍 Verificar Firma en Servidor";
+            if (btn) btn.textContent = "🔍 Verificar Firma en Servidor";
+            if (btnPanel) btnPanel.textContent = "🔍 Verificar en Servidor";
         }
     }
 
-    function drawSarChipCanvas(id, data) {
-        const canvas = document.getElementById(id);
+    // ── RADAR SAR DUAL-POL CHIP CANVAS RENDERER ──
+    function drawSarChipCanvas(canvasId, data) {
+        const canvas = document.getElementById(canvasId);
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
-        const w = canvas.width, h = canvas.height;
+        const w = canvas.width;
+        const h = canvas.height;
 
-        ctx.fillStyle = '#020408';
+        // Sea clutter background (Rayleigh speckle)
+        ctx.fillStyle = '#030508';
         ctx.fillRect(0, 0, w, h);
 
-        // Noise
         const imgData = ctx.createImageData(w, h);
         const buf = imgData.data;
         for (let i = 0; i < buf.length; i += 4) {
-            const n = Math.floor(Math.random() * 35);
-            buf[i] = n; buf[i+1] = n; buf[i+2] = n; buf[i+3] = 255;
+            const noise = Math.floor(Math.random() * 32);
+            buf[i] = noise;
+            buf[i+1] = noise + 4;
+            buf[i+2] = noise + 10;
+            buf[i+3] = 255;
         }
         ctx.putImageData(imgData, 0, 0);
 
-        // Bragg Hull Target
-        const cx = w / 2, cy = h / 2;
-        const grad = ctx.createRadialGradient(cx, cy, 2, cx, cy, 18);
-        grad.addColorStop(0, '#ffffff');
-        grad.addColorStop(0.4, '#00d2fe');
-        grad.addColorStop(1, 'transparent');
-        ctx.fillStyle = grad;
+        // Coordinate reticle
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < w; x += 30) {
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+        }
+        for (let y = 0; y < h; y += 30) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+        }
+
+        const cx = w / 2;
+        const cy = h / 2;
+        const rcs = (data && data.radar_cross_section_db) || 51.6;
+        const len = (data && data.estimated_dimensions && data.estimated_dimensions.length_meters) || 41.5;
+        const beam = (data && data.estimated_dimensions && data.estimated_dimensions.beam_meters) || 10.0;
+
+        // Cross-sidelobe diffraction spikes (SAR specular response)
+        ctx.strokeStyle = 'rgba(0, 210, 254, 0.28)';
+        ctx.lineWidth = 1;
         ctx.beginPath();
-        ctx.ellipse(cx, cy, 22, 9, Math.PI / 4, 0, Math.PI * 2);
+        ctx.moveTo(cx - 60, cy); ctx.lineTo(cx + 60, cy);
+        ctx.moveTo(cx, cy - 45); ctx.lineTo(cx, cy + 45);
+        ctx.stroke();
+
+        // Bragg reflection envelope
+        const radGrad = ctx.createRadialGradient(cx, cy, 3, cx, cy, 32);
+        radGrad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+        radGrad.addColorStop(0.25, 'rgba(56, 189, 248, 0.7)');
+        radGrad.addColorStop(0.65, 'rgba(2, 132, 199, 0.25)');
+        radGrad.addColorStop(1, 'transparent');
+        ctx.fillStyle = radGrad;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 32, 0, Math.PI * 2);
         ctx.fill();
 
-        // Scale bar
-        ctx.strokeStyle = '#00d2fe';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.moveTo(14, h - 14); ctx.lineTo(64, h - 14);
-        ctx.stroke();
-        ctx.fillStyle = '#00d2fe';
-        ctx.font = '8.5px JetBrains Mono';
-        ctx.fillText('100m SCALE (10m/px)', 14, h - 20);
-    }
+        // Metallic Hull Core (Steel Dihedral Backscatter)
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(15 * Math.PI / 180);
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowColor = '#00d2fe';
+        ctx.shadowBlur = 10;
+        ctx.fillRect(-beam * 0.8, -len * 0.35, beam * 1.6, len * 0.7);
+        ctx.restore();
 
-    function copyDossierHash() {
-        const text = document.getElementById('dossierSha256Box')?.textContent || '';
-        navigator.clipboard.writeText(text.trim());
-        showToast('📋 Hash SHA-256 copiado al portapapeles', '📋');
-    }
-
-    function copyDossierLayaSignature() {
-        const text = document.getElementById('dossierLayaSigBox')?.textContent || '';
-        navigator.clipboard.writeText(text.trim());
-        showToast('🛡️ Firma digital asimétrica Ed25519 copiada', '🛡️');
+        // Annotations
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = '8.5px JetBrains Mono, monospace';
+        ctx.fillText(`SENTINEL-1 C-BAND · DUAL-POL VV/VH`, 8, 14);
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillText(`RCS: +${Number(rcs).toFixed(1)} dB · RESNET-18 P(V): 0.923`, 8, h - 8);
     }
 
     // ── HIGH-FIDELITY JUDICIAL FORENSIC DOSSIER PDF GENERATOR (1-PAGE A4) ──
@@ -2540,13 +2692,13 @@
             format: 'a4'
         });
 
-        const targetId = document.getElementById('dossierTargetSelect')?.value || 'DARK-VV-VH-001';
-        const coordsText = document.getElementById('dossierWgs84Coords')?.textContent || '-45.1603°S, -59.9586°W';
-        const distText = document.getElementById('dossierDistBorder')?.textContent || '15.20 NM (Incursión ZEE)';
-        const dimsText = document.getElementById('dossierDimensionsVal')?.textContent || 'Eslora: 41.5m | Manga: 10.0m';
-        const rcsText = document.getElementById('dossierRcsVal')?.textContent || 'RCS: +51.6 dB';
-        const shaText = document.getElementById('dossierSha256Box')?.textContent || '8ce0d8dbf7ffa1c35f2161bf89dc3cfbdab36f9c0919c2d9a6c2faaf0072a921';
-        const sigText = document.getElementById('dossierLayaSigBox')?.textContent || 'KT+N5kXyR0KDRkRff37SS5l7BNJV5o0B+m5ATvldl3lwudy1MamVRM4aLBIx/5tXFyxjKRX54GMCdn3ofNOfCw==';
+        const targetId = document.getElementById('dossierTargetSelect')?.value || document.getElementById('panelVesselName')?.textContent || 'DARK-VV-VH-001';
+        const coordsText = document.getElementById('panelWgs84Coords')?.textContent || document.getElementById('dossierWgs84Coords')?.textContent || '-45.1603°S, -59.9586°W';
+        const distText = document.getElementById('panelDistanceEez')?.textContent || document.getElementById('dossierDistBorder')?.textContent || '15.20 NM (Incursión ZEE)';
+        const dimsText = document.getElementById('panelDimensions')?.textContent || document.getElementById('dossierDimensionsVal')?.textContent || 'Eslora: 41.5m | Manga: 10.0m';
+        const rcsText = document.getElementById('panelRcsVal')?.textContent || document.getElementById('dossierRcsVal')?.textContent || 'RCS: +51.6 dB';
+        const shaText = document.getElementById('panelSha256Box')?.textContent || document.getElementById('dossierSha256Box')?.textContent || '8ce0d8dbf7ffa1c35f2161bf89dc3cfbdab36f9c0919c2d9a6c2faaf0072a921';
+        const sigText = document.getElementById('panelLayaSigBox')?.textContent || document.getElementById('dossierLayaSigBox')?.textContent || 'KT+N5kXyR0KDRkRff37SS5l7BNJV5o0B+m5ATvldl3lwudy1MamVRM4aLBIx/5tXFyxjKRX54GMCdn3ofNOfCw==';
         const dateUtc = new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
 
         // 1. HEADER HERO BANNER (Void Blue Navy)
@@ -2781,61 +2933,60 @@
         showToast(`📥 ${filename} descargado exitosamente`, '📥');
     }
 
-    // ── MISSION HERO CONTROLLER ──
+    // ── MISSION HERO CONTROLLER (SAFE NO-OP) ──
     function toggleMissionHero(show) {
         const hero = document.getElementById('missionHeroSection');
         const compactBar = document.getElementById('heroCompactBar');
-        if (!hero || !compactBar) return;
+        if (!hero) return;
         if (show) {
             hero.classList.remove('collapsed');
-            compactBar.classList.remove('visible');
+            if (compactBar) compactBar.classList.remove('visible');
         } else {
             hero.classList.add('collapsed');
-            compactBar.classList.add('visible');
+            if (compactBar) compactBar.classList.add('visible');
         }
-    }
-
-    function focusCriticalVesselInDossier() {
-        toggleMissionHero(false);
-        switchMainView('forensic_dossier');
-        loadDossierTab('DARK-VV-VH-001');
-        showToast('Evidencia pericial cargada: Caso LU RONG YU 588', '⚖️');
     }
 
     // ── ONBOARDING GUIDED TOUR (4 PASOS ESTRATÉGICOS) ──
     const tourSteps = [
         {
             stepNumber: "PASO 01 / 04",
-            title: "01. Vigilancia en la Milla 201 (El Problema)",
-            text: "Bienvenido a OceanEye. Monitoreamos en tiempo real la frontera de las 200 millas náuticas de la Zona Económica Exclusiva Argentina frente al saqueo pesquero de flotas extranjeras que apagan sus transpondedores AIS en el Agujero Azul.",
-            view: "live_map",
-            highlightSelector: "#missionHeroSection",
-            action: () => toggleMissionHero(true)
-        },
-        {
-            stepNumber: "PASO 02 / 04",
-            title: "02. Radar que Atraviesa Tormentas (Sentinel-1 SAR)",
-            text: "El radar satelital en banda C (5.405 GHz) no depende de luz solar ni de visibilidad meteorológica. La polarización cruzada Dual-Pol (VV/VH) suprime la dispersión de Bragg del oleaje patagónico y detecta el eco electromagnético del acero naval.",
-            view: "sar_lab",
-            highlightSelector: "#sarFilterLabCard",
-            action: () => toggleMissionHero(false)
-        },
-        {
-            stepNumber: "PASO 03 / 04",
-            title: "03. Cruce Cinemático SAR vs AIS (Aislamiento de Buque Oscuro)",
-            text: "Los barcos verdes transmiten posición legal AIS. Si el sensor satelital detecta un buque físico de 40 a 70 metros de eslora que apagó deliberadamente su transpondedor, el sistema lo aísla automáticamente en rojo como BUQUE OSCURO.",
+            title: "01. Vigilancia de Flota (Columna Izquierda)",
+            text: "Aquí monitoreamos en tiempo real la flota pesquera en el corredor de la Milla 201 ZEE. Los contactos en verde transmiten posición AIS legal, mientras que los contactos en rojo se aíslan como BUQUES OSCUROS que apagaron su transpondedor.",
             view: "live_map",
             highlightSelector: "#sidebar",
             action: () => toggleMissionHero(false)
         },
         {
-            stepNumber: "PASO 04 / 04",
-            title: "04. Cadena de Custodia Criptográfica (Validez Judicial)",
-            text: "La prueba técnica se sella criptográficamente con un hash SHA-256 inmutable y firma digital asimétrica Ed25519 con plena validez probatoria ante la Justicia Federal y la Prefectura Naval. Podés descargar el Dossier Pericial Oficial en PDF membretado en un clic.",
-            view: "forensic_dossier",
-            highlightSelector: ".dossier-workbench",
+            stepNumber: "PASO 02 / 04",
+            title: "02. Mapa Satelital Táctico (Columna Central)",
+            text: "El mapa satelital Esri de alta resolución traza la frontera oficial de las 200 millas náuticas y el polígono crítico del Agujero Azul. Permite inspeccionar vectores cinemáticos y elipses de incertidumbre CEP.",
+            view: "live_map",
+            highlightSelector: "#map-container",
+            action: () => toggleMissionHero(false)
+        },
+        {
+            stepNumber: "PASO 03 / 04",
+            title: "03. Recorte de Radar SAR Dual-Pol (Columna Derecha)",
+            text: "El radar satelital Sentinel-1 en banda C (5.405 GHz) penetra niebla y noche patagónica. La fusión de polarizaciones cruzadas VV/VH anula el oleaje y revela el rebote electromagnético del casco de acero naval.",
+            view: "live_map",
+            highlightSelector: ".panel-sar-chip-box",
             action: () => {
                 toggleMissionHero(false);
+                const p = document.getElementById('rightForensicPanel');
+                if (p) p.classList.remove('collapsed');
+            }
+        },
+        {
+            stepNumber: "PASO 04 / 04",
+            title: "04. Cadena de Custodia SHA-256 & PDF Judicial",
+            text: "La prueba técnica se sella con un hash SHA-256 inmutable y firma digital asimétrica Ed25519 para el Fuero Federal. Podés descargar el informe oficial membretado en un clic con el botón cian [ Descargar Dossier Oficial ].",
+            view: "live_map",
+            highlightSelector: "#rightForensicPanel",
+            action: () => {
+                toggleMissionHero(false);
+                const p = document.getElementById('rightForensicPanel');
+                if (p) p.classList.remove('collapsed');
                 loadDossierTab('DARK-VV-VH-001');
             }
         }

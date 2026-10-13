@@ -1,8 +1,20 @@
 {
+  "framework": null,
+  "buildCommand": null,
+  "outputDirectory": null,
+  "cleanUrls": true,
   "rewrites": [
     {
       "source": "/api/(.*)",
       "destination": "https://oceaneye-backend-29923645081.us-central1.run.app/api/$1"
+    },
+    {
+      "source": "/app",
+      "destination": "/app/index.html"
+    },
+    {
+      "source": "/console",
+      "destination": "/app/index.html"
     }
   ]
 }
