@@ -1,8 +1,11 @@
 backend/
+data/
 docs/
+notebooks/
 venv/
 *.py
 *.pyc
 __pycache__/
 .env*
 concursoBBVA.pdf
+
