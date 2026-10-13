@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://oceaneye-backend.railway.app/$1"
+      "destination": "https://oceaneye-backend-29923645081.us-central1.run.app/api/$1"
     }
   ]
 }

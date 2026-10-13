@@ -1,119 +1,132 @@
-<div align="center">
-  <img src="https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/Docker.svg" height="40" alt="docker logo"  />
-  <img width="12" />
-  <img src="https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/Python.svg" height="40" alt="python logo"  />
-  <img width="12" />
-  <img src="https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/FastAPI.svg" height="40" alt="fastapi logo"  />
-  <img width="12" />
-  <img src="https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/GCP.svg" height="40" alt="gcp logo"  />
-  <img width="12" />
-  <img src="https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/Vercel.svg" height="40" alt="vercel logo"  />
-</div>
-
-<br/>
+# 🌊 OceanEye — Platform Intel & IUU Fishing Detection (BNA 2026 Edition)
 
 <div align="center">
-  <h1 align="center">🌊 OceanEye</h1>
-  <p align="center">
-    <strong>AI-Powered Real-Time Maritime Intelligence Platform</strong>
-  </p>
-  <p align="center">
-    Detecting Illegal, Unreported, and Unregulated (IUU) fishing through AIS telemetry and Claude AI. 
-  </p>
-  <br/>
-  <h3>🔴 <a href="https://oceaneye-three.vercel.app">LIVE DEMO: Test in Real Time!</a> 🔴</h3>
+  <img src="https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/Python.svg" height="40" alt="python logo" />
+  <img width="12" />
+  <img src="https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/FastAPI.svg" height="40" alt="fastapi logo" />
+  <img width="12" />
+  <img src="https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/PostgreSQL-Dark.svg" height="40" alt="postgres logo" />
+  <img width="12" />
+  <img src="https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/Docker.svg" height="40" alt="docker logo" />
 </div>
 
-<br/>
+---
 
-## 🎯 Global Impact
-OceanEye is designed for maritime authorities, coast guards, and environmental organizations protecting Exclusive Economic Zones (EEZ). By combining satellite telemetry with advanced language models, the platform acts as an autonomous intelligence analyst, identifying dark vessel operations, transshipment networks, and loitering patterns in real-time.
+## 🌐 Live Deployments & Entorno de Producción
+
+| Componente | Plataforma | URL / Endpoint | Estado |
+| :--- | :--- | :--- | :--- |
+| **Frontend Web** | Vercel Edge | [https://oceaneye-two.vercel.app](https://oceaneye-two.vercel.app) | 🟢 Operativo |
+| **Backend API** | Google Cloud Run (`stealthmark-prod`) | [https://oceaneye-backend-29923645081.us-central1.run.app](https://oceaneye-backend-29923645081.us-central1.run.app) | 🟢 Operativo (Min instances: 0) |
+| **API Healthcheck** | Cloud Run | [`/health`](https://oceaneye-backend-29923645081.us-central1.run.app/health) | 🟢 200 OK (DB + AIS + GFW + AI) |
+| **Flota en Vivo** | Supabase + TimescaleDB | [`/api/v1/fleet/live`](https://oceaneye-backend-29923645081.us-central1.run.app/api/v1/fleet/live) | 🟢 150+ Buques Streaming |
+| **Benchmark SAR** | Sentinel-1 GRD Dual-Pol | [`/api/v1/sar/benchmark`](https://oceaneye-backend-29923645081.us-central1.run.app/api/v1/sar/benchmark) | 🟢 15 Detecciones / 12 Dark |
+| **Repositorio** | GitHub | [https://github.com/Gastonchevarria/OceanEye](https://github.com/Gastonchevarria/OceanEye) | 🟢 Sincronizado |
 
 ---
 
-## ✨ Features
-- 🧠 **Claude AI Automated Analysis:** Calculates live risk scores (0-100) and drafts tactical intelligence briefings for every tracked vessel.
-- 📡 **Live AIS Tracking:** Direct WebSocket streaming from `aisstream.io` for zero-latency vessel geolocation rendering.
-- 🚩 **Behavior Profiling:** Automated heuristics identifying suspicious behaviors: multi-day loitering, AIS manipulation (gaps), and zero-port evasive voyages.
-- 📊 **Military-Grade Dashboard:** Built for operations rooms, featuring dynamic scrolling tickers, deep-linking, color-coded threat assessments, and map layers.
-- 📋 **Tactical Exports:** One-click generation of `.txt` intelligence reports ready for legal documentation or naval interception briefings.
-- 💬 **Conversational RAG:** Chat directly with the "OceanEye Intelligence Agent" to query specific vessel histories or summarize fleet deployments in human language.
+## 🏆 Proyecto Postulado a las Becas Leonardo 2026 (Fundación BBVA)
+**Área**: *Ciencias de la Computación, Ciencia de Datos e Inteligencia Artificial* / *Tecnología Limpia (Cleantech) y Biodiversidad*  
+**Convocatoria Oficial**: [https://www.programaleonardo.com/](https://www.programaleonardo.com/) — [Bases Oficiales](concursoBBVA.pdf)
+
+**OceanEye** es una plataforma de inteligencia marítima y soberanía geoespacial impulsada por teledetección satelital (Sentinel-1 SAR), inteligencia artificial generativa y monitoreo de telemetría AIS en tiempo real. Está diseñada para detectar, correlacionar y tipificar jurídicamente la pesca ilegal, no declarada y no reglamentada (INDNR / IUU Fishing) en el Atlántico Sur y el Agujero Azul (Milla 201), aportando evidencia pericial con cadena de custodia criptográfica SHA-256 ante el Régimen Federal de Pesca (Ley 24.922).
 
 ---
 
-## 🏗 System Architecture
-OceanEye is built as a highly decoupled, stateless pipeline to ensure infinite scalability and stability:
-* **Backend:** `FastAPI` (Python) deployed on **Google Cloud Run**. Completely stateless endpoints for risk calculation, chatting, and export generation.
-* **Frontend:** Vanilla HTML/JS + `Leaflet.js` deployed on **Vercel** for instant delivery across the globe.
-* **Intelligence Layer:** `Claude 3.5 Sonnet` via Anthropic API.
-* **Data Sources:** `Global Fishing Watch` API (Vessel Metadata) + `AIS Stream` (Real-Time Location Data).
+## 🚀 Arquitectura de Producción
 
----
-
-## 💻 Local Quickstart
-
-### Prerequisites
-1. Python 3.11+
-2. Docker (Optional, for containerized run)
-3. API Keys: Anthropic, Global Fishing Watch JWT, and AIS Stream Key.
-
-### 1. Clone the repository
-```bash
-git clone https://github.com/Gastonchevarria/OceanEye.git
-cd OceanEye
+```
+                      ┌──────────────────────────────┐
+                      │    WebSocket AISStream.io    │
+                      └──────────────┬───────────────┘
+                                     │
+                                     ▼
+                      ┌──────────────────────────────┐
+                      │   Worker AIS 24/7 (Worker)   │
+                      │  `workers/ais_ingestor.py`   │
+                      └──────────────┬───────────────┘
+                                     │
+                                     ▼
+   ┌──────────────────────────────────────────────────────────────────┐
+   │                  PostgreSQL / Supabase + TimescaleDB             │
+   │  Tables: vessel_positions (Hypertable) | vessel_profiles | alerts │
+   └─────────────────────────────────┬────────────────────────────────┘
+                                     │
+                                     ▼
+ ┌──────────────────────────────────────────────────────────────────────┐
+ │                      FastAPI Backend API (Cloud Run)                 │
+ │  `/vessels` | `/analyze` | `/chat` | `/briefing` | `/alerts`       │
+ └───────────────────────────────────┬──────────────────────────────────┘
+                                     │
+                                     ▼
+ ┌──────────────────────────────────────────────────────────────────────┐
+ │                   Artificial AI Engine (Resilience Chain)             │
+ │  Multi-model inference with automatic failover                       │
+ │  3-level fallback for zero-downtime intelligence analysis            │
+ └──────────────────────────────────────────────────────────────────────┘
 ```
 
-### 2. Configure Environment
+---
+
+## 🛠️ Componentes Clave
+
+- **Base de Datos Espacio-Temporal**: PostgreSQL + TimescaleDB (Supabase) con retención automática de 90 días para millones de posiciones AIS.
+- **Worker 24/7 Ininterrumpido**: Proceso independiente que ingiere transmisiones AIS de la ZEE Argentina, calcula heurísticas de riesgo en tiempo real y genera alertas inmediatas.
+- **Motor de IA (Artificial AI)**: Sistema multi-modelo con tolerancia a fallos para análisis tácticos en lenguaje natural, reportes de inteligencia y chatbot conversacional.
+- **Enriquecimiento GFW**: Integración directa con Global Fishing Watch API para correlación de eventos de loitering, vacíos AIS (dark vessels) y visitas a puerto.
+
+---
+
+## 📦 Despliegue y Ejecución
+
+### 1. Base de Datos (Supabase)
+Ejecutar la migración SQL `backend/alembic/versions/001_init.sql` en el Editor SQL de Supabase.
+
+### 2. Backend FastAPI
 ```bash
 cd backend
-cp .env.example .env
-```
-Fill `.env` with your secure credentials:
-```env
-ANTHROPIC_API_KEY=sk-ant-...
-GFW_API_TOKEN=eyJhbG...
-AIS_STREAM_KEY=YOUR_KEY
-FRONTEND_URL=http://localhost:3000
-PORT=8000
-```
-
-### 3. Run the Backend API
-```bash
-python3 -m venv venv
-source venv/bin/activate
 pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
 ```
 
-### 4. Run the Frontend 
-From the root of the project, spin up a simple static server:
-```bash
-cd frontend
-python3 -m http.server 3000
-```
-
-Navigate to `http://localhost:3000` to access the Operations Dashboard.
-
----
-
-## 🚀 Deployment (Production)
-
-### Cloud Run (Backend)
+### 3. Worker AIS 24/7
 ```bash
 cd backend
-gcloud run deploy oceaneye-backend \
-  --source . \
-  --region us-central1 \
-  --allow-unauthenticated \
-  --set-env-vars ANTHROPIC_API_KEY=xxx,GFW_API_TOKEN=xxx
+python -m workers.ais_ingestor
 ```
-
-### Vercel (Frontend)
-Point your Vercel project to the `frontend/` directory and ensure the `API_BASE` string in `index.html` matches your newly provisioned Cloud Run URL.
 
 ---
 
-<div align="center">
-  <p>🌍 <strong>Protecting our Oceans through Intelligence</strong></p>
-  <sub>Built for the Hackathon Demo Day</sub>
-</div>
+## 🌐 Frontend
+Distribuido en Vercel. Conecta de forma transparente con el backend FastAPI via `window.OCEANEYE_API_BASE`.
+
+---
+
+## 🛰️ Módulo de Teledetección Radar SAR & Convocatoria Becas Leonardo BBVA 2026
+
+OceanEye v2.0 incorpora el pipeline de física de radar y teledetección satelital para la detección de buques no reglamentados en el Atlántico Sur (Milla 201):
+
+### ⚡ Evaluación Rápida Offline para el Jurado (< 2.5s)
+El repositorio incluye una sub-escena calibrada Sentinel-1 IW GRD Dual-Pol (VV + VH) pre-empaquetada en `backend/tests/fixtures/`. Para correr el pipeline completo sin requerir tokens ni descargas externas:
+
+```bash
+cd backend
+pytest tests/test_e2e_pipeline.py -s
+```
+
+**Resultados de la Ejecución de Prueba**:
+- Tiempo de ejecución: **~2.4 segundos**
+- Blancos físicos detectados: **15**
+- Buques legales confirmados (SAR + AIS): **3**
+- **Pesqueros Oscuros (Dark Vessels) identificados**: **12 / 12**
+- **Suplantación de Identidad (Ghost AIS Spoofing)**: **1**
+- **Cadena de Custodia Criptográfica**: 12 Dossiers con sellos SHA-256 generados
+
+### 📜 Documentación Científica y Jurídica
+- **Memoria Técnica Completa**: Consulte [`docs/MEMORIA_TECNICA_BBVA.md`](docs/MEMORIA_TECNICA_BBVA.md) para el desglose matemático, físico, algorítmico y presupuestario.
+- **Límite Náutico Oficial (Milla 200)**: Definido en [`frontend/data/argentina_eez.geojson`](frontend/data/argentina_eez.geojson) según el Servicio de Hidrografía Naval (SHN) y Ley 23.968.
+- **Endpoints REST**:
+  - `GET /api/v1/sar/benchmark`: Benchmark instantáneo sin credenciales.
+  - `POST /api/v1/sar/analyze`: Ingesta STAC COG en tiempo real con fallback resiliente.
+  - `GET /api/v1/sar/dossier/{target_id}`: Generación de certificado pericial SHA-256.
+  - `GET /api/v1/sar/eez/boundary`: GeoJSON oficial de la ZEE Argentina.
