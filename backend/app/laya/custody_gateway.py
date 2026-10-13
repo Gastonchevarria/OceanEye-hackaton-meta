@@ -29,9 +29,25 @@ from cryptography.exceptions import InvalidSignature
 from app.processing.morphology import SarVesselDetection
 from app.legal.dossier_generator import calculate_distance_to_eez_boundary
 
-# Global in-memory Ed25519 keypair for LAYA Custody Gateway (or persistent key)
-_LAYA_PRIVATE_KEY = ed25519.Ed25519PrivateKey.generate()
-_LAYA_PUBLIC_KEY = _LAYA_PRIVATE_KEY.public_key()
+import os
+
+# Persistent LAYA Ed25519 Keypair (Production Secret / Stable Hardware Seed)
+# Loaded from Secret Manager via LAYA_ED25519_PRIVATE_KEY or stable persistent seed
+_PERSISTENT_DEFAULT_SEED = "bdf53d775b3832dabb213594709c5a6257c479e5f04f77606c0917122da15d3a"
+
+def _init_laya_keypair() -> Tuple[ed25519.Ed25519PrivateKey, ed25519.Ed25519PublicKey]:
+    priv_hex = os.getenv("LAYA_ED25519_PRIVATE_KEY", "").strip()
+    if not priv_hex:
+        priv_hex = _PERSISTENT_DEFAULT_SEED
+    try:
+        priv_bytes = bytes.fromhex(priv_hex)
+        priv_key = ed25519.Ed25519PrivateKey.from_private_bytes(priv_bytes)
+    except Exception:
+        priv_bytes = bytes.fromhex(_PERSISTENT_DEFAULT_SEED)
+        priv_key = ed25519.Ed25519PrivateKey.from_private_bytes(priv_bytes)
+    return priv_key, priv_key.public_key()
+
+_LAYA_PRIVATE_KEY, _LAYA_PUBLIC_KEY = _init_laya_keypair()
 
 
 class LayaCryptographicCertificate(BaseModel):
@@ -157,3 +173,59 @@ def verify_forensic_signature(
         return True
     except (InvalidSignature, Exception):
         return False
+
+
+def verify_laya_certificate(payload_dict: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Verify a full LAYA cryptographic certificate or forensic dossier.
+    Validates both the SHA-256 integrity hash and Ed25519 asymmetric signature.
+    """
+    t_start = time.perf_counter()
+    canonical = payload_dict.get("canonical_payload")
+    sig_b64 = payload_dict.get("ed25519_signature_base64") or payload_dict.get("signature_base64", "")
+    pub_key_hex = payload_dict.get("laya_public_key_hex") or get_laya_public_key_hex()
+    expected_hash = payload_dict.get("sha256_evidence_hash") or payload_dict.get("evidence_sha256", "")
+
+    if not canonical:
+        # Reconstruct canonical payload from top-level fields if passed directly
+        canonical = {
+            "dossier_id": payload_dict.get("dossier_id", ""),
+            "target_id": payload_dict.get("target_id", ""),
+            "scene_id": payload_dict.get("scene_id", "S1A_IW_GRDH_1SDV_2026_MILE201"),
+            "satellite_sensor": "Sentinel-1A SAR C-Band",
+            "timestamp_utc": payload_dict.get("timestamp_utc", ""),
+            "lat": payload_dict.get("wgs84_latitude", payload_dict.get("lat", 0.0)),
+            "lon": payload_dict.get("wgs84_longitude", payload_dict.get("lon", 0.0)),
+            "distance_to_eez_nm": payload_dict.get("distance_to_eez_nm", 0.0),
+            "boundary_status": payload_dict.get("boundary_status", ""),
+            "length_meters": payload_dict.get("length_meters", 0.0),
+            "beam_meters": payload_dict.get("beam_meters", 0.0),
+            "peak_rcs_db": payload_dict.get("peak_rcs_db", 0.0),
+            "legal_infraction": payload_dict.get("legal_infraction", ""),
+            "legal_framework": [
+                "Ley Federal de Pesca 24.922 (Art. 51)",
+                "CONVEMAR Art. 56 y 73",
+                "Resolucion OMI A.1106(29)"
+            ],
+            "radar_chip_sha256": payload_dict.get("radar_chip_sha256", hashlib.sha256(b"").hexdigest())
+        }
+
+    canonical_bytes = json.dumps(canonical, sort_keys=True).encode("utf-8")
+    computed_hash = hashlib.sha256(canonical_bytes).hexdigest()
+    
+    hash_valid = (expected_hash == computed_hash) if expected_hash else True
+    sig_valid = verify_forensic_signature(canonical, sig_b64, pub_key_hex) if sig_b64 else False
+    
+    latency_ms = round((time.perf_counter() - t_start) * 1000.0, 2)
+    is_valid = hash_valid and sig_valid
+
+    return {
+        "status": "VALID_AUTHENTIC" if is_valid else "TAMPERED_OR_INVALID",
+        "is_valid": is_valid,
+        "hash_verified": hash_valid,
+        "signature_verified": sig_valid,
+        "sha256_digest": computed_hash,
+        "public_key_hex": pub_key_hex,
+        "verification_latency_ms": latency_ms
+    }
+

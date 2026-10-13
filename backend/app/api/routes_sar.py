@@ -35,6 +35,7 @@ from app.laya.ais_guardian import evaluate_ais_telemetry, AisGuardianVerdict
 from app.laya.custody_gateway import (
     seal_forensic_evidence_laya,
     verify_forensic_signature,
+    verify_laya_certificate,
     get_laya_public_key_hex,
     LayaCryptographicCertificate
 )
@@ -270,6 +271,15 @@ async def run_laya_ais_guardian(req: AisGuardianRequest) -> Dict[str, Any]:
         previous_report=req.previous_report
     )
     return verdict.model_dump()
+
+
+@router.post("/laya/verify")
+async def verify_laya_dossier(payload: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Public cryptographic verification of any LAYA-sealed forensic dossier.
+    Validates the SHA-256 evidence chain and Ed25519 asymmetric signature.
+    """
+    return verify_laya_certificate(payload)
 
 
 @router.get("/laya/public-key")

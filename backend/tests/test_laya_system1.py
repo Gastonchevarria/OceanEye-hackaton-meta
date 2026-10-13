@@ -150,3 +150,35 @@ def test_laya_ed25519_custody_sealing_and_verification():
         cert.ed25519_signature_base64,
         cert.laya_public_key_hex
     ) is False
+
+
+def test_laya_full_certificate_verification_and_tamper():
+    from app.laya.custody_gateway import verify_laya_certificate
+
+    dark_vessel = SarVesselDetection(
+        id="SAR-TGT-008",
+        lat=-45.72, lon=-60.10,
+        pixel_r=250, pixel_c=310,
+        length_m=68.0, beam_m=11.5, heading_deg=90.0,
+        peak_rcs_db=49.0, mean_rcs_db=34.0, snr_db=19.0,
+        area_pixels=12,
+        classification="DARK_VESSEL"
+    )
+
+    cert = seal_forensic_evidence_laya(dark_vessel, scene_id="S1A_IW_GRDH_TEST2")
+    cert_dict = cert.model_dump()
+
+    # 1. Verification of pristine certificate
+    verdict = verify_laya_certificate(cert_dict)
+    assert verdict["is_valid"] is True
+    assert verdict["status"] == "VALID_AUTHENTIC"
+    assert verdict["signature_verified"] is True
+    assert verdict["verification_latency_ms"] < 25.0
+
+    # 2. Tampering test: change length_meters
+    tampered_cert = cert_dict.copy()
+    tampered_cert["length_meters"] = 999.0
+    tampered_verdict = verify_laya_certificate(tampered_cert)
+    assert tampered_verdict["is_valid"] is False
+    assert tampered_verdict["status"] == "TAMPERED_OR_INVALID"
+

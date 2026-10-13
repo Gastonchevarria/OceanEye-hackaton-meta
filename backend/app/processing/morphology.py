@@ -33,6 +33,9 @@ class SarVesselDetection(BaseModel):
     snr_db: float = Field(..., description="Estimated target SNR over local clutter in dB")
     area_pixels: int = Field(..., description="Number of connected pixels")
     classification: str = Field(default="UNMATCHED_SAR", description="Tactical classification")
+    dl_vessel_prob: Optional[float] = Field(default=None, description="Deep Learning probability of marine vessel vs clutter")
+    dl_fishing_prob: Optional[float] = Field(default=None, description="Deep Learning probability of fishing activity/potero")
+    dl_predicted_type: Optional[str] = Field(default=None, description="Deep Learning morphological label")
 
 
 def pixel_to_wgs84(
@@ -191,6 +194,26 @@ def extract_sar_targets(
             snr_db = round(to_db(max(mean_lin / max(mean_thresh, 1e-10), 1e-3)), 1)
         else:
             snr_db = round(peak_rcs_db - 15.0, 1)
+        # Extract 64x64 chip around target centroid for deep learning inference
+        r_int, c_int = int(round(r_c)), int(round(c_c))
+        r0, r1 = max(0, r_int - 32), min(h, r_int + 32)
+        c0, c1 = max(0, c_int - 32), min(w, c_int + 32)
+        chip_crop = np.zeros((64, 64), dtype=np.float32)
+        chip_crop[:(r1 - r0), :(c1 - c0)] = intensity_linear[r0:r1, c0:c1]
+
+        dl_pred = None
+        try:
+            from ml.model import SarChipInference
+            global _SAR_CHIP_INFER
+            if "_SAR_CHIP_INFER" not in globals():
+                _SAR_CHIP_INFER = SarChipInference()
+            dl_pred = _SAR_CHIP_INFER.classify_chip(
+                chip_vv=chip_crop,
+                peak_rcs_db=peak_rcs_db,
+                area_pixels=area
+            )
+        except Exception:
+            dl_pred = None
 
         det = SarVesselDetection(
             id=f"SAR-TGT-{target_idx:03d}",
@@ -205,7 +228,10 @@ def extract_sar_targets(
             mean_rcs_db=mean_rcs_db,
             snr_db=snr_db,
             area_pixels=area,
-            classification="UNMATCHED_SAR"
+            classification="UNMATCHED_SAR",
+            dl_vessel_prob=dl_pred.get("is_vessel_prob") if dl_pred else None,
+            dl_fishing_prob=dl_pred.get("is_fishing_prob") if dl_pred else None,
+            dl_predicted_type=dl_pred.get("classification_label") if dl_pred else None
         )
         detections.append(det)
         target_idx += 1
