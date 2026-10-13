@@ -8,37 +8,44 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
-            --bg-void: #05070a;
-            --bg-primary: #070a10;
-            --bg-surface: #0c1019;
-            --bg-surface-elevated: #111723;
-            --bg-surface-hover: #172030;
+            --bg-void: #060709;
+            --bg-primary: #090D15;
+            --bg-surface: #0D111A;
+            --bg-surface-elevated: #0F1117;
+            --bg-surface-hover: #141A28;
             --border: rgba(255, 255, 255, 0.08);
             --border-subtle: rgba(255, 255, 255, 0.05);
-            --border-hover: rgba(0, 210, 254, 0.4);
+            --border-hover: rgba(0, 210, 254, 0.45);
             --border-active: #00d2fe;
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
-            --text-muted: #475569;
+            --text-muted: #64748b;
             --accent-cyan: #00d2fe;
             --accent-cyan-glow: rgba(0, 210, 254, 0.35);
+            --accent-indigo: #6366f1;
+            --accent-indigo-glow: rgba(99, 102, 241, 0.25);
             --critical: #ef4444;
             --critical-glow: rgba(239, 68, 68, 0.6);
             --suspicious: #f59e0b;
             --suspicious-glow: rgba(245, 158, 11, 0.5);
             --normal: #10b981;
             --normal-glow: rgba(16, 185, 129, 0.5);
-            --radius-sm: 4px;
-            --radius-md: 8px;
-            --transition: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --spring: cubic-bezier(0.16, 1, 0.3, 1);
+            --transition: 0.22s cubic-bezier(0.16, 1, 0.3, 1);
         }
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Inter',-apple-system,sans-serif; background:var(--bg-void); color:var(--text-primary); overflow:hidden; height:100vh; width:100vw; }
+        body { font-family:'Plus Jakarta Sans',-apple-system,sans-serif; background:var(--bg-void); color:var(--text-primary); overflow:hidden; height:100vh; width:100vw; }
+        h1, h2, h3, h4, .brand-title { font-family:'Plus Jakarta Sans',sans-serif; letter-spacing:-0.03em; font-weight:800; }
+        .mono, .header-clock, pre, code, .vessel-risk-pill, .vessel-meta, .hud-item-val { font-family:'JetBrains Mono',monospace; font-variant-numeric:tabular-nums; }
+        .btn-primary:active, .btn-secondary:active, .header-btn:active, .filter-btn:active, .layer-btn:active, .btn-pdf-export:active { transform:scale(0.97); }
 
         /* UNIFIED COMMAND HEADER (Single 52px high-density bar) */
         #command-header {
@@ -307,20 +314,25 @@
         .vessel-card {
             padding: 9px 10px;
             border-radius: var(--radius-sm);
-            border: 1px solid transparent;
+            border: 1px solid var(--border-subtle);
             cursor: pointer;
-            transition: all var(--transition);
-            margin-bottom: 3px;
-            background: rgba(255, 255, 255, 0.015);
+            transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+            margin-bottom: 4px;
+            background: rgba(255, 255, 255, 0.02);
         }
         .vessel-card:hover {
             background: var(--bg-surface-elevated);
-            border-color: rgba(255, 255, 255, 0.12);
+            border-color: rgba(0, 210, 254, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 210, 254, 0.12);
+        }
+        .vessel-card:active {
+            transform: scale(0.98);
         }
         .vessel-card.active {
             background: rgba(0, 210, 254, 0.08);
             border-color: var(--accent-cyan);
-            box-shadow: 0 0 14px rgba(0, 210, 254, 0.18);
+            box-shadow: 0 0 16px rgba(0, 210, 254, 0.22);
         }
         .vessel-card-top {
             display: flex;
@@ -515,6 +527,11 @@
         .legend-item { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; color: var(--text-secondary); }
         .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
         .legend-line { width: 16px; height: 2px; flex-shrink: 0; }
+
+        @keyframes radar-sweep-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
 
         /* WAR ROOM 3-COLUMN LAYOUT */
         #viewLiveMap {
@@ -1248,6 +1265,22 @@
                     </button>
                 </div>
 
+                <!-- Live Orbital Radar Sweep Animatic (60 FPS) -->
+                <div class="panel-sweep-beacon" style="display:flex;align-items:center;justify-content:space-between;background:#030509;border:1px solid rgba(0,210,254,0.25);border-radius:6px;padding:6px 10px;margin-bottom:10px;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <div style="width:20px;height:20px;border-radius:50%;background:#04060A;border:1px solid #00d2fe;position:relative;overflow:hidden;box-shadow:0 0 8px rgba(0,210,254,0.4);">
+                            <div style="position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg, rgba(0,210,254,0.8) 0deg, rgba(0,210,254,0.15) 45deg, transparent 90deg);animation:radar-sweep-spin 3s linear infinite;"></div>
+                            <div style="position:absolute;width:3px;height:3px;border-radius:50%;background:#ef4444;box-shadow:0 0 4px #ef4444;top:32%;left:48%;"></div>
+                        </div>
+                        <div style="font-size:9.5px;font-family:'JetBrains Mono',monospace;color:#38bdf8;font-weight:700;">
+                            PASADA ORBITAL SENTINEL-1
+                        </div>
+                    </div>
+                    <div style="font-size:8.5px;font-family:'JetBrains Mono',monospace;color:#10b981;font-weight:700;display:flex;align-items:center;gap:4px;">
+                        <span style="width:5px;height:5px;border-radius:50%;background:#10b981;display:inline-block;box-shadow:0 0 6px #10b981;"></span> 60 FPS
+                    </div>
+                </div>
+
                 <!-- Recorte Radar Sentinel-1 SAR (Grayscale Bragg) -->
                 <div class="panel-sar-chip-box">
                     <div class="panel-box-label">
@@ -1893,7 +1926,7 @@
                             return { color: '#00d2fe', weight: 2.5, opacity: 0.95, dashArray: '8,6' };
                         }
                         if (feature.properties && feature.properties.id === 'ARG-BLUE-HOLE-AOI') {
-                            return { color: '#f59e0b', weight: 1.5, fillOpacity: 0.05, dashArray: '4,4' };
+                            return { color: '#6366f1', weight: 2, fillOpacity: 0.08, fillColor: '#6366f1', dashArray: '6,4' };
                         }
                         return { color: '#00d2fe', weight: 1.5, opacity: 0.4, fillColor: '#00d2fe', fillOpacity: 0.04 };
                     },
