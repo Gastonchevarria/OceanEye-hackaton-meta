@@ -8,3 +8,6 @@ __pycache__/
 .vercel/
 .vercel
 .env*
+data/sar_datasets/
+data/sar_chips/
+*.zip
