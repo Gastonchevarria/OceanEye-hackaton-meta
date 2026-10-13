@@ -5,6 +5,7 @@ Generates tamper-evident forensic intelligence dossiers for suspected dark vesse
 and unauthorized intruders in the Argentine Exclusive Economic Zone (EEZ - Milla 200):
 - Accurate geodesic distance to the Argentine maritime boundary (SHN / Ley 23.968).
 - Tipification under UNCLOS / CONVEMAR (Arts. 56, 62, 73) and Ley Federal de Pesca 24.922.
+- Integration with formal deterministic Legal Rules Engine.
 - Cryptographic SHA-256 seal guaranteeing chain-of-custody integrity for maritime tribunals.
 """
 
@@ -17,6 +18,7 @@ from pydantic import BaseModel, Field
 
 from app.processing.morphology import SarVesselDetection
 from app.correlation.kinematic_predictor import haversine_distance_nm
+from app.legal.rules_engine import evaluate_maritime_case, LegalVerdict
 
 # Official boundary vertices along the Argentine Mile 200 outer limit (Milla 200)
 # from Río de la Plata down to Tierra del Fuego / Malvinas shelf
@@ -58,6 +60,7 @@ class ForensicDossier(BaseModel):
     boundary_status: str
     nearest_boundary_point: Dict[str, float]
     legal_infraction_type: str
+    legal_verdict: Optional[Dict[str, Any]] = None
     legal_citations: List[str]
     chain_of_custody_hash_sha256: str
     evidentiary_payload: Dict[str, Any]
@@ -102,31 +105,19 @@ def generate_forensic_dossier(
     scene_id: str = "S1A_IW_GRDH_1SDV_2026_MILE201"
 ) -> ForensicDossier:
     """
-    Generate a cryptographic forensic dossier for a detected naval target.
+    Generate a cryptographic forensic dossier for a detected naval target with
+    formal legal verdict and SHA-256 evidence chain.
     """
     now_utc = datetime.now(timezone.utc).isoformat()
     signed_dist, nearest_pt, boundary_status = calculate_distance_to_eez_boundary(
         sar_target.lat, sar_target.lon
     )
 
-    if sar_target.classification == "DARK_VESSEL":
-        if boundary_status == "EEZ_INTRUSION_CONFIRMED":
-            infraction = "UNAUTHORIZED_FISHING_INSIDE_EEZ_DARK_VESSEL"
-            citations = [
-                "Ley Federal de Pesca 24.922 - Art. 51 (Pesca no autorizada en ZEE)",
-                "CONVEMAR Art. 56 y 73 (Derechos de soberanía y medidas de ejecución del Estado ribereño)",
-                "Código Penal de la Nación Argentina Art. 189 bis"
-            ]
-        else:
-            infraction = "SUSPECTED_IUU_BLACKOUT_ADJACENT_TO_EEZ"
-            citations = [
-                "Acuerdo sobre Medidas del Estado Rector del Puerto (AMERP / FAO)",
-                "Resolución OMI A.1106(29) - Apagado ilegítimo de transpondedores AIS en alta mar",
-                "Ley 24.922 - Art. 21 (Monitoreo de especies transzonales: Illex argentinus)"
-            ]
-    else:
-        infraction = "MONITORED_COOPERATIVE_VESSEL"
-        citations = ["CONVEMAR Art. 87 (Libertad de navegación en alta mar)"]
+    # Formal deterministic legal verdict
+    verdict = evaluate_maritime_case(
+        distance_to_eez_nm=signed_dist,
+        classification=sar_target.classification
+    )
 
     dossier_id = f"DOSSIER-{sar_target.id}-{int(datetime.now(timezone.utc).timestamp())}"
 
@@ -144,6 +135,9 @@ def generate_forensic_dossier(
         "distance_to_eez_nm": signed_dist,
         "boundary_status": boundary_status,
         "nearest_boundary_point": {"lat": nearest_pt[0], "lon": nearest_pt[1]},
+        "legal_rule_id": verdict.rule_id,
+        "legal_infraction_code": verdict.infraction_code,
+        "legal_severity": verdict.severity.value,
         "ais_telemetry": ais_match.model_dump() if ais_match and hasattr(ais_match, "model_dump") else None,
         "generated_timestamp_utc": now_utc
     }
@@ -167,8 +161,9 @@ def generate_forensic_dossier(
         distance_to_eez_nm=signed_dist,
         boundary_status=boundary_status,
         nearest_boundary_point={"latitude": nearest_pt[0], "longitude": nearest_pt[1]},
-        legal_infraction_type=infraction,
-        legal_citations=citations,
+        legal_infraction_type=verdict.infraction_code,
+        legal_verdict=verdict.model_dump(),
+        legal_citations=verdict.legal_basis_articles,
         chain_of_custody_hash_sha256=sha256_hash,
         evidentiary_payload=evidentiary_payload
     )
