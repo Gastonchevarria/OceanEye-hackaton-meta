@@ -11,3 +11,6 @@ __pycache__/
 data/sar_datasets/
 data/sar_chips/
 *.zip
+
+# Graphify (grafo local, se regenera)
+graphify-out/

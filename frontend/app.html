@@ -56,11 +56,14 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 16px;
+            padding: 0 14px;
             z-index: 2000;
             position: relative;
+            gap: 10px;
+            overflow: hidden;
+            white-space: nowrap;
         }
-        .brand-section { display: flex; align-items: center; gap: 10px; }
+        .brand-section { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
         .brand-logo {
             width: 28px;
             height: 28px;
@@ -71,6 +74,7 @@
             justify-content: center;
             font-size: 15px;
             box-shadow: 0 0 12px var(--accent-cyan-glow);
+            flex-shrink: 0;
         }
         .brand-title {
             font-size: 16px;
@@ -89,6 +93,7 @@
             border-radius: 100px;
             color: #38bdf8;
             letter-spacing: 0.5px;
+            flex-shrink: 0;
         }
 
         /* 3 CORE NAVIGATION TABS */
@@ -100,20 +105,22 @@
             border-radius: 6px;
             padding: 3px;
             gap: 4px;
+            flex-shrink: 0;
         }
         .view-tab {
             background: transparent;
             border: 1px solid transparent;
             color: #94a3b8;
-            padding: 6px 14px;
+            padding: 6px 12px;
             border-radius: 4px;
-            font-size: 11.5px;
+            font-size: 11px;
             font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 7px;
+            gap: 6px;
             transition: all var(--transition);
+            white-space: nowrap;
         }
         .view-tab:hover {
             color: #f8fafc;
@@ -127,7 +134,7 @@
         }
 
         /* HEADER ACTIONS & STATUS */
-        .header-actions { display: flex; align-items: center; gap: 10px; }
+        .header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
         .threat-alert-pill {
             display: inline-flex;
             align-items: center;
@@ -139,6 +146,7 @@
             border: 1px solid rgba(239, 68, 68, 0.45);
             border-radius: 100px;
             color: #fca5a5;
+            flex-shrink: 0;
         }
         .pulse-beacon {
             width: 7px;
@@ -163,6 +171,8 @@
             align-items: center;
             gap: 5px;
             transition: all var(--transition);
+            flex-shrink: 0;
+            white-space: nowrap;
         }
         .header-btn:hover {
             border-color: #00d2fe;
@@ -183,6 +193,28 @@
             color: var(--text-muted);
             font-family: 'JetBrains Mono', monospace;
             padding-left: 4px;
+            flex-shrink: 0;
+        }
+
+        /* Responsive Breakpoints for Command Header */
+        @media (max-width: 1480px) {
+            .telemetry-chip.api-chip { display: none !important; }
+            .header-btn.modal-trigger-btn { display: none !important; }
+        }
+        @media (max-width: 1280px) {
+            .header-telemetry-status { display: none !important; }
+            .badge-sovereignty { display: none !important; }
+            .threat-alert-pill span#headerThreatText { display: none !important; }
+            .threat-alert-pill::after { content: '12 OSCUROS'; }
+        }
+        @media (max-width: 1080px) {
+            .header-clock { display: none !important; }
+            .header-back-link { font-size: 10px; padding: 3px 6px; }
+            .tab-full-label { display: none !important; }
+            .tab-short-label { display: inline !important; }
+        }
+        @media (min-width: 1081px) {
+            .tab-short-label { display: none !important; }
         }
 
         /* VIEW CONTAINER */
@@ -195,7 +227,7 @@
         .view-screen {
             width: 100%;
             height: 100%;
-            display: none;
+            display: none !important;
             position: relative;
         }
         .view-screen.active,
@@ -388,7 +420,11 @@
             background: #020408 !important;
         }
         .leaflet-container { background: #020408 !important; }
-        .leaflet-control-zoom { border: none !important; margin-left: 14px !important; margin-top: 14px !important; }
+        .leaflet-top.leaflet-left {
+            top: 56px !important;
+            left: 14px !important;
+        }
+        .leaflet-control-zoom { border: none !important; margin: 0 !important; }
         .leaflet-control-zoom a {
             background: rgba(10, 14, 23, 0.92) !important;
             color: #cbd5e1 !important;
@@ -404,7 +440,7 @@
         .map-filters {
             position: absolute;
             top: 14px;
-            left: 56px;
+            left: 48px;
             z-index: 1000;
             display: flex;
             gap: 6px;
@@ -449,7 +485,7 @@
         .map-layer-switcher {
             position: absolute;
             top: 14px;
-            right: 16px;
+            right: 56px;
             z-index: 1000;
             display: flex;
             background: rgba(10, 14, 23, 0.9);
@@ -535,11 +571,13 @@
 
         /* WAR ROOM 3-COLUMN LAYOUT */
         #viewLiveMap {
-            display: flex;
             width: 100%;
             height: 100%;
             overflow: hidden;
             position: relative;
+        }
+        #viewLiveMap.active {
+            display: flex !important;
         }
         #map-container {
             flex: 1;
@@ -1096,23 +1134,23 @@
     <!-- UNIFIED COMMAND HEADER (Single 52px Bar) -->
     <header id="command-header">
         <div class="brand-section">
-            <a href="/" class="header-btn" style="text-decoration:none;background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.15);color:#cbd5e1;padding:5px 10px;font-size:11px;font-weight:700;" title="Volver al portal institucional">
-                ‹ Volver a Institucional
+            <a href="/" class="header-back-link header-btn" style="text-decoration:none;background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.15);color:#cbd5e1;padding:5px 10px;font-size:11px;font-weight:700;" title="Volver al portal institucional">
+                ‹ Volver
             </a>
             <div class="brand-logo">🌊</div>
             <span class="brand-title">OceanEye</span>
-            <span class="badge-sovereignty">🇦🇷 CONSOLA TÁCTICA</span>
+            <span class="badge-sovereignty">🇦🇷 TÁCTICA</span>
             
             <!-- Real-time Status Badges (AIS & Sentinel-1) -->
             <div class="header-telemetry-status">
                 <span class="telemetry-chip ais-chip" title="Ingesta continua AISStream y Global Fishing Watch">
-                    <span class="pulse-chip-green"></span> AIS STREAM: 24/7 EN LÍNEA
+                    <span class="pulse-chip-green"></span> AIS: 24/7 ACTIVO
                 </span>
                 <span class="telemetry-chip sar-chip" title="Pasada orbital Sentinel-1 IW GRD en Milla 201">
-                    🛰️ SENTINEL-1: ACTIVO (M201)
+                    🛰️ SENTINEL-1: ACTIVO
                 </span>
-                <span class="telemetry-chip" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);color:#34d399;" title="Cloud Run us-central1 backend">
-                    🟢 API EN VIVO (Cloud Run)
+                <span class="telemetry-chip api-chip" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);color:#34d399;" title="Cloud Run us-central1 backend">
+                    🟢 CLOUD RUN
                 </span>
             </div>
         </div>
@@ -1120,13 +1158,13 @@
         <!-- 3 MAIN SCIENTIFIC VIEWS NAVIGATION -->
         <nav class="view-navigation">
             <button class="view-tab active" data-view="live_map" onclick="switchMainView('live_map')">
-                🗺️ Vigilancia Marítima en Vivo
+                🗺️ <span class="tab-full-label">Vigilancia Marítima</span><span class="tab-short-label">Vigilancia</span>
             </button>
             <button class="view-tab" data-view="sar_lab" onclick="switchMainView('sar_lab')">
-                🛰️ Laboratorio Radar SAR (Sentinel-1)
+                🛰️ <span class="tab-full-label">Radar SAR (Sentinel-1)</span><span class="tab-short-label">Radar SAR</span>
             </button>
             <button class="view-tab" data-view="forensic_dossier" onclick="switchMainView('forensic_dossier')">
-                ⚖️ Dossier Forense SHA-256
+                ⚖️ <span class="tab-full-label">Dossier Forense SHA-256</span><span class="tab-short-label">Dossier</span>
             </button>
         </nav>
 
@@ -1134,26 +1172,26 @@
             <!-- DEFCON Threat Alert Pill -->
             <div class="threat-alert-pill" onclick="switchMainView('forensic_dossier')" style="cursor:pointer;" title="Ver evidencia de buques oscuros">
                 <span class="pulse-beacon"></span>
-                <span id="headerThreatText">THREAT ALERT · MILLA 201 (12 OSCUROS)</span>
+                <span id="headerThreatText">THREAT: 12 OSCUROS</span>
             </div>
 
             <!-- Guided Tour Button (Hermes Recommendation) -->
-            <button class="header-btn" id="headerTourBtn" onclick="startGuidedTour()" style="background:rgba(0,210,254,0.15);border-color:#00d2fe;color:#00d2fe;box-shadow:0 0 12px rgba(0,210,254,0.3);font-weight:800;" title="Iniciar recorrido guiado paso a paso">
+            <button class="header-btn" id="headerTourBtn" onclick="startGuidedTour()" style="background:rgba(0,210,254,0.15);border-color:#00d2fe;color:#00d2fe;box-shadow:0 0 12px rgba(0,210,254,0.3);font-weight:800;flex-shrink:0;" title="Iniciar recorrido guiado paso a paso">
                 🧭 Tutorial Paso a Paso
             </button>
 
             <!-- Natural Audio Briefing Button -->
             <button class="header-btn audio-btn" id="audioBriefingBtn" onclick="playVoiceBriefing()" title="Transmitir audio briefing táctico de inteligencia">
-                🔊 Audio Briefing IA
+                🔊 Audio IA
             </button>
 
             <!-- Institutional Scientific Protocol Modal -->
-            <button class="header-btn" onclick="openConvemarModal()" title="Marco jurídico y conservación de biodiversidad">
+            <button class="header-btn modal-trigger-btn" onclick="openConvemarModal()" title="Marco jurídico y conservación de biodiversidad">
                 🔬 CONVEMAR
             </button>
 
             <!-- Institutional Partners Modal -->
-            <button class="header-btn" onclick="openPartnersModal()" title="Alianzas CONAE, INIDEP, CONICET, GFW">
+            <button class="header-btn modal-trigger-btn" onclick="openPartnersModal()" title="Alianzas CONAE, INIDEP, CONICET, GFW">
                 🤝 Alianzas
             </button>
 
@@ -1840,25 +1878,29 @@
             t.classList.toggle('active', t.dataset.view === viewName);
         });
 
-        document.getElementById('viewLiveMap').classList.toggle('active', viewName === 'live_map');
-        document.getElementById('viewSarLab').classList.toggle('active', viewName === 'sar_lab');
-        document.getElementById('viewForensicDossier').classList.toggle('active', viewName === 'forensic_dossier');
+        const liveMap = document.getElementById('viewLiveMap');
+        const sarLab = document.getElementById('viewSarLab');
+        const forensic = document.getElementById('viewForensicDossier');
+
+        if (liveMap) liveMap.classList.toggle('active', viewName === 'live_map');
+        if (sarLab) sarLab.classList.toggle('active', viewName === 'sar_lab');
+        if (forensic) forensic.classList.toggle('active', viewName === 'forensic_dossier');
 
         if (viewName === 'live_map') {
             setTimeout(() => { if (map) map.invalidateSize(); }, 150);
         } else if (viewName === 'sar_lab') {
-            initSarLabCanvas();
+            setTimeout(() => { initSarLabCanvas(); }, 50);
         } else if (viewName === 'forensic_dossier') {
             const sel = document.getElementById('dossierTargetSelect');
-            loadDossierTab(sel ? sel.value : 'DARK-VV-VH-001');
+            setTimeout(() => { loadDossierTab(sel ? sel.value : 'DARK-VV-VH-001'); }, 50);
         }
     }
 
     // ── MAP INITIALIZATION (ESRI SATELLITE BY DEFAULT) ──
     function initMap() {
         map = L.map('map', {
-            center: [-45.2, -59.8],
-            zoom: 6,
+            center: [-45.5, -59.5],
+            zoom: 6.5,
             zoomControl: true,
             attributionControl: false,
             preferCanvas: true
@@ -1998,8 +2040,13 @@
         renderVesselMarkers();
         renderVesselList();
         updateFleetCounts();
-        if (!window._initialBoundsFitted && vessels.length && map) {
-            map.fitBounds(L.latLngBounds(vessels.map(v => [v.lat, v.lon])).pad(0.25));
+        if (!window._initialBoundsFitted && map) {
+            const patagoniaVessels = (vessels || []).filter(v => v.lat <= -38 && v.lat >= -56 && v.lon <= -52 && v.lon >= -68);
+            if (patagoniaVessels.length > 0) {
+                map.fitBounds(L.latLngBounds(patagoniaVessels.map(v => [v.lat, v.lon])).pad(0.08), { maxZoom: 7.2 });
+            } else {
+                map.setView([-45.5, -59.5], 6.5);
+            }
             window._initialBoundsFitted = true;
         }
     }
@@ -2164,19 +2211,24 @@
 
         if (nameEl) nameEl.textContent = v.name || 'LU RONG YU 588';
         if (flagEl) flagEl.textContent = `${v.flag || '🇨🇳 China'} · MMSI: ${v.mmsi || '412001928'}`;
-        if (coordsEl && v.lat && v.lon) coordsEl.textContent = `${v.lat.toFixed(4)}°S, ${v.lon.toFixed(4)}°W`;
+        if (coordsEl && v.lat && v.lon) coordsEl.textContent = `${Number(v.lat).toFixed(4)}°S, ${Number(v.lon).toFixed(4)}°W`;
         if (distEl) {
             const d = v.distance_to_eez_nm !== undefined && v.distance_to_eez_nm !== null ? v.distance_to_eez_nm : 15.20;
             distEl.textContent = `${Math.abs(d).toFixed(2)} NM (${d < 0 ? 'Incursión ZEE' : 'Límite Exterior'})`;
             distEl.style.color = d < 0 ? '#ef4444' : '#10b981';
         }
-        if (dimsEl) dimsEl.textContent = `Eslora: ${v.length_meters || 41.5}m · Manga: ${v.beam_meters || 10.0}m`;
-        if (rcsEl) rcsEl.textContent = `RCS: +${v.rcs_db || 51.6} dB`;
+        
+        const lengthNum = parseFloat(v.length_meters || v.length || 41.5) || 41.5;
+        const beamNum = parseFloat(v.beam_meters || v.beam || 10.0) || 10.0;
+        if (dimsEl) dimsEl.textContent = `Eslora: ${lengthNum}m · Manga: ${beamNum}m`;
+        
+        const rcsVal = v.rcs_db || (v.risk_score ? (46.0 + (v.risk_score * 0.08)).toFixed(1) : 51.6);
+        if (rcsEl) rcsEl.textContent = `RCS: +${rcsVal} dB`;
 
         // Render Bragg canvas for War Room panel
         drawSarChipCanvas('sarChipCanvasWarRoom', {
-            radar_cross_section_db: v.rcs_db || 51.6,
-            estimated_dimensions: { length_meters: v.length_meters || 41.5, beam_meters: v.beam_meters || 10.0 }
+            radar_cross_section_db: Number(rcsVal),
+            estimated_dimensions: { length_meters: lengthNum, beam_meters: beamNum }
         });
     }
 
@@ -2988,7 +3040,10 @@
             text: "Aquí monitoreamos en tiempo real la flota pesquera en el corredor de la Milla 201 ZEE. Los contactos en verde transmiten posición AIS legal, mientras que los contactos en rojo se aíslan como BUQUES OSCUROS que apagaron su transpondedor.",
             view: "live_map",
             highlightSelector: "#sidebar",
-            action: () => toggleMissionHero(false)
+            action: () => {
+                const s = document.getElementById('sidebar');
+                if (s && s.classList.contains('collapsed')) s.classList.remove('collapsed');
+            }
         },
         {
             stepNumber: "PASO 02 / 04",
@@ -2996,7 +3051,9 @@
             text: "El mapa satelital Esri de alta resolución traza la frontera oficial de las 200 millas náuticas y el polígono crítico del Agujero Azul. Permite inspeccionar vectores cinemáticos y elipses de incertidumbre CEP.",
             view: "live_map",
             highlightSelector: "#map-container",
-            action: () => toggleMissionHero(false)
+            action: () => {
+                if (map) map.setView([-45.5, -59.5], 6.5);
+            }
         },
         {
             stepNumber: "PASO 03 / 04",
@@ -3005,9 +3062,12 @@
             view: "live_map",
             highlightSelector: ".panel-sar-chip-box",
             action: () => {
-                toggleMissionHero(false);
                 const p = document.getElementById('rightForensicPanel');
-                if (p) p.classList.remove('collapsed');
+                if (p && p.classList.contains('collapsed')) p.classList.remove('collapsed');
+                setTimeout(() => {
+                    const el = document.querySelector('.panel-sar-chip-box');
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
             }
         },
         {
@@ -3017,10 +3077,13 @@
             view: "live_map",
             highlightSelector: "#rightForensicPanel",
             action: () => {
-                toggleMissionHero(false);
                 const p = document.getElementById('rightForensicPanel');
-                if (p) p.classList.remove('collapsed');
+                if (p && p.classList.contains('collapsed')) p.classList.remove('collapsed');
                 loadDossierTab('DARK-VV-VH-001');
+                setTimeout(() => {
+                    const el = document.querySelector('.panel-crypto-box');
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
             }
         }
     ];
@@ -3146,6 +3209,10 @@
 
     // ── INITIALIZATION ──
     async function init() {
+        if (window.innerWidth < 1200) {
+            const p = document.getElementById('rightForensicPanel');
+            if (p) p.classList.add('collapsed');
+        }
         initMap();
         // Pre-load critical vessel in dossier so zero fields are empty
         loadDossierTab('DARK-VV-VH-001');
