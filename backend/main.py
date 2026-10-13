@@ -287,7 +287,7 @@ Key Context:
 - +600,000 hours of unbroadcasted fishing documented annually (dark vessels)
 - Gaps concentrated at miles 200-220 — deliberate EEZ evasion pattern
 - Operation Mare Nostrum I active (Argentine Navy, 2025/2026)
-- The Blue Hole (43°-47°S): maximum squid concentration zone
+- The Blue Hole (43-47S): maximum squid concentration zone
 
 Rules: Always respond in English. Be direct. Use data. Never hedge with "could be"."""
 
