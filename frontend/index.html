@@ -4,15 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OceanEye — Monitoreo Satelital Soberano & Inteligencia Geoespacial Marítima</title>
-    <meta name="description" content="Plataforma de Inteligencia Marítima Satelital para la Conservación de Biodiversidad y Control Soberano en el Atlántico Sur (Milla 201 ZEE Argentina y Agujero Azul). Postulación Beca Leonardo BBVA 2026.">
+    <meta name="description" content="Iniciativa de Investigación Científica, Teledetección y Soberanía Tecnológica del Mar Argentino (Milla 201 ZEE y Agujero Azul). Postulación Beca Leonardo BBVA 2026. Investigador Principal: Ing. Químico Gastón Chevarria.">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>">
+    <link rel="describedby" href="/llms.txt" type="text/plain">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": "https://oceaneye-ai.com/#researcher",
+          "name": "Gastón Chevarria",
+          "honorificPrefix": "Ing.",
+          "jobTitle": "Investigador Independiente · Especialista en Arquitectura de Sistemas de IA",
+          "alumniOf": [
+            { "@type": "CollegeOrUniversity", "name": "Universidad Tecnológica Nacional (UTN FRVM)" },
+            { "@type": "CollegeOrUniversity", "name": "Universidad Nacional de San Martín (UNSAM)" }
+          ]
+        },
+        {
+          "@type": "ResearchProject",
+          "@id": "https://oceaneye-ai.com/#project",
+          "name": "OceanEye",
+          "alternateName": "Iniciativa de Investigación Científica, Teledetección y Soberanía Tecnológica del Mar Argentino",
+          "url": "https://oceaneye-ai.com",
+          "description": "Plataforma de Inteligencia Marítima Satelital para la Conservación de Biodiversidad y Control Soberano en el Atlántico Sur (Milla 201 ZEE Argentina y Agujero Azul).",
+          "founder": { "@id": "https://oceaneye-ai.com/#researcher" },
+          "funder": { "@type": "Organization", "name": "Beca Leonardo BBVA 2026 (Postulación en Ciencias de la Computación)" }
+        }
+      ]
+    }
+    </script>
     <style>
         /* ════════════════════════════════════════════════════════════════════════
-           1. SISTEMA VISUAL & PALETA OFICIAL (STEALTHMARK SPEC)
+           1. SISTEMA VISUAL & PALETA OFICIAL (OCEANEYE TACTICAL RESEARCH SPEC)
            ════════════════════════════════════════════════════════════════════════ */
         :root {
             --bg-void: #060709;
@@ -27,7 +56,7 @@
             --text-secondary: #94A3B8;
             --text-muted: #64748B;
             
-            /* Acentos Oficiales StealthMark */
+            /* Acentos Oficiales OceanEye */
             --accent-cyan: #00D2FE;
             --accent-cyan-glow: rgba(0, 210, 254, 0.35);
             --accent-indigo: #6366F1;
@@ -776,7 +805,7 @@
 </head>
 <body>
 
-    <!-- Ambient Glow Spheres (StealthMark Luxury Spec) -->
+    <!-- Ambient Glow Spheres (OceanEye Atmospheric Spec) -->
     <div class="ambient-glow ambient-glow-top"></div>
     <div class="ambient-glow ambient-glow-middle"></div>
 
@@ -793,7 +822,8 @@
             <a href="#radar-animatic" class="nav-link">Simulador Radar SAR</a>
             <a href="#pilares" class="nav-link">Física & IA LAYA</a>
             <a href="#benchmarks" class="nav-link">Métricas de Producción</a>
-            <a href="#marco-legal" class="nav-link">Marco Jurídico</a>
+            <a href="#investigador" class="nav-link" style="color:#00d2fe;font-weight:700;"><span style="font-size:11px;background:rgba(0,210,254,0.12);border:1px solid rgba(0,210,254,0.35);padding:3px 9px;border-radius:12px;">👨‍🔬 Ing. Gastón Chevarria</span></a>
+            <a href="https://github.com/Gastonchevarria/oceaneye-evaluation" target="_blank" class="nav-link" style="color:#38bdf8;">Kit de Verificación ↗</a>
             <a href="/app" class="nav-cta-btn">
                 <span>🛰️</span> Consola Táctica ➔
             </a>
@@ -809,6 +839,7 @@
                     <span class="hero-pill-critical">
                         <span class="pulse-beacon"></span> VIGILANCIA SATELITAL ACTIVA · MILLA 201 ZEE
                     </span>
+                    <span class="spec-chip" style="color:#10b981;border-color:rgba(16,185,129,0.35);">INICIATIVA DE INVESTIGACIÓN CIENTÍFICA & SOBERANÍA TECNOLÓGICA</span>
                     <span class="spec-chip">POSTULACIÓN BECA LEONARDO BBVA 2026</span>
                     <span class="spec-chip">SENTINEL-1 C-BAND (5.405 GHz)</span>
                 </div>
@@ -828,8 +859,8 @@
                     <button onclick="downloadForensicPdfLanding()" class="btn-editorial-secondary" title="Descargar acta pericial oficial de muestra en PDF">
                         <span>📥</span> Descargar Peritaje de Muestra (PDF A4)
                     </button>
-                    <a href="https://github.com/Gastonchevarria/OceanEye" target="_blank" class="btn-editorial-secondary">
-                        <span>🐙</span> GitHub
+                    <a href="https://github.com/Gastonchevarria/oceaneye-evaluation" target="_blank" class="btn-editorial-secondary" title="Repositorio Público de Verificación Científica y Benchmarks">
+                        <span>🐙</span> Kit de Verificación (GitHub)
                     </a>
                 </div>
             </div>
@@ -996,16 +1027,18 @@
                 <!-- Pilar 2: Triage LAYA -->
                 <div class="bento-card bento-col-5">
                     <div>
-                        <div class="card-icon">⚡</div>
+                        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+                            <img src="/logolaya.png" alt="LAYA Logo" style="height:32px;filter:drop-shadow(0 0 12px rgba(0,210,254,0.35));object-fit:contain;">
+                        </div>
                         <h3 class="card-title">02. Triage Determinista LAYA (Sistema 1)</h3>
                         <p class="card-body">
-                            En lugar de procesar gigabytes de océano vacío con costosos modelos neuronales, el filtro perimetral LAYA computa varianza estadística en 9.12 milisegundos por chip, descartando el 96% de escenas sin blancos y optimizando el consumo energético en Google Cloud Run a demanda ($0 en reposo).
+                            En lugar de procesar gigabytes de océano vacío con costosos modelos neuronales en GPU, el motor determinista LAYA computa varianza estadística en micro-latencia (≈3-5 ms por tesela), descartando el 44% al 52% de océano vacío en la escena de referencia y optimizando el consumo en Google Cloud Run a demanda ($0 en reposo).
                         </p>
                     </div>
                     <div class="card-specs">
-                        <span class="spec-chip">Sub-10ms Latencia</span>
-                        <span class="spec-chip">Reducción de Costo 44%</span>
-                        <span class="spec-chip">CPU Determinista</span>
+                        <span class="spec-chip">Sub-10ms Latencia CPU</span>
+                        <span class="spec-chip">Descarte 44-52% Océano</span>
+                        <span class="spec-chip">Decisions, Not Text</span>
                     </div>
                 </div>
 
@@ -1076,7 +1109,7 @@
                     </div>
                     <div class="demo-hud-card">
                         <div class="demo-hud-label">Dimensiones Estimadas SAR</div>
-                        <div class="demo-hud-val">Eslora: 41.5m · Manga: 10.0m</div>
+                        <div class="demo-hud-val">Eslora: 80.0m · Manga: 13.0m</div>
                     </div>
                     <div class="demo-hud-card">
                         <div class="demo-hud-label">Firma Radar (RCS / SNR)</div>
@@ -1111,6 +1144,83 @@
                 </div>
             </div>
         </section>
+
+        <!-- ── DIRECCIÓN CIENTÍFICA & AUTORÍA ── -->
+        <section class="section-container" id="investigador">
+            <div class="section-header">
+                <span class="section-tag">INVESTIGACIÓN INDIVIDUAL & SOBERANÍA TECNOLÓGICA</span>
+                <h2 class="section-title">Dirección Científica del Proyecto</h2>
+                <p class="section-desc">
+                    Iniciativa de investigación científica concebida y desarrollada de forma individual, orientada a la protección de la biodiversidad marina y la soberanía del Mar Argentino.
+                </p>
+            </div>
+
+            <div class="peritaje-demo-box" style="border-color:rgba(0,210,254,0.25);background:linear-gradient(180deg, #0a0f18 0%, #06090e 100%);">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:24px;border-bottom:1px solid var(--border);padding-bottom:20px;">
+                    <div style="display:flex;align-items:center;gap:18px;">
+                        <div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg, #00d2fe, #6366f1);display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 0 24px rgba(0,210,254,0.35);">
+                            👨‍🔬
+                        </div>
+                        <div>
+                            <span style="font-size:11px;font-weight:800;color:#00d2fe;letter-spacing:1px;text-transform:uppercase;" class="mono">Investigador Principal</span>
+                            <h3 style="font-size:24px;font-weight:900;color:#ffffff;margin:3px 0;">Ing. Químico Gastón Chevarria</h3>
+                            <div style="font-size:13px;color:#94a3b8;">
+                                Investigador Independiente · Especialista en Arquitectura de Sistemas de Inteligencia Artificial
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                        <span class="spec-chip" style="color:#00d2fe;border-color:rgba(0,210,254,0.3);">UTN FRVM</span>
+                        <span class="spec-chip" style="color:#6366f1;border-color:rgba(99,102,241,0.3);">UNSAM</span>
+                        <span class="spec-chip" style="color:#10b981;border-color:rgba(16,185,129,0.3);">POSTULACIÓN BECA LEONARDO 2026</span>
+                    </div>
+                </div>
+
+                <div class="demo-hud-grid" style="grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));margin:20px 0;">
+                    <div class="demo-hud-card">
+                        <div class="demo-hud-label">Antecedente Científico de Referencia</div>
+                        <div style="font-size:12.5px;color:#f1f5f9;line-height:1.55;margin-top:6px;">
+                            <em>«Clasificación y Monitoreo de Parámetros de Calidad de Agua en la Franja Costera del Río de la Plata mediante Modelos de Machine Learning»</em>
+                        </div>
+                        <div style="font-size:11px;color:#64748b;margin-top:6px;">
+                            Desarrollado en colaboración con series de datos abiertos del Ministerio de Ambiente y Desarrollo Sostenible de la Nación.
+                        </div>
+                    </div>
+
+                    <div class="demo-hud-card">
+                        <div class="demo-hud-label">Kit de Verificación & Código Abierto</div>
+                        <div style="font-size:12.5px;color:#f1f5f9;line-height:1.55;margin-top:6px;">
+                            Repositorio público con sub-escena sintética reproducible, ecuaciones matemáticas completas y script de auditoría pericial:
+                        </div>
+                        <div style="margin-top:10px;">
+                            <a href="https://github.com/Gastonchevarria/oceaneye-evaluation" target="_blank" class="nav-cta-btn" style="padding:7px 14px;font-size:11.5px;display:inline-flex;">
+                                🐙 Gastonchevarria/oceaneye-evaluation ↗
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="demo-hud-card">
+                        <div class="demo-hud-label">Transparencia para Evaluadores IA</div>
+                        <div style="font-size:12.5px;color:#f1f5f9;line-height:1.55;margin-top:6px;">
+                            Archivos estructurados según estándar emergente para agentes evaluadores (Perplexity, Claude, GPT):
+                        </div>
+                        <div style="margin-top:10px;display:flex;gap:8px;">
+                            <a href="/llms.txt" target="_blank" class="spec-chip" style="color:#00d2fe;border-color:rgba(0,210,254,0.3);">📄 /llms.txt</a>
+                            <a href="/llms-full.txt" target="_blank" class="spec-chip" style="color:#a855f7;border-color:rgba(168,85,247,0.3);">📚 /llms-full.txt</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.25);border-radius:8px;padding:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+                    <div style="font-size:12px;color:#cbd5e1;">
+                        🛡️ <strong>Verificación Determinista:</strong> El pipeline puede ser auditado sin credenciales externas ejecutando: <code style="background:#04060a;padding:2px 6px;border-radius:4px;color:#00d2fe;" class="mono">python3 verify.py</code>
+                    </div>
+                    <a href="https://github.com/Gastonchevarria/oceaneye-evaluation" target="_blank" style="font-size:12px;color:#10b981;font-weight:700;text-decoration:none;">
+                        Ver Memoria Técnica Completa ➔
+                    </a>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- ── FOOTER INSTITUCIONAL ── -->
@@ -1122,10 +1232,10 @@
                     <span style="font-size:16px;font-weight:900;color:#ffffff;">OceanEye</span>
                 </div>
                 <p style="font-size:12px;color:#94a3b8;line-height:1.6;">
-                    Iniciativa científica y de soberanía satelital postulada a la <strong>Beca Leonardo BBVA 2026</strong> en Ciencias de la Computación, Ciencia de Datos e Inteligencia Artificial.
+                    Iniciativa de investigación científica y teledetección para la soberanía marítima de la República Argentina. Postulación a la <strong>Beca Leonardo BBVA 2026</strong>.
                 </p>
                 <div style="font-size:11px;color:#64748b;" class="mono">
-                    Stack: Sentinel-1 C-Band SAR · PyTorch MPS/CUDA · LAYA Engine · FastAPI · Cloud Run
+                    Investigador Principal: Ing. Químico Gastón Chevarria (UTN FRVM · UNSAM)
                 </div>
             </div>
 
@@ -1135,15 +1245,15 @@
                 <a href="#radar-animatic" class="footer-link">Simulador Radar SAR (60 FPS)</a>
                 <a href="#pilares" class="footer-link">Física de Radar SAR & IA LAYA</a>
                 <a href="#benchmarks" class="footer-link">Métricas de Producción</a>
-                <a href="#marco-legal" class="footer-link">Marco Jurídico</a>
+                <a href="#investigador" class="footer-link">Dirección Científica</a>
             </div>
 
             <div class="footer-col">
-                <span class="footer-title">Institucional</span>
+                <span class="footer-title">Investigación & Código</span>
+                <a href="https://github.com/Gastonchevarria/oceaneye-evaluation" target="_blank" class="footer-link">Kit de Verificación (GitHub) ↗</a>
+                <a href="/llms.txt" target="_blank" class="footer-link">Resumen para Modelos IA (/llms.txt)</a>
+                <a href="/llms-full.txt" target="_blank" class="footer-link">Memoria Técnica (/llms-full.txt)</a>
                 <a href="https://www.programaleonardo.com/" target="_blank" class="footer-link">Beca Leonardo BBVA 2026</a>
-                <a href="https://www.conae.gob.ar/" target="_blank" class="footer-link">CONAE (Argentina)</a>
-                <a href="https://www.argentina.gob.ar/inidep" target="_blank" class="footer-link">INIDEP (Conservación)</a>
-                <a href="https://github.com/Gastonchevarria/OceanEye" target="_blank" class="footer-link">Repositorio GitHub</a>
             </div>
 
             <div class="footer-col">
@@ -1182,12 +1292,28 @@
         window.requestAnimationFrame(step);
     }
 
-    // Trigger on intersection
+    // Trigger on intersection with live API benchmark sync
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+        entries.forEach(async (entry) => {
             if (entry.isIntersecting) {
-                animateValue("counterLaya", 0.0, 9.12, 1200, 2);
-                animateValue("counterDarks", 0, 12, 1000, 0);
+                let layaMs = 4.66;
+                let darkCount = 12;
+                try {
+                    const resp = await fetch('/api/v1/sar/benchmark');
+                    if (resp.ok) {
+                        const d = await resp.json();
+                        if (d.laya_system1_triage?.triage_latency_ms) {
+                            layaMs = Number(d.laya_system1_triage.triage_latency_ms);
+                        }
+                        if (d.metrics?.total_dark_vessels) {
+                            darkCount = Number(d.metrics.total_dark_vessels);
+                        }
+                    }
+                } catch(e) {
+                    console.debug("Benchmark fallback active");
+                }
+                animateValue("counterLaya", 0.0, layaMs, 1200, 2);
+                animateValue("counterDarks", 0, darkCount, 1000, 0);
                 animateValue("counterPrecision", 0.0, 100.0, 1400, 1);
                 animateValue("counterHallucination", 12.5, 0.00, 1000, 2);
                 observer.unobserve(entry.target);

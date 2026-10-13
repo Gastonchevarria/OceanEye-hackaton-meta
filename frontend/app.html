@@ -2740,20 +2740,9 @@
                 estimated_dimensions: { length_meters: len, beam_meters: beam, heading_degrees: targetMatch?.heading_deg || 184 },
                 radar_cross_section_db: rcs,
                 laya_ed25519_certificate: {
-                    ed25519_signature_base64: 'KT+N5kXyR0KDRkRff37SS5l7BNJV5o0B+m5ATvldl3lwudy1MamVRM4aLBIx/5tXFyxjKRX54GMCdn3ofNOfCw=='
+                    ed25519_signature_base64: 'SIN CONEXIÓN · REQUIERE BACKEND ACTIVO'
                 }
             };
-        }
-
-        // Naval Architecture Hydrodynamics Guard (Enforce realistic L/B ratio ~4.8 - 6.2)
-        if (dossierData && dossierData.estimated_dimensions) {
-            let l = Number(dossierData.estimated_dimensions.length_meters) || 58.4;
-            let b = Number(dossierData.estimated_dimensions.beam_meters) || 9.8;
-            if (b >= l * 0.45 || Math.abs(b - l) < 1.0) {
-                b = Number((l / 5.6).toFixed(1));
-            }
-            dossierData.estimated_dimensions.length_meters = l;
-            dossierData.estimated_dimensions.beam_meters = b;
         }
 
         window.currentLoadedDossier = dossierData;
@@ -2869,9 +2858,6 @@
         const rcs = (data && data.radar_cross_section_db) || 51.6;
         let len = (data && data.estimated_dimensions && data.estimated_dimensions.length_meters) || 58.4;
         let beam = (data && data.estimated_dimensions && data.estimated_dimensions.beam_meters) || 9.8;
-        if (beam >= len * 0.45 || Math.abs(beam - len) < 1.0) {
-            beam = Number((len / 5.6).toFixed(1));
-        }
 
         // Cross-sidelobe diffraction spikes (SAR specular response)
         ctx.strokeStyle = 'rgba(0, 210, 254, 0.28)';

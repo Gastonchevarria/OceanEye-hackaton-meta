@@ -16,12 +16,12 @@
 
 | Componente | Plataforma | URL / Endpoint | Estado |
 | :--- | :--- | :--- | :--- |
-| **Frontend Web** | Vercel Edge | [https://oceaneye-two.vercel.app](https://oceaneye-two.vercel.app) | 🟢 Operativo |
-| **Backend API** | Google Cloud Run (`stealthmark-prod`) | [https://oceaneye-backend-29923645081.us-central1.run.app](https://oceaneye-backend-29923645081.us-central1.run.app) | 🟢 Operativo (Min instances: 0) |
+| **Frontend Web** | Vercel Edge | [https://oceaneye-ai.com](https://oceaneye-ai.com) (espejo: [oceaneye-two.vercel.app](https://oceaneye-two.vercel.app)) | 🟢 Operativo |
+| **Backend API** | Google Cloud Run | [https://oceaneye-backend-29923645081.us-central1.run.app](https://oceaneye-backend-29923645081.us-central1.run.app) | 🟢 Operativo (Min instances: 0) |
 | **API Healthcheck** | Cloud Run | [`/health`](https://oceaneye-backend-29923645081.us-central1.run.app/health) | 🟢 200 OK (DB + AIS + GFW + AI) |
 | **Flota en Vivo** | Supabase + TimescaleDB | [`/api/v1/fleet/live`](https://oceaneye-backend-29923645081.us-central1.run.app/api/v1/fleet/live) | 🟢 150+ Buques Streaming |
 | **Benchmark SAR** | Sentinel-1 GRD Dual-Pol | [`/api/v1/sar/benchmark`](https://oceaneye-backend-29923645081.us-central1.run.app/api/v1/sar/benchmark) | 🟢 15 Detecciones / 12 Dark |
-| **Repositorio** | GitHub | [https://github.com/Gastonchevarria/OceanEye](https://github.com/Gastonchevarria/OceanEye) | 🟢 Sincronizado |
+| **Kit de Verificación** | GitHub (Público) | [https://github.com/Gastonchevarria/oceaneye-evaluation](https://github.com/Gastonchevarria/oceaneye-evaluation) | 🟢 Verificable en 1 comando |
 
 ---
 

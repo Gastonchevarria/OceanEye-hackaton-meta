@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+
+# Permitir indexación profunda a rastreadores y evaluadores de IA
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+Sitemap: https://oceaneye-ai.com/sitemap.xml

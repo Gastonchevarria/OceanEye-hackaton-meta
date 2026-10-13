@@ -54,26 +54,26 @@ def generate_mile201_fixture(shape: Tuple[int, int] = (600, 600)) -> Dict[str, A
 
     # 2. Vessel Coordinates & Fleet Ground Truth
     # 15 distinct vessel locations
-    # (r, c, length_m, beam_m, is_ais, name, mmsi)
+    # (r, c, length_m, beam_m, heading_deg, is_ais, name, mmsi)
     vessels_spec = [
         # 3 AIS Confirmed Vessels
-        (120, 150, 75.0, 13.0, True, "LU RONG YU 588", "413294810"),
-        (220, 310, 68.0, 12.0, True, "FU YUAN YU 7881", "413388120"),
-        (480, 240, 72.0, 12.5, True, "ZHONG YU 218", "413491029"),
+        (120, 150, 75.0, 13.0, 170.0, True, "LU RONG YU 588", "413294810"),
+        (220, 310, 68.0, 12.0, 165.0, True, "FU YUAN YU 7881", "413388120"),
+        (480, 240, 72.0, 12.5, 175.0, True, "ZHONG YU 218", "413491029"),
 
         # 12 Dark Vessels (Turned off transponders inside/bordering EEZ)
-        (80, 420, 65.0, 11.0, False, "DARK POTERO 01", None),
-        (140, 435, 62.0, 10.5, False, "DARK POTERO 02", None),
-        (190, 450, 70.0, 12.0, False, "DARK POTERO 03", None),
-        (250, 465, 78.0, 13.0, False, "DARK TRAWLER 04", None),
-        (280, 180, 58.0, 10.0, False, "DARK POTERO 05", None),
-        (330, 210, 64.0, 11.5, False, "DARK POTERO 06", None),
-        (370, 390, 85.0, 14.0, False, "DARK REEFER 07", None),
-        (410, 420, 66.0, 11.0, False, "DARK POTERO 08", None),
-        (440, 150, 60.0, 10.0, False, "DARK POTERO 09", None),
-        (490, 480, 73.0, 12.0, False, "DARK POTERO 10", None),
-        (530, 320, 68.0, 11.0, False, "DARK POTERO 11", None),
-        (560, 270, 75.0, 13.0, False, "DARK POTERO 12", None),
+        (80, 420, 65.0, 11.0, 180.0, False, "DARK POTERO 01", None),
+        (140, 435, 62.0, 10.5, 185.0, False, "DARK POTERO 02", None),
+        (190, 450, 70.0, 12.0, 170.0, False, "DARK POTERO 03", None),
+        (250, 465, 78.0, 13.0, 160.0, False, "DARK TRAWLER 04", None),
+        (280, 180, 58.0, 10.0, 190.0, False, "DARK POTERO 05", None),
+        (330, 210, 64.0, 11.5, 175.0, False, "DARK POTERO 06", None),
+        (370, 390, 85.0, 14.0, 165.0, False, "DARK REEFER 07", None),
+        (410, 420, 66.0, 11.0, 180.0, False, "DARK POTERO 08", None),
+        (440, 150, 60.0, 10.0, 170.0, False, "DARK POTERO 09", None),
+        (490, 480, 73.0, 12.0, 185.0, False, "DARK POTERO 10", None),
+        (530, 320, 68.0, 11.0, 175.0, False, "DARK POTERO 11", None),
+        (560, 270, 75.0, 13.0, 165.0, False, "DARK POTERO 12", None),
     ]
 
     min_lon, min_lat, max_lon, max_lat = bounds
@@ -81,25 +81,41 @@ def generate_mile201_fixture(shape: Tuple[int, int] = (600, 600)) -> Dict[str, A
 
     ground_truth_targets = []
     ais_reports = []
+    res_m = 10.0
 
-    for idx, (r, c, length, beam, has_ais, name, mmsi) in enumerate(vessels_spec, 1):
+    for idx, (r, c, length, beam, heading, has_ais, name, mmsi) in enumerate(vessels_spec, 1):
         # Pixel coordinates to Lat/Lon
         lat = max_lat - (r / (h - 1)) * (max_lat - min_lat)
         lon = min_lon + (c / (w - 1)) * (max_lon - min_lon)
 
-        # Inject metallic radar return
+        # Inject realistic elongated naval hull radar return
         # Metallic hull creates high cross-polarization (VH) return (40 to 80 dB power)
-        # and moderate VV return
-        rr, cc = np.ogrid[-2:3, -2:3]
-        mask_ship = (rr**2 + cc**2) <= 4
+        # and moderate VV return, with length-to-beam ratio matching naval architecture
+        a_px = max((length / 2.0) / res_m, 2.0)
+        b_px = max((beam / 2.0) / res_m, 0.7)
+        theta = np.radians(heading)
+        rad = int(np.ceil(a_px)) + 1
+        rr, cc = np.ogrid[-rad:rad+1, -rad:rad+1]
+
+        u = -rr * np.cos(theta) + cc * np.sin(theta)
+        v = rr * np.sin(theta) + cc * np.cos(theta)
+        ellipse_norm = (u / a_px)**2 + (v / b_px)**2
+        mask_ship = ellipse_norm <= 1.0
 
         # Bounds check
-        r_min, r_max = max(0, r - 2), min(h, r + 3)
-        c_min, c_max = max(0, c - 2), min(w, c + 3)
-        sub_mask = mask_ship[:r_max - r_min, :c_max - c_min]
+        r_min, r_max = max(0, r - rad), min(h, r + rad + 1)
+        c_min, c_max = max(0, c - rad), min(w, c + rad + 1)
 
-        vv[r_min:r_max, c_min:c_max][sub_mask] += float(np.random.uniform(180.0, 350.0))
-        vh[r_min:r_max, c_min:c_max][sub_mask] += float(np.random.uniform(220.0, 450.0))
+        mr_min = r_min - (r - rad)
+        mr_max = mr_min + (r_max - r_min)
+        mc_min = c_min - (c - rad)
+        mc_max = mc_min + (c_max - c_min)
+        sub_mask = mask_ship[mr_min:mr_max, mc_min:mc_max]
+        sub_norm = ellipse_norm[mr_min:mr_max, mc_min:mc_max]
+        weight = np.clip(1.0 - 0.25 * sub_norm, 0.5, 1.0).astype(np.float32)
+
+        vv[r_min:r_max, c_min:c_max][sub_mask] += (float(np.random.uniform(180.0, 340.0)) * weight[sub_mask]).astype(np.float32)
+        vh[r_min:r_max, c_min:c_max][sub_mask] += (float(np.random.uniform(220.0, 440.0)) * weight[sub_mask]).astype(np.float32)
 
         tgt_info = {
             "target_id": f"GT-TGT-{idx:02d}",
@@ -109,6 +125,7 @@ def generate_mile201_fixture(shape: Tuple[int, int] = (600, 600)) -> Dict[str, A
             "lon": round(lon, 5),
             "length_m": length,
             "beam_m": beam,
+            "heading_deg": heading,
             "has_active_ais": has_ais,
             "name": name,
             "mmsi": mmsi,

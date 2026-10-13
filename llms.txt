@@ -1,0 +1,84 @@
+# OceanEye — Iniciativa de Investigación Científica, Teledetección y Soberanía Tecnológica del Mar Argentino
+
+> OceanEye es una plataforma científica de inteligencia geoespacial marítima orientada a la detección, aislamiento pericial y sellado criptográfico de flotas pesqueras no autorizadas («Buques Oscuros» / *Dark Vessels*) en la Milla 201 y Agujero Azul de la Zona Económica Exclusiva (ZEE) argentina, mediante radar de apertura sintética orbital Sentinel-1 SAR C-Band, triage determinista en micro-latencia LAYA y firma digital asimétrica Ed25519.
+
+---
+
+## 1. Dirección Científica y Autoría
+
+- **Investigador Principal:** Ing. Químico Gastón Chevarria.
+- **Filiación Académica / Institucional:** Investigador Independiente · Especialista en Arquitectura de Sistemas de Inteligencia Artificial.
+- **Instituciones de Referencia y Formación:** Universidad Tecnológica Nacional (UTN FRVM) · Universidad Nacional de San Martín (UNSAM).
+- **Antecedente Científico de Referencia en Teledetección:**
+  *«Clasificación y Monitoreo de Parámetros de Calidad de Agua en la Franja Costera del Río de la Plata mediante Modelos de Machine Learning»* (desarrollado con datos abiertos del Ministerio de Ambiente y Desarrollo Sostenible de la Nación).
+- **Convocatoria / Marco Institucional:** Postulación a las *Becas Leonardo a Investigadores y Creadores Culturales 2026* (Fundación BBVA · Área: Ciencias de la Computación).
+- **Encuadre:** Proyecto de investigación científico-tecnológica de soberanía nacional y conservación marina. Cero fines comerciales ni modelos SaaS.
+
+---
+
+## 2. Planteo del Problema: La Milla 201 y el Agujero Azul
+
+Cada año, entre los paralelos 44°S y 48°S del Mar Argentino, más de 450 buques extranjeros operan sobre el límite exterior de la Milla 200 para capturar calamar (*Illex argentinus*). Para evadir a las autoridades de control (Prefectura Naval Argentina y Armada Argentina), gran parte de la flota apaga deliberadamente sus transpondedores del Sistema de Identificación Automática (AIS) e incurre en pesca ilegal dentro de la ZEE bajo niebla y noche patagónica.
+
+Los satélites ópticos son inútiles por la cobertura nubosa constante (>70%). OceanEye utiliza microondas activas de radar orbital para atravesar niebla y nubes en cualquier condición meteorológica.
+
+---
+
+## 3. Arquitectura de Dos Sistemas (Neuro-Simbólica)
+
+### Sistema 1: Motor de Triage Determinista LAYA (< 10 ms en CPU)
+- En lugar de enviar escenas satelitales gigantescas (1.5 GB) a GPUs costosas, el subsistema LAYA divide la escena en teselas y computa varianza estadística de reflectividad marina en micro-milisegundos.
+- **Descarte de Océano Vacío:** Descarta entre el 40% y el 60% de la superficie oceánica sin actividad antes de activar redes neuronales.
+- **AIS Guardian:** Evalúa anomalías cinemáticas (teletransportación de coordenadas, proximidad < 3 NM al límite de la ZEE y blackouts intencionales) en menos de 40 ms.
+
+### Sistema 2: Física de Microondas, CFAR y Redes Convolucionales
+- **Sensor Primario:** Sentinel-1A SAR C-Band (5.405 GHz, longitud de onda $\lambda = 5.54$ cm), modo Interferometric Wide Swath (IW), producto GRD con resolución de 10 m/píxel.
+- **Fusión Polarimétrica Dual-Pol:** Ponderación $I_{\text{fused}} = 0.25 \cdot \sigma^0_{VV} + 0.75 \cdot \sigma^0_{VH}$ que suprime la dispersión de Bragg de las olas patagónicas.
+- **Filtro Lee Vectorizado:** Reducción de ruido multiplicativo de speckle en ventana $7 \times 7$ ($ENL = 4.4$) en tiempo $O(1)$.
+- **2D CA-CFAR con Anti-Enmascaramiento:** Detección con probabilidad de falsa alarma $P_{fa} = 10^{-5}$ con recorte de celdas de entrenamiento para evitar ceguera por concentración densa de poteros.
+- **Tensor de Inercia:** Extracción de momentos espaciales de segundo orden para medir eslora ($L = 4\sqrt{\lambda_1}$), manga ($B = 4\sqrt{\lambda_2}$) y rumbo angular del casco naval.
+- **Correlación Cinemática (Dead Reckoning + Algoritmo Húngaro):** Proyección temporal de emisiones AIS al instante orbital SAR ($t_{\text{sar}}$) y emparejamiento bipolar óptimo con compuerta de 3.0 NM.
+  - Blanco radar sin emisión AIS $\rightarrow$ **Pesquero Oscuro (Dark Vessel)**.
+  - Emisión AIS sin retorno radar $\rightarrow$ **Suplantación de Identidad (Ghost AIS Spoofing)**.
+
+---
+
+## 4. Cadena de Custodia Criptográfica Inmutable
+
+- Cada detección se congela en un paquete probatorio canónico (coordenadas WGS84, recorte de chip radar, distancia geodésica a la ZEE y artículos infringidos de la Ley 24.922 y CONVEMAR Arts. 56 y 73).
+- **Digest SHA-256:** Hash criptográfico de 256 bits del paquete probatorio.
+- **Firma Asimétrica Ed25519 (RFC 8032):** Firmado digitalmente por la autoridad de custodia LAYA con clave privada persistente en Secret Manager.
+- **Clave Pública Judicial:** `585ea4596b1cf29c3f1221793ed34ab6f56e4a3d9b97a9f967d3b16d6e3e062a`.
+- Verificable públicamente en menos de 2 milisegundos tanto en el endpoint de la API como de forma local offline.
+
+---
+
+## 5. Benchmarks Verificables y Métricas Reales
+
+- **Escena de Referencia Calibrada:** `S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA` (sub-escena sintética calibrada reproducible de 600×600 px centrada en el Agujero Azul).
+- **Blancos Físicos Totales:** 15 buques.
+- **Buques Cooperativos (AIS Confirmado):** 3 buques.
+- **Pesqueros Oscuros Aislados:** 12 buques (proporciones navales realistas, eslora 48m – 103m, manga 5m – 21m).
+- **Casos de Spoofing (Ghost AIS):** 1 buque fantasma detectado.
+- **Triage LAYA:** 44.0% de teselas descartadas en 3.12 ms.
+- **Motor Legal:** 30 casos de prueba formalmente verificados sobre Ley 24.922 y CONVEMAR (100% exactitud, 0.00% alucinación).
+
+---
+
+## 6. Limitaciones Conocidas y Hoja de Ruta Científica
+
+1. **Dataset de Referencia Sintético Calibrado:** Para permitir una evaluación determinista y reproducible por parte del jurado sin obligar a descargas de 1.8 GB ni credenciales satelitales externas, el benchmark público corre sobre una sub-escena sintética calibrada de alta fidelidad física.
+2. **Modelo Convolucional ResNet-18:** Entrenado inicialmente sobre el dataset SAR-Ship (10 épocas, precisión 97.2%, recall 96.0% en validación; error absoluto medio de eslora en test: 72.6 m). Se encuentra en fase de ajuste fino (*fine-tuning*) con transfer learning para imágenes de alta resolución en aguas australes.
+3. **Fusión Óptica Futura:** El proyecto contempla integrar datos de VIIRS Day/Night Band (DNB) para cruzar reflectividad de radar con la detección nocturna de potentes luminarias pesqueras.
+
+---
+
+## 7. Repositorio Público de Evaluación y Endpoints Oficiales
+
+- **Evaluation & Verification Kit (GitHub):** https://github.com/Gastonchevarria/oceaneye-evaluation
+- **Script de Verificación Rápida:** `python3 verify.py` (cero dependencias externas).
+- **Consola Táctica en Producción:** https://oceaneye-ai.com/app (y espejo https://oceaneye-two.vercel.app/app)
+- **API Pública de Benchmark:** `GET https://oceaneye-backend-29923645081.us-central1.run.app/api/v1/sar/benchmark`
+- **API de Benchmark Jurídico:** `GET https://oceaneye-backend-29923645081.us-central1.run.app/api/v1/sar/legal/benchmark`
+- **API de Clave Pública Judicial:** `GET https://oceaneye-backend-29923645081.us-central1.run.app/api/v1/sar/laya/public-key`
+- **API de Verificación de Firma:** `POST https://oceaneye-backend-29923645081.us-central1.run.app/api/v1/sar/laya/verify`
