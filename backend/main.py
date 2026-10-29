@@ -221,12 +221,27 @@ class ExportRequest(BaseModel):
     vessel_data: dict
     claude_report: dict
 
-# ── NVIDIA AI Wrapper via HTTPX (3-Level Fallback) ───────────────────────────
+# ── Meta Model API (Muse Wonder 1.0 & Muse Spark 1.3) + NVIDIA Fallback ───────
 async def call_nvidia_ai(
     messages: List[Dict[str, Any]],
     temperature: float = 0.2,
-    max_tokens: int = 1024,
+    max_tokens: int = 2048,
 ) -> str:
+    try:
+        from app.laya.meta_muse_engine import call_meta_muse_chat, get_meta_api_key
+        if get_meta_api_key():
+            logger.info("🤖 Calling Meta Model API (muse-wonder-1.0) on https://api.meta.ai/v1")
+            meta_res = await call_meta_muse_chat(
+                messages=messages,
+                model="muse-wonder-1.0",
+                temperature=temperature,
+                max_tokens=max(max_tokens, 2048),
+            )
+            if meta_res.get("content"):
+                return meta_res["content"]
+    except Exception as e:
+        logger.warning(f"⚠️ Meta Model API failed ({e}), falling back to secondary provider...")
+
     if NVIDIA_API_KEY:
         headers = {
             "Authorization": f"Bearer {NVIDIA_API_KEY}",
@@ -342,21 +357,24 @@ async def enrich_from_gfw(mmsi: str, gfw_id: str) -> dict:
 @app.get("/")
 async def root():
     return {
-        "app": "OceanEye API",
-        "version": "4.1.0",
+        "app": "OceanEye API — Meta Model API Hackathon Edition",
+        "version": "5.0.0-meta",
         "status": "online",
-        "provider": "Artificial AI",
-        "models": NVIDIA_MODELS,
+        "provider": "Meta Model API (https://api.meta.ai/v1)",
+        "models": ["muse-wonder-1.0", "muse-spark-1.3", "muse-image-1.0", "sam-3.1"],
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
 
 @app.get("/health")
 async def health():
+    from app.laya.meta_muse_engine import get_meta_api_key
     db_ok = db_pool is not None
+    meta_ok = bool(get_meta_api_key())
     return {
         "status": "healthy" if db_ok else "operational",
         "database": "connected" if db_ok else "in_memory_cache",
-        "ai": "configured" if NVIDIA_API_KEY else "missing",
+        "meta_model_api": "configured" if meta_ok else "missing",
+        "ai": "configured" if (meta_ok or NVIDIA_API_KEY) else "missing",
         "gfw": "configured" if GFW_API_TOKEN else "missing",
         "ais": "stream_active",
     }
