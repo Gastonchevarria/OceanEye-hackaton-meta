@@ -6,7 +6,7 @@
     <title>OceanEye — Monitoreo Satelital Soberano & Inteligencia Geoespacial Marítima</title>
     <meta name="description" content="Iniciativa de Investigación Científica, Teledetección y Soberanía Tecnológica del Mar Argentino (Milla 201 ZEE y Agujero Azul). Meta AI Hackathon 2026 · OceanEye Sentinel 2.0. Investigador Principal: Ing. Químico Gastón Chevarria.">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>">
-    <link rel="describedby" href="/llms.txt" type="text/plain">
+    <link rel="describedby" href="./llms.txt" type="text/plain">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -830,14 +830,19 @@
             <a href="#benchmarks" class="nav-link">Métricas de Producción</a>
             <a href="#investigador" class="nav-link" style="color:#00d2fe;font-weight:700;"><span style="font-size:11px;background:rgba(0,210,254,0.12);border:1px solid rgba(0,210,254,0.35);padding:3px 9px;border-radius:12px;">👨‍🔬 Ing. Gastón Chevarria</span></a>
             <a href="https://github.com/Gastonchevarria/oceaneye-evaluation" target="_blank" class="nav-link" style="color:#38bdf8;">Kit de Verificación ↗</a>
-            <a href="/app" class="nav-cta-btn">
+            <a href="./app/" class="nav-cta-btn">
                 <span>🛰️</span> Consola Táctica ➔
             </a>
         </nav>
     </header>
 
     <!-- ── HERO SECTION ── -->
-    <main>
+    <!-- META HACKATHON HERO RIBBON -->
+<div style="background:linear-gradient(90deg,rgba(2,132,199,0.22),rgba(16,185,129,0.18));border:1px solid rgba(56,189,248,0.45);border-radius:10px;padding:10px 16px;margin:14px auto;max-width:980px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#e2e8f0;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;">
+  <span><strong>∞ META AI PIPELINE:</strong> <code>muse-image-1.0</code> + <code>sam-3.1</code> (12/12 máscaras poligonales + control negativo) + <code>muse-wonder-1.0</code> vs <code>muse-spark-1.3</code></span>
+  <span>📊 <strong>Benchmark (n=60, temp 0.1):</strong> Wonder <code>26/30 (86.7%)</code> · Spark <code>19/30 (63.3%)</code> · Adherencia <code>98.0% vs 92.0%</code> · <a href="./app/?pitch=1" style="color:#38bdf8;font-weight:800;text-decoration:underline;">▶ Abrir Pitch 90s</a></span>
+</div>
+<main>
         <section class="hero-section" id="mision">
             <!-- Left Column: Typography & CTAs -->
             <div class="hero-content">
@@ -859,7 +864,7 @@
                 </p>
 
                 <div class="hero-actions">
-                    <a href="/app" class="btn-warroom-giant">
+                    <a href="./app/" class="btn-warroom-giant">
                         <span>🛰️</span> [ INGRESAR A LA CONSOLA TÁCTICA ➔ ]
                     </a>
                     <button onclick="downloadForensicPdfLanding()" class="btn-editorial-secondary" title="Descargar acta pericial oficial de muestra en PDF">
@@ -954,7 +959,7 @@
                 <div class="marquee-item"><span class="dot-crimson"></span> <strong>ALERTA CRÍTICA:</strong> Incursión detectada LU RONG YU 588 (-45.16°S, -59.95°W) · AIS APAGADO · RESNET-18 P(V): 0.923</div>
                 <div class="marquee-item"><span class="dot-cyan"></span> <strong>SENTINEL-1 C-BAND:</strong> Pasada orbital IW GRD sobre Agujero Azul completada · Fusión Dual-Pol VV/VH</div>
                 <div class="marquee-item"><span class="dot-emerald"></span> <strong>TRIAGE LAYA:</strong> Descarte de mar vacío ejecutado en 9.12ms · Ahorro 44% cómputo</div>
-                <div class="marquee-item"><span class="dot-emerald"></span> <strong>PRECISIÓN LEGAL:</strong> 100% s/ 30 Casos en Ley 24.922 & CONVEMAR · 0.00% alucinación</div>
+                <div class="marquee-item"><span class="dot-emerald"></span> <strong>PRECISIÓN LEGAL:</strong> 100% s/ 30 Casos en Ley 24.922 & CONVEMAR · 98.0% adherencia media verificada</div>
                 <div class="marquee-item"><span class="dot-cyan"></span> <strong>CADENA DE CUSTODIA:</strong> Sellado SHA-256 + Firma Ed25519 con verificación en Cloud Run</div>
                 <div class="marquee-item"><span class="dot-indigo"></span> <strong>INTERCEPTOR NAVAL:</strong> ARA Bouchard (P-51) navegando rumbo 148° a 15.2 NM</div>
                 
@@ -962,7 +967,7 @@
                 <div class="marquee-item"><span class="dot-crimson"></span> <strong>ALERTA CRÍTICA:</strong> Incursión detectada LU RONG YU 588 (-45.16°S, -59.95°W) · AIS APAGADO · RESNET-18 P(V): 0.923</div>
                 <div class="marquee-item"><span class="dot-cyan"></span> <strong>SENTINEL-1 C-BAND:</strong> Pasada orbital IW GRD sobre Agujero Azul completada · Fusión Dual-Pol VV/VH</div>
                 <div class="marquee-item"><span class="dot-emerald"></span> <strong>TRIAGE LAYA:</strong> Descarte de mar vacío ejecutado en 9.12ms · Ahorro 44% cómputo</div>
-                <div class="marquee-item"><span class="dot-emerald"></span> <strong>PRECISIÓN LEGAL:</strong> 100% s/ 30 Casos en Ley 24.922 & CONVEMAR · 0.00% alucinación</div>
+                <div class="marquee-item"><span class="dot-emerald"></span> <strong>PRECISIÓN LEGAL:</strong> 100% s/ 30 Casos en Ley 24.922 & CONVEMAR · 98.0% adherencia media verificada</div>
                 <div class="marquee-item"><span class="dot-cyan"></span> <strong>CADENA DE CUSTODIA:</strong> Sellado SHA-256 + Firma Ed25519 con verificación en Cloud Run</div>
                 <div class="marquee-item"><span class="dot-indigo"></span> <strong>INTERCEPTOR NAVAL:</strong> ARA Bouchard (P-51) navegando rumbo 148° a 15.2 NM</div>
             </div>
@@ -1034,7 +1039,7 @@
                 <div class="bento-card bento-col-5">
                     <div>
                         <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-                            <img src="/logolaya.png" alt="LAYA Logo" style="height:32px;filter:drop-shadow(0 0 12px rgba(0,210,254,0.35));object-fit:contain;">
+                            <img src="./logolaya.png" alt="LAYA Logo" style="height:32px;filter:drop-shadow(0 0 12px rgba(0,210,254,0.35));object-fit:contain;">
                         </div>
                         <h3 class="card-title">02. Triage Determinista LAYA (Sistema 1)</h3>
                         <p class="card-body">
@@ -1166,7 +1171,7 @@
                 </div>
 
                 <div style="margin-top:24px;text-align:center;">
-                    <a href="/app" class="btn-warroom-giant" style="display:inline-flex;">
+                    <a href="./app/" class="btn-warroom-giant" style="display:inline-flex;">
                         <span>🎛️</span> [ ABRIR CONSOLA TÁCTICA COMPLETA ➔ ]
                     </a>
                 </div>
@@ -1249,8 +1254,8 @@
                             Manifiestos estructurados para agentes evaluadores (Perplexity, Claude, GPT):
                         </div>
                         <div style="margin-top:8px;display:flex;gap:6px;">
-                            <a href="/llms.txt" target="_blank" class="spec-chip" style="color:#00d2fe;border-color:rgba(0,210,254,0.3);padding:3px 8px;font-size:10.5px;">📄 /llms.txt</a>
-                            <a href="/llms-full.txt" target="_blank" class="spec-chip" style="color:#a855f7;border-color:rgba(168,85,247,0.3);padding:3px 8px;font-size:10.5px;">📚 /llms-full.txt</a>
+                            <a href="./llms.txt" target="_blank" class="spec-chip" style="color:#00d2fe;border-color:rgba(0,210,254,0.3);padding:3px 8px;font-size:10.5px;">📄 /llms.txt</a>
+                            <a href="./llms.txt" target="_blank" class="spec-chip" style="color:#a855f7;border-color:rgba(168,85,247,0.3);padding:3px 8px;font-size:10.5px;">📚 /llms-full.txt</a>
                         </div>
                     </div>
                 </div>
@@ -1313,7 +1318,7 @@
 
             <div class="footer-col">
                 <span class="footer-title">Plataforma</span>
-                <a href="/app" class="footer-link">Consola Táctica "War Room"</a>
+                <a href="./app/" class="footer-link">Consola Táctica "War Room"</a>
                 <a href="#radar-animatic" class="footer-link">Simulador Radar SAR (60 FPS)</a>
                 <a href="#pilares" class="footer-link">Física de Radar SAR & IA LAYA</a>
                 <a href="#benchmarks" class="footer-link">Métricas de Producción</a>
@@ -1323,8 +1328,8 @@
             <div class="footer-col">
                 <span class="footer-title">Investigación & Código</span>
                 <a href="https://github.com/Gastonchevarria/oceaneye-evaluation" target="_blank" class="footer-link">Kit de Verificación (GitHub) ↗</a>
-                <a href="/llms.txt" target="_blank" class="footer-link">Resumen para Modelos IA (/llms.txt)</a>
-                <a href="/llms-full.txt" target="_blank" class="footer-link">Memoria Técnica (/llms-full.txt)</a>
+                <a href="./llms.txt" target="_blank" class="footer-link">Resumen para Modelos IA (/llms.txt)</a>
+                <a href="./llms.txt" target="_blank" class="footer-link">Memoria Técnica (/llms-full.txt)</a>
                 <a href="https://github.com/Gastonchevarria/OceanEye-hackaton-meta" target="_blank" class="footer-link">OceanEye Sentinel 2.0 · Meta AI</a>
             </div>
 
@@ -1378,7 +1383,7 @@
                 let layaMs = 4.66;
                 let darkCount = 12;
                 try {
-                    const resp = await fetch('/api/v1/sar/benchmark');
+                    const resp = await fetch('./data/sar_benchmark_2026.json');
                     if (resp.ok) {
                         const d = await resp.json();
                         if (d.laya_system1_triage?.triage_latency_ms) {
@@ -1423,7 +1428,7 @@
         doc.setTextColor(255, 255, 255);
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(10.5);
-        doc.text("REPÚBLICA ARGENTINA — PODER JUDICIAL DE LA NACIÓN", 18, 17);
+        doc.text("REPÚBLICA ARGENTINA — BORRADOR TÉCNICO DE APOYO A LA DECISIÓN — SIMULACIÓN OPERATIVA", 18, 17);
 
         doc.setTextColor(0, 210, 254);
         doc.setFontSize(8);
@@ -1487,7 +1492,7 @@
             doc.text(val, x + 38, y);
         };
 
-        printRow("Blanco Identificado:", "DARK-VV-VH-001 (Caso LU RONG YU 588)", 18, 68, [2, 132, 199], true);
+        printRow("Blanco Identificado:", "SAR-TGT-001 (Caso LU RONG YU 588)", 18, 68, [2, 132, 199], true);
         printRow("Tipo de Embarcación:", "Potero Calamarero Industrial (Jigger)", 18, 73);
         printRow("Transpondedor AIS:", "APAGADO DELIBERADAMENTE (BUQUE OSCURO / DARK VESSEL)", 18, 78, [220, 38, 38], true);
         printRow("Coordenadas WGS84:", "-45.1603°S, -59.9586°W", 18, 83, [15, 23, 42], true);

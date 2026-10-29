@@ -171,13 +171,13 @@ async def main() -> None:
         "total_model_evaluations": 60,
         "muse_wonder_1_0_summary": {
             "average_adherence_raw_percent": wonder_adh,
-            "post_validator_adherence_percent": 100.0,
+            "post_validator_adherence_percent": round(avg_adherence, 2),
             "average_latency_ms": wonder_lat,
             "total_tokens": wonder_tokens,
         },
         "muse_spark_1_3_summary": {
             "average_adherence_raw_percent": spark_adh,
-            "post_validator_adherence_percent": 100.0,
+            "post_validator_adherence_percent": round(avg_adherence, 2),
             "average_latency_ms": spark_lat,
             "total_tokens": spark_tokens,
         },

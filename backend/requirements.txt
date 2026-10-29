@@ -20,3 +20,5 @@ shapely>=2.0.0
 pytest>=8.0.0
 cryptography>=42.0.0
 onnxruntime>=1.18.0
+
+Pillow>=10.0.0

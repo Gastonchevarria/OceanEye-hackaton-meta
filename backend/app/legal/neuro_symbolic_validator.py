@@ -64,8 +64,12 @@ def extract_numerical_claims_from_text(text: str) -> Dict[str, List[float]]:
         "penalties_usd": []
     }
 
+    # Strip Sentinel-1 scene identifiers (e.g. S1A_IW_GRDH_1SDV_...) so '1SDV' is never misread as 1°S latitude
+    clean_text = re.sub(r"\bS1[AB]_IW_[A-Z0-9_]+\b", " ", text)
+    clean_text = re.sub(r"\b1SDV\b", " ", clean_text, flags=re.IGNORECASE)
+
     # Matches coordinates: either prefix 'latitud' or suffix '°S/N' (excluding 'NM')
-    for m in re.finditer(r"(?:lat(?:itud)?[:\s]+(-?\d{1,2}(?:\.\d{1,6})?)|(-?\d{1,2}(?:\.\d{1,6})?)\s*°?\s*([sSnN])(?![mM]))", text, re.IGNORECASE):
+    for m in re.finditer(r"(?:lat(?:itud)?[:\s]+(-?\d{1,2}(?:\.\d{1,6})?)|(-?\d{1,2}(?:\.\d{1,6})?)\s*°\s*([sSnN])(?![mMa-zA-Z]))", clean_text, re.IGNORECASE):
         val_str = m.group(1) or m.group(2)
         if val_str:
             try:
@@ -98,7 +102,7 @@ def extract_numerical_claims_from_text(text: str) -> Dict[str, List[float]]:
             pass
 
     # Lengths like 41.5 m, 300 metros de eslora, etc.
-    len_matches = re.findall(r"(\d+(?:\.\d+)?)\s*(?:m|metros?)(?:\s*(?:de\s*)?eslora)?", text, re.IGNORECASE)
+    len_matches = re.findall(r"(\d+(?:\.\d+)?)\s*(?:metros?(?:\s+de\s+eslora)?|m\s+de\s+eslora)\b", clean_text, re.IGNORECASE)
     for m in len_matches:
         try:
             claims["lengths_m"].append(float(m))
@@ -238,8 +242,22 @@ def validate_legal_narrative(
             error_severity="FABRICATED_MILITARY_VESSEL_TYPE"
         ))
 
-    # False piracy claims against cooperative licensed fleets
-    if "piratería" in text_lower and evidence.classification == "COOPERATIVE_VESSEL":
+    # Validate RCS if stated
+    if evidence.peak_rcs_db > 0.0:
+        for rcs_claim in claims["rcs_db"]:
+            err = abs(rcs_claim - evidence.peak_rcs_db)
+            if err > 2.5:
+                discrepancies.append(ValidationDiscrepancy(
+                    metric_name="peak_rcs_db",
+                    llm_stated_value=rcs_claim,
+                    ground_truth_value=evidence.peak_rcs_db,
+                    absolute_error=round(err, 2),
+                    error_severity="RCS_SIGNATURE_HALLUCINATION"
+                ))
+
+    # False piracy claims against cooperative licensed fleets (ignoring explicit negations)
+    has_affirmative_piracy = bool(re.search(r"(?<!no\s)(?<!sin\s)(?<!descarta\s)(?<!ni\s)\bpirater[ií]a\b", text_lower))
+    if has_affirmative_piracy and evidence.classification == "COOPERATIVE_VESSEL":
         discrepancies.append(ValidationDiscrepancy(
             metric_name="infraction_hallucination",
             llm_stated_value="piratería",

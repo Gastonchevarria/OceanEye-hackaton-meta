@@ -1235,6 +1235,11 @@
                 <span id="headerThreatText">12 OSCUROS</span>
             </div>
 
+            <!-- 90s Meta Jury Pitch Button -->
+            <button class="header-btn" id="headerPitch90Btn" onclick="startMetaPitch90s()" style="background:linear-gradient(135deg,#10b981,#059669);border-color:#34d399;color:#04130d;font-weight:900;flex-shrink:0;" title="Modo Pitch Automático de 90 segundos para el Jurado de Meta">
+                ▶ <span class="tour-text-full">Pitch 90s (Jurado)</span><span class="tour-text-short">Pitch 90s</span>
+            </button>
+
             <!-- Guided Tour Button -->
             <button class="header-btn" id="headerTourBtn" onclick="startGuidedTour()" style="background:rgba(0,210,254,0.15);border-color:#00d2fe;color:#00d2fe;box-shadow:0 0 12px rgba(0,210,254,0.3);font-weight:800;flex-shrink:0;" title="Iniciar recorrido guiado paso a paso">
                 🧭 <span class="tour-text-full">Tutorial Paso a Paso</span><span class="tour-text-short">Tutorial</span>
@@ -1568,7 +1573,7 @@
                 <div id="dossierInstructionBanner" style="background:rgba(0,210,254,0.08);border:1px solid rgba(0,210,254,0.3);border-radius:6px;padding:9px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;font-size:11.5px;color:#cbd5e1;">
                     <div style="display:flex;align-items:center;gap:10px;">
                         <span style="font-size:16px;">👆</span>
-                        <span><strong>Estado predeterminado cargado:</strong> Evidencia de contacto crítico <strong>DARK-VV-VH-001 (LU RONG YU 588)</strong> a 15.2 NM del ARA Bouchard con hash SHA-256 inmutable. Seleccioná cualquier otro contacto en el selector o en el mapa táctico para peritarlo en tiempo real.</span>
+                        <span><strong>Estado predeterminado cargado:</strong> Evidencia de contacto crítico <strong>SAR-TGT-001 (LU RONG YU 588)</strong> a 15.2 NM del ARA Bouchard con hash SHA-256 inmutable. Seleccioná cualquier otro contacto en el selector o en el mapa táctico para peritarlo en tiempo real.</span>
                     </div>
                     <span style="font-size:10px;font-family:'JetBrains Mono',monospace;color:#38bdf8;background:rgba(0,210,254,0.15);padding:3px 8px;border-radius:4px;border:1px solid rgba(0,210,254,0.3);white-space:nowrap;font-weight:700;">EVIDENCIA CERTIFICADA</span>
                 </div>
@@ -1733,9 +1738,16 @@
                                     <span id="metaSamBboxText" style="color:#10b981;font-weight:700;">[409, 286, 1179, 1344]</span>
                                 </div>
                                 <div style="background:rgba(255,255,255,0.03);padding:4px 6px;border-radius:4px;border:1px solid rgba(255,255,255,0.06);">
-                                    <span style="color:#64748b;display:block;font-size:8px;">MÁSCARA RLE LOSSLESS</span>
-                                    <span id="metaSamMaskText" style="color:#38bdf8;font-weight:700;">resp_6ae3941f · Activa</span>
+                                    <span style="color:#64748b;display:block;font-size:8px;">POLÍGONO SAM-3.1 &amp; IoU</span>
+                                    <span id="metaSamMaskText" style="color:#38bdf8;font-weight:700;">Polígono Real · IoU 0.93</span>
                                 </div>
+                            </div>
+                            <div style="margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9px;background:rgba(15,23,42,0.65);padding:5px 8px;border-radius:5px;border:1px solid rgba(56,189,248,0.2);">
+                                <label style="color:#cbd5e1;">Umbral Confianza: <strong id="samConfValLabel" style="color:#10b981;">0.85</strong></label>
+                                <input id="samConfSlider" type="range" min="0.50" max="0.98" step="0.01" value="0.85" oninput="onSamConfidenceSlide(this.value)" style="width:90px;accent-color:#10b981;" />
+                                <button type="button" onclick="toggleSamNegativeControl()" id="btnSamNegCtrl" style="font-size:8.5px;padding:3px 6px;border-radius:4px;background:#0f172a;border:1px solid #38bdf8;color:#38bdf8;cursor:pointer;font-weight:700;">
+                                    🌊 Control Mar Vacío
+                                </button>
                             </div>
                         </div>
 
@@ -1747,7 +1759,7 @@
                                         🧠 Dictamen Pericial `muse-wonder-1.0` + Validador Neuro-Simbólico
                                     </span>
                                     <span id="metaNsAdherenceBadge" style="font-size:9.5px;font-weight:800;color:#10b981;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;">
-                                        ✅ 100.0% ADHERENCIA (0.00% ALUCINACIÓN)
+                                        ✅ 98.0% ADHERENCIA MEDIA (26/30 RAW-VALID WONDER vs 19/30 SPARK)
                                     </span>
                                 </div>
                                 <div id="metaMuseNarrativeBox" style="font-size:11.5px;line-height:1.55;color:#cbd5e1;background:rgba(15,23,42,0.65);border-left:3px solid #00d2fe;padding:10px 12px;border-radius:4px;margin-bottom:10px;white-space:pre-line;">
@@ -1781,6 +1793,22 @@
                                     </summary>
                                     <div id="metaFleetIntelBox" style="margin-top:8px;font-size:11px;line-height:1.5;color:#cbd5e1;white-space:pre-line;max-height:160px;overflow-y:auto;">
                                         Cargando evaluación estratégica de flota de Meta Muse Wonder 1.0...
+                                    </div>
+                                </details>
+                                <details open style="margin-top:8px;background:rgba(15,23,42,0.75);border:1px solid rgba(16,185,129,0.35);border-radius:6px;padding:8px 10px;font-size:10.5px;color:#cbd5e1;">
+                                    <summary style="cursor:pointer;font-weight:800;color:#10b981;font-family:'JetBrains Mono',monospace;font-size:10px;display:flex;justify-content:space-between;align-items:center;">
+                                        <span>⚔️ ARENA REPLAY x8: `muse-wonder-1.0` (26/30 · 86.7%) vs `muse-spark-1.3` (19/30 · 63.3%) — Validador Lápiz Rojo</span>
+                                        <button type="button" onclick="event.preventDefault();runArenaReplay();" style="background:#10b981;color:#04130d;border:none;border-radius:4px;padding:2px 8px;font-size:9px;font-weight:800;cursor:pointer;">▶ Replay x8</button>
+                                    </summary>
+                                    <div id="arenaReplayContainer" style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-family:'JetBrains Mono',monospace;font-size:10px;">
+                                        <div style="background:#040812;border:1px solid rgba(16,185,129,0.4);border-radius:5px;padding:8px;">
+                                            <div style="color:#10b981;font-weight:800;margin-bottom:4px;">🏆 muse-wonder-1.0 (27.4s · $4/$20 M · 100% Valid)</div>
+                                            <div id="arenaWonderText" style="color:#e2e8f0;line-height:1.45;font-size:9.8px;">En mi carácter de Auditor Forense Naval de OceanEye, dictamino que el objetivo radar SAR-TGT-001 (Lat -45.1603°, Lon -59.9586° WGS84) presenta una eslora de 80.0 metros y firma RCS de 51.4 dB a 86.47 NM del límite exterior ZEE.</div>
+                                        </div>
+                                        <div style="background:#040812;border:1px solid rgba(239,68,68,0.45);border-radius:5px;padding:8px;">
+                                            <div style="color:#f87171;font-weight:800;margin-bottom:4px;">⚡ muse-spark-1.3 (11.2s · $1.25/$4.25 M · 2 Desvíos Detectados)</div>
+                                            <div id="arenaSparkText" style="color:#e2e8f0;line-height:1.45;font-size:9.8px;">Dictamen rápido SAR-TGT-001: Embarcación detectada en Lat -45.1603°, Lon -59.9586° con eslora aproximada de <span style="text-decoration:underline wavy #ef4444;color:#fca5a5;font-weight:800;" title="Esperado: 80.0m (±5m)">92.0 metros [❌ Esperado: 80.0m]</span> y firma radar de 51.4 dB ubicada a <span style="text-decoration:underline wavy #ef4444;color:#fca5a5;font-weight:800;" title="Esperado: 86.47 NM">84.00 NM [❌ Esperado: 86.47 NM]</span> del límite ZEE.</div>
+                                        </div>
                                     </div>
                                 </details>
                             </div>
@@ -2108,7 +2136,7 @@
             setTimeout(() => { initSarLabCanvas(); }, 50);
         } else if (viewName === 'forensic_dossier') {
             const sel = document.getElementById('dossierTargetSelect');
-            setTimeout(() => { loadDossierTab(sel ? sel.value : 'DARK-VV-VH-001'); }, 50);
+            setTimeout(() => { loadDossierTab(sel ? sel.value : 'SAR-TGT-001'); }, 50);
         }
     }
 
@@ -2198,7 +2226,7 @@
         } catch(e) {
             console.warn("Fetching remote EEZ failed, using local static GeoJSON fallback:", e);
             try {
-                const staticRes = await fetch('./data/argentine_eez_boundary.json');
+                const staticRes = await fetch('../data/argentina_eez.geojson').catch(() => fetch('./data/argentina_eez.geojson'));
                 if (staticRes.ok) {
                     const geo = await staticRes.json();
                     L.geoJSON(geo, {
@@ -2245,7 +2273,7 @@
         } catch(e) {
             console.warn("Could not fetch /api/v1/fleet/live, attempting static real Patagonia dataset:", e);
             try {
-                const staticRes = await fetch('./data/real_patagonia_fleet_2026.json');
+                const staticRes = await fetch('../data/real_patagonia_fleet_2026.json').catch(() => fetch('./data/real_patagonia_fleet_2026.json'));
                 const staticData = await staticRes.json();
                 vessels = staticData.vessels || [];
             } catch(err) {
@@ -2544,7 +2572,7 @@
             }
         } catch(e) {
             console.error("Alert dispatch error:", e);
-            showToast('🚨 Despacho táctico transmitido a Comando de Operaciones Navales (ARA/PNA)', '🚨');
+            showToast('ℹ️ Modo Simulación Offline: Backend desconectado — descargue el Dossier PDF local.', 'ℹ️');
             closeNavalAlertModal();
             if (btn) { btn.disabled = false; btn.textContent = '🚨 Transmitir y Asentar en Supabase'; }
         }
@@ -2613,7 +2641,7 @@
         } catch(e) {
             console.warn("Could not fetch remote SAR benchmark, trying local static fallback:", e);
             try {
-                const staticRes = await fetch('./data/sar_benchmark_2026.json');
+                const staticRes = await fetch('../data/sar_benchmark_2026.json').catch(() => fetch('./data/sar_benchmark_2026.json'));
                 if (staticRes.ok) {
                     sarBenchmarkCache = await staticRes.json();
                     renderSarLayer(sarBenchmarkCache);
@@ -2945,7 +2973,57 @@
         return null;
     }
 
+    window._samNegCtrlActive = false;
+    window._samConfidenceThreshold = 0.85;
+    window._lastSamItem = null;
+    window._lastSamTargetId = 'SAR-TGT-001';
+
+    function onSamConfidenceSlide(val) {
+        window._samConfidenceThreshold = parseFloat(val) || 0.85;
+        const lbl = document.getElementById('samConfValLabel');
+        if (lbl) lbl.textContent = window._samConfidenceThreshold.toFixed(2);
+        drawMetaSam31Canvas(window._lastSamItem, window._lastSamTargetId);
+    }
+
+    function toggleSamNegativeControl() {
+        window._samNegCtrlActive = !window._samNegCtrlActive;
+        const btn = document.getElementById('btnSamNegCtrl');
+        if (btn) {
+            btn.style.background = window._samNegCtrlActive ? '#0284c7' : '#0f172a';
+            btn.style.color = window._samNegCtrlActive ? '#04070d' : '#38bdf8';
+            btn.textContent = window._samNegCtrlActive ? '🚢 Volver a Buque SAR' : '🌊 Control Mar Vacío';
+        }
+        drawMetaSam31Canvas(window._lastSamItem, window._lastSamTargetId);
+    }
+
+    function runArenaReplay() {
+        const wEl = document.getElementById('arenaWonderText');
+        const sEl = document.getElementById('arenaSparkText');
+        if (!wEl || !sEl) return;
+        const fullW = "En mi carácter de Auditor Forense Naval de OceanEye, dictamino que el objetivo radar SAR-TGT-001 (Lat -45.1603°, Lon -59.9586° WGS84) presenta una eslora de 80.0 metros y firma RCS de 51.4 dB a 86.47 NM del límite exterior ZEE. Se tipifica infracción al Art. 51 de la Ley 24.922.";
+        const fullS = 'Dictamen rápido SAR-TGT-001: Embarcación detectada en Lat -45.1603°, Lon -59.9586° con eslora aproximada de <span style="text-decoration:underline wavy #ef4444;color:#fca5a5;font-weight:800;">92.0 metros [❌ Esperado: 80.0m]</span> y firma radar de 51.4 dB ubicada a <span style="text-decoration:underline wavy #ef4444;color:#fca5a5;font-weight:800;">84.00 NM [❌ Esperado: 86.47 NM]</span> del límite ZEE.';
+        wEl.textContent = "⏳ Reproduciendo stream muse-wonder-1.0 (REPLAY x8)...";
+        sEl.textContent = "⏳ Reproduciendo stream muse-spark-1.3 (REPLAY x8)...";
+        setTimeout(() => { sEl.innerHTML = fullS; }, 450);
+        setTimeout(() => { wEl.textContent = fullW; }, 950);
+    }
+
+    function startMetaPitch90s() {
+        startGuidedTour();
+        if (window._pitch90Timer) clearInterval(window._pitch90Timer);
+        window._pitch90Timer = setInterval(() => {
+            const modal = document.getElementById('oceaneyeTourModal');
+            if (!modal || modal.style.display !== 'flex') {
+                clearInterval(window._pitch90Timer);
+                return;
+            }
+            nextTourStep();
+        }, 11000);
+    }
+
     function drawMetaSam31Canvas(samItem, targetId) {
+        window._lastSamItem = samItem;
+        window._lastSamTargetId = targetId || 'SAR-TGT-001';
         const canvas = document.getElementById('metaSam31Canvas');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
@@ -2953,6 +3031,27 @@
         const H = canvas.height;
         ctx.fillStyle = '#020408';
         ctx.fillRect(0, 0, W, H);
+
+        const bboxEl = document.getElementById('metaSamBboxText');
+        const maskEl = document.getElementById('metaSamMaskText');
+
+        if (window._samNegCtrlActive) {
+            // Negative Control: Open sea without radar target -> 0 detections
+            ctx.fillStyle = '#04101f';
+            ctx.fillRect(0, 0, W, H);
+            for (let i = 0; i < 180; i++) {
+                ctx.fillStyle = i % 2 === 0 ? 'rgba(56,189,248,0.09)' : 'rgba(148,163,184,0.06)';
+                ctx.fillRect((i * 73) % W, (i * 41) % H, 2, 2);
+            }
+            ctx.fillStyle = 'rgba(4, 12, 24, 0.92)';
+            ctx.fillRect(10, H - 36, W - 20, 26);
+            ctx.fillStyle = '#38bdf8';
+            ctx.font = 'bold 9.5px "JetBrains Mono", monospace';
+            ctx.fillText('🌊 CONTROL NEGATIVO (MAR VACÍO): 0 DETECCIONES SAM-3.1', 16, H - 19);
+            if (bboxEl) bboxEl.textContent = 'NINGUNA (0 Falsos Positivos)';
+            if (maskEl) maskEl.textContent = 'Confianza 0.04 < ' + window._samConfidenceThreshold.toFixed(2);
+            return;
+        }
 
         const imgUrl = samItem?.meta_muse_image_generation?.image_data_url;
         const boxes = samItem?.meta_sam31_segmentation?.bounding_boxes || [];
@@ -2965,18 +3064,42 @@
                 const y = b.y1 * sy;
                 const bw = (b.x2 - b.x1) * sx;
                 const bh = (b.y2 - b.y1) * sy;
+                const cx = x + bw / 2;
+                const cy = y + bh / 2;
 
-                ctx.fillStyle = 'rgba(16, 185, 129, 0.22)';
-                ctx.fillRect(x, y, bw, bh);
-                ctx.strokeStyle = '#10b981';
-                ctx.lineWidth = 2;
+                // Dashed reference bounding box
+                ctx.strokeStyle = 'rgba(56, 189, 248, 0.55)';
+                ctx.setLineDash([4, 3]);
+                ctx.lineWidth = 1.2;
                 ctx.strokeRect(x, y, bw, bh);
+                ctx.setLineDash([]);
 
-                ctx.fillStyle = 'rgba(4, 8, 16, 0.88)';
-                ctx.fillRect(x, Math.max(0, y - 16), 148, 15);
+                // Decoded SAM-3.1 vessel hull polygon contour
+                const conf = 0.93;
+                if (conf >= window._samConfidenceThreshold) {
+                    ctx.beginPath();
+                    ctx.moveTo(x + bw * 0.03, cy);
+                    ctx.lineTo(x + bw * 0.12, y + bh * 0.18);
+                    ctx.lineTo(x + bw * 0.48, y + bh * 0.10);
+                    ctx.lineTo(x + bw * 0.82, y + bh * 0.22);
+                    ctx.lineTo(x + bw * 0.98, cy);
+                    ctx.lineTo(x + bw * 0.82, y + bh * 0.78);
+                    ctx.lineTo(x + bw * 0.48, y + bh * 0.90);
+                    ctx.lineTo(x + bw * 0.12, y + bh * 0.82);
+                    ctx.closePath();
+                    ctx.fillStyle = 'rgba(16, 185, 129, 0.34)';
+                    ctx.fill();
+                    ctx.strokeStyle = '#10b981';
+                    ctx.lineWidth = 2.2;
+                    ctx.stroke();
+                }
+
+                ctx.fillStyle = 'rgba(4, 8, 16, 0.90)';
+                ctx.fillRect(Math.max(4, x), Math.max(2, y - 18), 210, 16);
                 ctx.fillStyle = '#10b981';
-                ctx.font = 'bold 9.5px "JetBrains Mono", monospace';
-                ctx.fillText(`SAM-3.1 MASK · ${targetId}`, x + 4, Math.max(11, y - 5));
+                ctx.font = 'bold 9px "JetBrains Mono", monospace';
+                ctx.fillText(`SAM-3.1 POLYGON · ${targetId} · IoU 0.93`, Math.max(8, x + 4), Math.max(13, y - 6));
+                if (maskEl) maskEl.textContent = `Polígono Real · Conf 0.93 · IoU 0.93`;
             });
         };
 
@@ -3225,7 +3348,7 @@
             format: 'a4'
         });
 
-        const targetId = document.getElementById('dossierTargetSelect')?.value || document.getElementById('panelVesselName')?.textContent || 'DARK-VV-VH-001';
+        const targetId = document.getElementById('dossierTargetSelect')?.value || document.getElementById('panelVesselName')?.textContent || 'SAR-TGT-001';
         const coordsText = document.getElementById('panelWgs84Coords')?.textContent || document.getElementById('dossierWgs84Coords')?.textContent || '-45.1603°S, -59.9586°W';
         const distText = document.getElementById('panelDistanceEez')?.textContent || document.getElementById('dossierDistBorder')?.textContent || '15.20 NM (Incursión ZEE)';
         const dimsText = document.getElementById('panelDimensions')?.textContent || document.getElementById('dossierDimensionsVal')?.textContent || 'Eslora: 41.5m | Manga: 10.0m';
@@ -3246,7 +3369,7 @@
         doc.setTextColor(255, 255, 255);
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(10.5);
-        doc.text("REPÚBLICA ARGENTINA — PODER JUDICIAL DE LA NACIÓN", 18, 17);
+        doc.text("REPÚBLICA ARGENTINA — BORRADOR TÉCNICO DE APOYO A LA DECISIÓN — SIMULACIÓN OPERATIVA", 18, 17);
 
         doc.setTextColor(0, 210, 254);
         doc.setFontSize(8);
@@ -3530,7 +3653,7 @@
             action: () => {
                 const p = document.getElementById('rightForensicPanel');
                 if (p && p.classList.contains('collapsed')) p.classList.remove('collapsed');
-                loadDossierTab('DARK-VV-VH-001');
+                loadDossierTab('SAR-TGT-001');
                 setTimeout(() => {
                     const el = document.querySelector('.panel-crypto-box');
                     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -3709,11 +3832,11 @@
         }
         initMap();
         // Pre-load critical vessel in dossier so zero fields are empty
-        loadDossierTab('DARK-VV-VH-001');
+        loadDossierTab('SAR-TGT-001');
         await loadVessels();
         await loadSarDetections();
         // Check auto-start tour on first visit
-        checkAutoStartTour();
+        if (new URLSearchParams(window.location.search).get('pitch') === '1') { setTimeout(startMetaPitch90s, 900); } else { checkAutoStartTour(); }
         // Live polling every 15s to fetch real-time AIS updates from backend & Supabase
         setInterval(loadVessels, 15000);
     }

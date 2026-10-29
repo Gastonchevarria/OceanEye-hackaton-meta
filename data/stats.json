@@ -1,0 +1,35 @@
+{
+  "generated_from": "meta_muse_sam31_benchmark_2026.json",
+  "meta_api_requests_total": 83,
+  "total_tokens_consumed": 188146,
+  "total_reasoning_tokens": 160838,
+  "dark_vessel_dossiers_total": 12,
+  "dark_vessel_dossiers_valid": 12,
+  "sam31_segmented_targets": 12,
+  "laya_public_key_hex": "e3ebf959fa6258d070999d2da37fbf34891dd048fb1647890c2d53e2d0e4a573",
+  "adversarial_60_case_benchmark": {
+    "cases_per_model": 30,
+    "total_runs": 60,
+    "temperature": 0.1,
+    "muse_wonder_1_0": {
+      "raw_valid_cases": 26,
+      "raw_valid_rate_percent": 86.67,
+      "avg_ground_truth_adherence_percent": 98.0,
+      "avg_latency_seconds": 28.6,
+      "pricing_usd_per_1m_tokens": {
+        "input": 4.0,
+        "output": 20.0
+      }
+    },
+    "muse_spark_1_3": {
+      "raw_valid_cases": 19,
+      "raw_valid_rate_percent": 63.33,
+      "avg_ground_truth_adherence_percent": 92.0,
+      "avg_latency_seconds": 11.73,
+      "pricing_usd_per_1m_tokens": {
+        "input": 1.25,
+        "output": 4.25
+      }
+    }
+  }
+}

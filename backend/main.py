@@ -74,11 +74,9 @@ else:
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
 async def verify_api_key(key: Optional[str] = Security(api_key_header)):
-    if ENVIRONMENT == "development":
-        return True
     if not INTERNAL_API_KEY:
-        return True
-    if key != INTERNAL_API_KEY:
+        raise HTTPException(status_code=503, detail="API key protection not configured (fail-closed)")
+    if not key or key != INTERNAL_API_KEY:
         raise HTTPException(status_code=403, detail="Invalid or missing API key")
     return True
 

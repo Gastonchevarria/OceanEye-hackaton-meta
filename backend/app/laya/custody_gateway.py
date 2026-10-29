@@ -33,18 +33,17 @@ import os
 
 # Persistent LAYA Ed25519 Keypair (Production Secret / Stable Hardware Seed)
 # Loaded from Secret Manager via LAYA_ED25519_PRIVATE_KEY or stable persistent seed
-_PERSISTENT_DEFAULT_SEED = "bdf53d775b3832dabb213594709c5a6257c479e5f04f77606c0917122da15d3a"
+# Official Public Verification Key for OceanEye Sentinel 2.0 Sealed Artifacts
+OFFICIAL_LAYA_PUBLIC_KEY_HEX = "e3ebf959fa6258d070999d2da37fbf34891dd048fb1647890c2d53e2d0e4a573"
 
 def _init_laya_keypair() -> Tuple[ed25519.Ed25519PrivateKey, ed25519.Ed25519PublicKey]:
     priv_hex = os.getenv("LAYA_ED25519_PRIVATE_KEY", "").strip()
-    if not priv_hex:
-        priv_hex = _PERSISTENT_DEFAULT_SEED
-    try:
+    if priv_hex:
         priv_bytes = bytes.fromhex(priv_hex)
         priv_key = ed25519.Ed25519PrivateKey.from_private_bytes(priv_bytes)
-    except Exception:
-        priv_bytes = bytes.fromhex(_PERSISTENT_DEFAULT_SEED)
-        priv_key = ed25519.Ed25519PrivateKey.from_private_bytes(priv_bytes)
+        return priv_key, priv_key.public_key()
+    # Ephemeral keypair for local unit tests when production secret is not mounted
+    priv_key = ed25519.Ed25519PrivateKey.generate()
     return priv_key, priv_key.public_key()
 
 _LAYA_PRIVATE_KEY, _LAYA_PUBLIC_KEY = _init_laya_keypair()
@@ -183,7 +182,7 @@ def verify_laya_certificate(payload_dict: Dict[str, Any]) -> Dict[str, Any]:
     t_start = time.perf_counter()
     canonical = payload_dict.get("canonical_payload")
     sig_b64 = payload_dict.get("ed25519_signature_base64") or payload_dict.get("signature_base64", "")
-    pub_key_hex = payload_dict.get("laya_public_key_hex") or get_laya_public_key_hex()
+    pub_key_hex = OFFICIAL_LAYA_PUBLIC_KEY_HEX if payload_dict.get("use_official_key") else (payload_dict.get("laya_public_key_hex") or get_laya_public_key_hex())
     expected_hash = payload_dict.get("sha256_evidence_hash") or payload_dict.get("evidence_sha256", "")
 
     if not canonical:
@@ -213,7 +212,7 @@ def verify_laya_certificate(payload_dict: Dict[str, Any]) -> Dict[str, Any]:
     canonical_bytes = json.dumps(canonical, sort_keys=True).encode("utf-8")
     computed_hash = hashlib.sha256(canonical_bytes).hexdigest()
     
-    hash_valid = (expected_hash == computed_hash) if expected_hash else True
+    hash_valid = (bool(expected_hash) and (expected_hash == computed_hash))
     sig_valid = verify_forensic_signature(canonical, sig_b64, pub_key_hex) if sig_b64 else False
     
     latency_ms = round((time.perf_counter() - t_start) * 1000.0, 2)

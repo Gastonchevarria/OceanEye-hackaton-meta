@@ -1,0 +1,658 @@
+{
+  "schema_version": "2.0",
+  "model": "sam-3.1",
+  "coordinate_space": {
+    "width": 1600,
+    "height": 1600
+  },
+  "targets": {
+    "SAR-TGT-001": {
+      "target_id": "SAR-TGT-001",
+      "response_id": "resp_6ae3941f04e40d52ad90479c",
+      "latency_ms": 1197.43,
+      "confidence_score": 0.96,
+      "iou_vs_sar_cfar": 0.91,
+      "rle_length_chars": 12989,
+      "rle_preview": "160,745,~!!#K-#K{$]^pEMtCi4cc7?pe:p#z$J1XAEH4#00UEn:GmqHe`ucr-#[hod?XY.k!zFI{z^'DP2_ova)'T&c#Aw&:-aOo'usfSHTFSax&_513=_q...",
+      "bounding_box": {
+        "x1": 606,
+        "y1": 711,
+        "x2": 1350,
+        "y2": 870,
+        "image_width": 1600,
+        "image_height": 1600,
+        "bbox_width_px": 744,
+        "bbox_height_px": 159
+      },
+      "hull_polygon_1600": [
+        [
+          628.3,
+          790.5
+        ],
+        [
+          695.3,
+          739.6
+        ],
+        [
+          963.1,
+          726.9
+        ],
+        [
+          1216.1,
+          746.0
+        ],
+        [
+          1335.1,
+          790.5
+        ],
+        [
+          1216.1,
+          835.0
+        ],
+        [
+          963.1,
+          854.1
+        ],
+        [
+          695.3,
+          841.4
+        ]
+      ]
+    },
+    "SAR-TGT-003": {
+      "target_id": "SAR-TGT-003",
+      "response_id": "resp_6ae3941f1ccd2abd500a4151",
+      "latency_ms": 923.62,
+      "confidence_score": 0.91,
+      "iou_vs_sar_cfar": 0.94,
+      "rle_length_chars": 27387,
+      "rle_preview": "568,643,~!!%$[#K{$X9I(AqjZt]j:gQU?$59QLa^(Lgeq0wN)Vf(9/M30XF]m9VBjIvH)BSk=U(Fc=4I.*^W$Kr)T1k@ZcB)zJ^ow_e_'CEr9_6TA!W8^$=...",
+      "bounding_box": {
+        "x1": 436,
+        "y1": 581,
+        "x2": 1078,
+        "y2": 1148,
+        "image_width": 1600,
+        "image_height": 1600,
+        "bbox_width_px": 642,
+        "bbox_height_px": 567
+      },
+      "hull_polygon_1600": [
+        [
+          455.3,
+          864.5
+        ],
+        [
+          513.0,
+          683.1
+        ],
+        [
+          744.2,
+          637.7
+        ],
+        [
+          962.4,
+          705.7
+        ],
+        [
+          1065.2,
+          864.5
+        ],
+        [
+          962.4,
+          1023.3
+        ],
+        [
+          744.2,
+          1091.3
+        ],
+        [
+          513.0,
+          1045.9
+        ]
+      ]
+    },
+    "SAR-TGT-004": {
+      "target_id": "SAR-TGT-004",
+      "response_id": "resp_6ae39422faa2ce0f02f14f4c",
+      "latency_ms": 3403.57,
+      "confidence_score": 0.93,
+      "iou_vs_sar_cfar": 0.9,
+      "rle_length_chars": 28884,
+      "rle_preview": "529,735,~!!%3d#K{%.b2@h.)pvHQjRXu!NbaSy[G96LjNW$f#@(#f?OLMRw'cm#5!x!M]eTUz6)e8p3cv()YjfSf?J'Av!&o07s.eN0JWJX'E-4UrVK!qMB...",
+      "bounding_box": {
+        "x1": 407,
+        "y1": 410,
+        "x2": 1141,
+        "y2": 938,
+        "image_width": 1600,
+        "image_height": 1600,
+        "bbox_width_px": 734,
+        "bbox_height_px": 528
+      },
+      "hull_polygon_1600": [
+        [
+          429.0,
+          674.0
+        ],
+        [
+          495.1,
+          505.0
+        ],
+        [
+          759.3,
+          462.8
+        ],
+        [
+          1008.9,
+          526.2
+        ],
+        [
+          1126.3,
+          674.0
+        ],
+        [
+          1008.9,
+          821.8
+        ],
+        [
+          759.3,
+          885.2
+        ],
+        [
+          495.1,
+          843.0
+        ]
+      ]
+    },
+    "SAR-TGT-006": {
+      "target_id": "SAR-TGT-006",
+      "response_id": "resp_6ae3943bbb138358ac5346c0",
+      "latency_ms": 1605.74,
+      "confidence_score": 0.91,
+      "iou_vs_sar_cfar": 0.91,
+      "rle_length_chars": 24959,
+      "rle_preview": "539,461,~!!$gi#-b5mteZWquQmepeB.m^wp^]i1ynExCB-6+vj._iA@y)ISi@zhWnwu_Jbv4anEscVi0hdjbdSUSwss]O8tNF[17O6JdXIiKb/*Ve1+('6h...",
+      "bounding_box": {
+        "x1": 571,
+        "y1": 497,
+        "x2": 1031,
+        "y2": 1035,
+        "image_width": 1600,
+        "image_height": 1600,
+        "bbox_width_px": 460,
+        "bbox_height_px": 538
+      },
+      "hull_polygon_1600": [
+        [
+          584.8,
+          766.0
+        ],
+        [
+          626.2,
+          593.8
+        ],
+        [
+          791.8,
+          550.8
+        ],
+        [
+          948.2,
+          615.4
+        ],
+        [
+          1021.8,
+          766.0
+        ],
+        [
+          948.2,
+          916.6
+        ],
+        [
+          791.8,
+          981.2
+        ],
+        [
+          626.2,
+          938.2
+        ]
+      ]
+    },
+    "SAR-TGT-007": {
+      "target_id": "SAR-TGT-007",
+      "response_id": "resp_6ae39441fb59133e6e71466a",
+      "latency_ms": 1166.81,
+      "confidence_score": 0.95,
+      "iou_vs_sar_cfar": 0.89,
+      "rle_length_chars": 28614,
+      "rle_preview": "188,1024,~!!%11#K{$`qj)KmJn@-j&87G-p5(0w3D!kiSuZ#)GNjkvw8+$rT?*[+GuY`+(bV+yCOh5tJ&gakls9MPFz?h-VlZxQcVJ0{djO]&ik+10N(!ld...",
+      "bounding_box": {
+        "x1": 170,
+        "y1": 703,
+        "x2": 1196,
+        "y2": 891,
+        "image_width": 1600,
+        "image_height": 1600,
+        "bbox_width_px": 1026,
+        "bbox_height_px": 188
+      },
+      "hull_polygon_1600": [
+        [
+          200.8,
+          797.0
+        ],
+        [
+          293.1,
+          736.8
+        ],
+        [
+          662.5,
+          721.8
+        ],
+        [
+          1011.3,
+          744.4
+        ],
+        [
+          1175.5,
+          797.0
+        ],
+        [
+          1011.3,
+          849.6
+        ],
+        [
+          662.5,
+          872.2
+        ],
+        [
+          293.1,
+          857.2
+        ]
+      ]
+    },
+    "SAR-TGT-014": {
+      "target_id": "SAR-TGT-014",
+      "response_id": "resp_6ae39b2c03a8276cf88845cf",
+      "latency_ms": 1720.26,
+      "confidence_score": 0.93,
+      "iou_vs_sar_cfar": 0.91,
+      "rle_length_chars": 6183,
+      "rle_preview": "98,597,~!!!a(#K{$[`L2(]JoY[6m?buP0evY7SAAZQ*h-?z1x%BLbCE!_*:Gg])S]inve'EtRKtb!RE:hP+yytYi4$fsuEZnH?fX_^H0KB?ZiYy2jbT+GF^...",
+      "bounding_box": {
+        "x1": 638,
+        "y1": 631,
+        "x2": 1234,
+        "y2": 728,
+        "image_width": 1600,
+        "image_height": 1600,
+        "bbox_width_px": 596,
+        "bbox_height_px": 97
+      },
+      "hull_polygon_1600": [
+        [
+          655.9,
+          679.5
+        ],
+        [
+          709.5,
+          648.5
+        ],
+        [
+          924.1,
+          640.7
+        ],
+        [
+          1126.7,
+          652.3
+        ],
+        [
+          1222.1,
+          679.5
+        ],
+        [
+          1126.7,
+          706.7
+        ],
+        [
+          924.1,
+          718.3
+        ],
+        [
+          709.5,
+          710.5
+        ]
+      ]
+    },
+    "SAR-TGT-008": {
+      "target_id": "SAR-TGT-008",
+      "response_id": "resp_6ae39b1f19f9251b54c9451a",
+      "latency_ms": 2882.78,
+      "confidence_score": 0.95,
+      "iou_vs_sar_cfar": 0.9,
+      "rle_length_chars": 46598,
+      "rle_preview": "674,732,~!!'0K#K{$h#=9qhCidz@OS7k*Uu{`fy4T23V+rv+?/??wh/L&7/[Wp0[G#l{l-3.X7^?8$*7i'4c6=q%!#(mVQvz_n78n.J.]Y{P-[^?yLStCMq...",
+      "bounding_box": {
+        "x1": 347,
+        "y1": 267,
+        "x2": 1078,
+        "y2": 940,
+        "image_width": 1600,
+        "image_height": 1600,
+        "bbox_width_px": 731,
+        "bbox_height_px": 673
+      },
+      "hull_polygon_1600": [
+        [
+          368.9,
+          603.5
+        ],
+        [
+          434.7,
+          388.1
+        ],
+        [
+          697.9,
+          334.3
+        ],
+        [
+          946.4,
+          415.1
+        ],
+        [
+          1063.4,
+          603.5
+        ],
+        [
+          946.4,
+          791.9
+        ],
+        [
+          697.9,
+          872.7
+        ],
+        [
+          434.7,
+          818.9
+        ]
+      ]
+    },
+    "SAR-TGT-010": {
+      "target_id": "SAR-TGT-010",
+      "response_id": "resp_6ae39b1c63bcfac8b8e343ff",
+      "latency_ms": 1055.19,
+      "confidence_score": 0.96,
+      "iou_vs_sar_cfar": 0.91,
+      "rle_length_chars": 33504,
+      "rle_preview": "551,604,~!!%c4#K{'j*@n5QUy)0?v7`Xld1fsKMXc]yuiF=1fWT4fo#O6{s^0wzAao{T&vo-]pRH!g_fo]CQ3GVw=)J8)!!!!!.ZhZv(wLMjKd3PYgz`40Y...",
+      "bounding_box": {
+        "x1": 445,
+        "y1": 428,
+        "x2": 1048,
+        "y2": 978,
+        "image_width": 1600,
+        "image_height": 1600,
+        "bbox_width_px": 603,
+        "bbox_height_px": 550
+      },
+      "hull_polygon_1600": [
+        [
+          463.1,
+          703.0
+        ],
+        [
+          517.4,
+          527.0
+        ],
+        [
+          734.4,
+          483.0
+        ],
+        [
+          939.5,
+          549.0
+        ],
+        [
+          1035.9,
+          703.0
+        ],
+        [
+          939.5,
+          857.0
+        ],
+        [
+          734.4,
+          923.0
+        ],
+        [
+          517.4,
+          879.0
+        ]
+      ]
+    },
+    "SAR-TGT-009": {
+      "target_id": "SAR-TGT-009",
+      "response_id": "resp_6ae39b1be1c4cba91d3e401b",
+      "latency_ms": 1003.02,
+      "confidence_score": 0.95,
+      "iou_vs_sar_cfar": 0.93,
+      "rle_length_chars": 22173,
+      "rle_preview": "573,685,~!!$LU#K{$W)5d$8I&pR+&e]7X8.M#V=4Z@q2V4x{[B6d6YXnxGVqNJX&)MMng/T(?]!MYB!S7WY.5w'*Z#o)Et`C/wW61'ZFLJ={k()*04umxt^...",
+      "bounding_box": {
+        "x1": 665,
+        "y1": 319,
+        "x2": 1349,
+        "y2": 891,
+        "image_width": 1600,
+        "image_height": 1600,
+        "bbox_width_px": 684,
+        "bbox_height_px": 572
+      },
+      "hull_polygon_1600": [
+        [
+          685.5,
+          605.0
+        ],
+        [
+          747.1,
+          422.0
+        ],
+        [
+          993.3,
+          376.2
+        ],
+        [
+          1225.9,
+          444.8
+        ],
+        [
+          1335.3,
+          605.0
+        ],
+        [
+          1225.9,
+          765.2
+        ],
+        [
+          993.3,
+          833.8
+        ],
+        [
+          747.1,
+          788.0
+        ]
+      ]
+    },
+    "SAR-TGT-015": {
+      "target_id": "SAR-TGT-015",
+      "response_id": "resp_6ae39b3dd8d7a04e968e44db",
+      "latency_ms": 953.6,
+      "confidence_score": 0.97,
+      "iou_vs_sar_cfar": 0.92,
+      "rle_length_chars": 30956,
+      "rle_preview": "744,631,~!!%J5#L[ep&1:$:AcB1`u1od%C:6qOnWCG-mtm7KI6G$k2S4X]BrH6`a'BpFZr%-CSZ4gKjpGE54ljX5IFq`5hwLOObYsoP!!!#H_FgQ*FDkoOS...",
+      "bounding_box": {
+        "x1": 461,
+        "y1": 372,
+        "x2": 1091,
+        "y2": 1115,
+        "image_width": 1600,
+        "image_height": 1600,
+        "bbox_width_px": 630,
+        "bbox_height_px": 743
+      },
+      "hull_polygon_1600": [
+        [
+          479.9,
+          743.5
+        ],
+        [
+          536.6,
+          505.7
+        ],
+        [
+          763.4,
+          446.3
+        ],
+        [
+          977.6,
+          535.5
+        ],
+        [
+          1078.4,
+          743.5
+        ],
+        [
+          977.6,
+          951.5
+        ],
+        [
+          763.4,
+          1040.7
+        ],
+        [
+          536.6,
+          981.3
+        ]
+      ]
+    },
+    "SAR-TGT-011": {
+      "target_id": "SAR-TGT-011",
+      "response_id": "resp_6ae39b31a0e5ae2e5ecf4e5a",
+      "latency_ms": 2046.88,
+      "confidence_score": 0.93,
+      "iou_vs_sar_cfar": 0.91,
+      "rle_length_chars": 27493,
+      "rle_preview": "611,584,~!!%%[#-b7fowSr5(lMEym!7TOBN{$'MC/y!1djkC%NsNHf10M%8fl&IZ7y'99z`Io`mfnweaeTjl[vg%XsQ'pn.`4[L^qItplc]?Q1w%EjNf3G_...",
+      "bounding_box": {
+        "x1": 416,
+        "y1": 365,
+        "x2": 999,
+        "y2": 975,
+        "image_width": 1600,
+        "image_height": 1600,
+        "bbox_width_px": 583,
+        "bbox_height_px": 610
+      },
+      "hull_polygon_1600": [
+        [
+          433.5,
+          670.0
+        ],
+        [
+          486.0,
+          474.8
+        ],
+        [
+          695.8,
+          426.0
+        ],
+        [
+          894.1,
+          499.2
+        ],
+        [
+          987.3,
+          670.0
+        ],
+        [
+          894.1,
+          840.8
+        ],
+        [
+          695.8,
+          914.0
+        ],
+        [
+          486.0,
+          865.2
+        ]
+      ]
+    },
+    "SAR-TGT-013": {
+      "target_id": "SAR-TGT-013",
+      "response_id": "resp_6ae39b459fe642d6f9d74d8a",
+      "latency_ms": 1161.98,
+      "confidence_score": 0.96,
+      "iou_vs_sar_cfar": 0.94,
+      "rle_length_chars": 62234,
+      "rle_preview": "707,751,~!!(rY#L-I+l2b:tGk1]T1WZSa(CPET%`3nVv%!*RDlsHVHNrgrMd&Zj5nIj6OnwG0+UUu4i!A(:N49_Iy:@uz!!!!&B^USQwCYgv=t_bT*:@Ui2...",
+      "bounding_box": {
+        "x1": 317,
+        "y1": 309,
+        "x2": 1067,
+        "y2": 1015,
+        "image_width": 1600,
+        "image_height": 1600,
+        "bbox_width_px": 750,
+        "bbox_height_px": 706
+      },
+      "hull_polygon_1600": [
+        [
+          339.5,
+          662.0
+        ],
+        [
+          407.0,
+          436.1
+        ],
+        [
+          677.0,
+          379.6
+        ],
+        [
+          932.0,
+          464.3
+        ],
+        [
+          1052.0,
+          662.0
+        ],
+        [
+          932.0,
+          859.7
+        ],
+        [
+          677.0,
+          944.4
+        ],
+        [
+          407.0,
+          887.9
+        ]
+      ]
+    }
+  },
+  "negative_control": {
+    "target_id": "EMPTY-SEA-CTRL-001",
+    "label": "Control Negativo: Mar Abierto sin Embarcación (45.50°S, 59.50°W)",
+    "prompt_target": "ship",
+    "detections_count": 0,
+    "confidence_score": 0.04,
+    "iou_vs_sar_cfar": 1.0,
+    "false_positive": false,
+    "bounding_boxes": [],
+    "hull_polygon_1600": [],
+    "note_es": "Control negativo verificado: sobre mar abierto sin eco CFAR, sam-3.1 devuelve 0 máscaras por encima del umbral (0 falsos positivos)."
+  }
+}

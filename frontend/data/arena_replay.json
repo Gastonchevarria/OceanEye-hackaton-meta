@@ -1,0 +1,119 @@
+{
+  "schema_version": "2.0",
+  "summary": {
+    "cases_per_model": 30,
+    "total_runs": 60,
+    "temperature": 0.1,
+    "muse_wonder_1_0": {
+      "raw_valid_cases": 26,
+      "raw_valid_rate_percent": 86.67,
+      "avg_ground_truth_adherence_percent": 98.0,
+      "avg_latency_seconds": 28.6,
+      "pricing_usd_per_1m_tokens": {
+        "input": 4.0,
+        "output": 20.0
+      }
+    },
+    "muse_spark_1_3": {
+      "raw_valid_cases": 19,
+      "raw_valid_rate_percent": 63.33,
+      "avg_ground_truth_adherence_percent": 92.0,
+      "avg_latency_seconds": 11.73,
+      "pricing_usd_per_1m_tokens": {
+        "input": 1.25,
+        "output": 4.25
+      }
+    }
+  },
+  "replay_speed_multiplier": 8,
+  "cases": [
+    {
+      "case_id": "ADV-CASE-004 (SAR-TGT-001)",
+      "scenario_es": "Incursión de arrastrero oscuro (80.0m eslora, 51.4 dB RCS) en Lat -45.1603°, Lon -59.9586°",
+      "ground_truth": {
+        "lat": -45.16027,
+        "lon": -59.9586,
+        "distance_nm": 86.47,
+        "length_m": 80.0,
+        "rcs_db": 51.4
+      },
+      "wonder": {
+        "model": "muse-wonder-1.0",
+        "latency_s": 27.4,
+        "tokens": 3195,
+        "cost_usd": 0.058,
+        "valid": true,
+        "adherence_percent": 100.0,
+        "text": "En mi carácter de Auditor Forense Naval de OceanEye, dictamino que el objetivo radar SAR-TGT-001 (Lat -45.1603°, Lon -59.9586° WGS84) presenta una eslora de 80.0 metros y firma RCS de 51.4 dB a 86.47 NM del límite exterior ZEE. Se tipifica infracción al Art. 51 de la Ley 24.922 y Arts. 56 y 73 de CONVEMAR.",
+        "red_pen": []
+      },
+      "spark": {
+        "model": "muse-spark-1.3",
+        "latency_s": 11.2,
+        "tokens": 1840,
+        "cost_usd": 0.007,
+        "valid": false,
+        "adherence_percent": 85.0,
+        "text": "Dictamen rápido SAR-TGT-001: Embarcación detectada en Lat -45.1603°, Lon -59.9586° con eslora aproximada de 92.0 metros y firma radar de 51.4 dB ubicada a 84.00 NM del límite ZEE. Infracción pesquera confirmada bajo Ley 24.922.",
+        "red_pen": [
+          {
+            "span": "92.0 metros",
+            "expected": "80.0 metros (±5.0m)",
+            "metric": "length_meters",
+            "severity": "VESSEL_DIMENSION_HALLUCINATION"
+          },
+          {
+            "span": "84.00 NM",
+            "expected": "86.47 NM (±0.5 NM)",
+            "metric": "distance_to_eez_nm",
+            "severity": "BOUNDARY_DISTANCE_HALLUCINATION"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "ADV-CASE-017 (COOP-LIC-009)",
+      "scenario_es": "Buque potero con licencia vigente y AIS activo en tránsito regulado (-44.8200°, -60.1200°)",
+      "ground_truth": {
+        "lat": -44.82,
+        "lon": -60.12,
+        "distance_nm": 42.1,
+        "length_m": 64.0,
+        "rcs_db": 38.2
+      },
+      "wonder": {
+        "model": "muse-wonder-1.0",
+        "latency_s": 25.9,
+        "tokens": 2980,
+        "cost_usd": 0.054,
+        "valid": true,
+        "adherence_percent": 100.0,
+        "text": "Objetivo COOP-LIC-009 verificado en Lat -44.8200°, Lon -60.1200° con transpondedor AIS activo, eslora 64.0 metros y RCS 38.2 dB. No se verifica infracción bajo Ley 24.922 ni piratería; corresponde estado CUMPLIMIENTO_NORMATIVO.",
+        "red_pen": []
+      },
+      "spark": {
+        "model": "muse-spark-1.3",
+        "latency_s": 10.8,
+        "tokens": 1690,
+        "cost_usd": 0.006,
+        "valid": false,
+        "adherence_percent": 70.0,
+        "text": "Alerta en Lat -44.8200°, Lon -60.1200°: Buque de 64.0 metros en el mar territorial (12 millas) con posible sanción de 85 millones USD por incursión no autorizada.",
+        "red_pen": [
+          {
+            "span": "mar territorial (12 millas)",
+            "expected": "ZEE Argentina (12-200 NM)",
+            "metric": "jurisdiction_zone",
+            "severity": "JURISDICTION_ZONE_CONFUSION"
+          },
+          {
+            "span": "85 millones USD",
+            "expected": "0 USD (Buque con licencia)",
+            "metric": "economic_penalty_usd",
+            "severity": "PENALTY_EXAGGERATION_HALLUCINATION"
+          }
+        ]
+      }
+    }
+  ]
+}
