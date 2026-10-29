@@ -128,7 +128,7 @@ async def main() -> None:
     )
 
     benchmark_artifact = {
-        "benchmark_id": "OCEANEYE-META-MUSE-SAM31-2026",
+        "benchmark_id": "OCEANEYE SENTINEL 2.0-META-MUSE-SAM31-2026",
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "total_execution_seconds": round(time.perf_counter() - t_global_start, 2),
         "meta_platform": "https://api.meta.ai/v1",

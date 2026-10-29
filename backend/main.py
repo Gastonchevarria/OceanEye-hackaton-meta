@@ -789,7 +789,7 @@ async def generate_export(
 
     prompt = f"""Generate this exact plain text report. Fill in ONLY the bracketed values with the data provided:
 
-OCEANEYE — MARITIME INTELLIGENCE REPORT
+OCEANEYE SENTINEL 2.0 — MARITIME INTELLIGENCE REPORT
 Generated: {now_utc}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 VESSEL: {v.get("name")} | MMSI: {v.get("mmsi")} | FLAG: {v.get("flag")}

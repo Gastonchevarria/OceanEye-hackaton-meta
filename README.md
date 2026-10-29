@@ -44,9 +44,9 @@
 
 ---
 
-## 🏆 Proyecto Postulado a las Becas Leonardo 2026 (Fundación BBVA)
+## 🏆 Proyecto Postulado a las OceanEye Sentinel 2.0 (Meta AI Multimodal Edition)
 **Área**: *Ciencias de la Computación, Ciencia de Datos e Inteligencia Artificial* / *Tecnología Limpia (Cleantech) y Biodiversidad*  
-**Convocatoria Oficial**: [https://www.programaleonardo.com/](https://www.programaleonardo.com/) — [Bases Oficiales](concursoBBVA.pdf)
+**Convocatoria Oficial**: [https://github.com/Gastonchevarria/OceanEye-hackaton-meta](https://github.com/Gastonchevarria/OceanEye-hackaton-meta) — [Bases Oficiales](docs/ARQUITECTURA_OCEANEYE_SENTINEL_2_META.md)
 
 **OceanEye** es una plataforma de inteligencia marítima y soberanía geoespacial impulsada por teledetección satelital (Sentinel-1 SAR), inteligencia artificial generativa y monitoreo de telemetría AIS en tiempo real. Está diseñada para detectar, correlacionar y tipificar jurídicamente la pesca ilegal, no declarada y no reglamentada (INDNR / IUU Fishing) en el Atlántico Sur y el Agujero Azul (Milla 201), aportando evidencia pericial con cadena de custodia criptográfica SHA-256 ante el Régimen Federal de Pesca (Ley 24.922).
 
@@ -117,11 +117,11 @@ python -m workers.ais_ingestor
 ---
 
 ## 🌐 Frontend
-Distribuido en Vercel. Conecta de forma transparente con el backend FastAPI via `window.OCEANEYE_API_BASE`.
+Distribuido en Vercel. Conecta de forma transparente con el backend FastAPI via `window.OCEANEYE SENTINEL 2.0_API_BASE`.
 
 ---
 
-## 🛰️ Módulo de Teledetección Radar SAR & Convocatoria Becas Leonardo BBVA 2026
+## 🛰️ Módulo de Teledetección Radar SAR & Convocatoria OceanEye Sentinel 2.0 · Meta AI 2026
 
 OceanEye v2.0 incorpora el pipeline de física de radar y teledetección satelital para la detección de buques no reglamentados en el Atlántico Sur (Milla 201):
 
@@ -142,7 +142,7 @@ pytest tests/test_e2e_pipeline.py -s
 - **Cadena de Custodia Criptográfica**: 12 Dossiers con sellos SHA-256 generados
 
 ### 📜 Documentación Científica y Jurídica
-- **Memoria Técnica Completa**: Consulte [`docs/MEMORIA_TECNICA_BBVA.md`](docs/MEMORIA_TECNICA_BBVA.md) para el desglose matemático, físico, algorítmico y presupuestario.
+- **Memoria Técnica Completa**: Consulte [`docs/ARQUITECTURA_OCEANEYE_SENTINEL_2_META.md`](docs/ARQUITECTURA_OCEANEYE_SENTINEL_2_META.md) para el desglose matemático, físico, algorítmico y presupuestario.
 - **Límite Náutico Oficial (Milla 200)**: Definido en [`frontend/data/argentina_eez.geojson`](frontend/data/argentina_eez.geojson) según el Servicio de Hidrografía Naval (SHN) y Ley 23.968.
 - **Endpoints REST**:
   - `GET /api/v1/sar/benchmark`: Benchmark instantáneo sin credenciales.

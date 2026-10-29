@@ -1,5 +1,5 @@
 """
-Offline SAR Scene Fixtures & Synthetic Data Generator for Evaluation and BBVA Leonardo Jury.
+Offline SAR Scene Fixtures & Synthetic Data Generator for Evaluation and OceanEye Sentinel 2.0 Evaluation.
 
 Provides zero-dependency, reproducible sub-scenes of Sentinel-1 IW GRD Dual-Pol
 over the Argentine Mile 201 corridor (South Atlantic - Agujero Azul).

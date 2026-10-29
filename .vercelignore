@@ -7,5 +7,5 @@ venv/
 *.pyc
 __pycache__/
 .env*
-concursoBBVA.pdf
+docs/ARQUITECTURA_OCEANEYE_SENTINEL_2_META.md
 

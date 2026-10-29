@@ -1,6 +1,6 @@
 {
   "benchmark_name": "OceanEye Neuro-Symbolic Legal Evaluation Benchmark (30 Cases)",
-  "framework_version": "2.0-BBVA-Leonardo",
+  "framework_version": "2.0-OceanEye-Sentinel-Meta",
   "total_test_cases": 30,
   "rule_engine_accuracy_percent": 100.0,
   "adversarial_hallucination_catch_rate_percent": 100.0,

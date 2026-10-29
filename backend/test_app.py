@@ -31,7 +31,7 @@ async def run_tests():
         res = await client.post("/analyze", json={"vessel_data": vessel})
         print("   NVIDIA AI Response Status:", res.status_code)
         print("   Intelligence Report Summary:", res.json().get("summary"))
-        # Test 5: GET /api/v1/sar/benchmark (BBVA Jury zero-credential evaluation)
+        # Test 5: GET /api/v1/sar/benchmark (OceanEye Sentinel 2.0 zero-credential evaluation)
         print("5. Calling GET /api/v1/sar/benchmark...")
         res = await client.get("/api/v1/sar/benchmark")
         print("   SAR Benchmark Status:", res.status_code)

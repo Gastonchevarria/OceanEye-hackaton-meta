@@ -1,7 +1,7 @@
 """
 30-Case Comprehensive Neuro-Symbolic Evaluation Harness.
 
-Benchmarking Framework for Fundación BBVA Leonardo 2026:
+Benchmarking Framework for OceanEye Sentinel 2.0 (Meta AI 2026):
 - 30 exhaustive maritime scenarios in the Southwest Atlantic (Mile 200 / Mile 201).
 - Evaluates:
   1. Deterministic Rule Adherence (100% target).
@@ -434,7 +434,7 @@ def run_neuro_symbolic_eval_suite() -> Dict[str, Any]:
 
     summary_report = {
         "benchmark_name": "OceanEye Neuro-Symbolic Legal Evaluation Benchmark (30 Cases)",
-        "framework_version": "2.0-BBVA-Leonardo",
+        "framework_version": "2.0-OceanEye-Sentinel-Meta",
         "total_test_cases": total_cases,
         "rule_engine_accuracy_percent": round(rule_accuracy_percent, 2),
         "adversarial_hallucination_catch_rate_percent": round(adversarial_catch_rate_percent, 2),

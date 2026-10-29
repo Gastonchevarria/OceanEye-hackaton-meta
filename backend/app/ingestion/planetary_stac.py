@@ -6,7 +6,7 @@ Performs Cloud-Optimized GeoTIFF (COG) HTTP range reads:
   corresponding to the Mile 201 Area of Interest (AOI).
 - Graceful offline fallback: if network is unavailable or Microsoft Planetary
   Computer returns an error, automatically serves the calibrated offline fixture
-  with zero degradation, ensuring full reliability for the BBVA Leonardo evaluation.
+  with zero degradation, ensuring full reliability for the OceanEye Sentinel 2.0 evaluation.
 """
 
 import os

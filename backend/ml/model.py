@@ -108,7 +108,7 @@ class SarChipInference:
     Runs on Cloud Run CPU in < 15ms per candidate chip.
     """
     def __init__(self, model_path: Optional[str] = None):
-        self.model_path = model_path or os.getenv("OCEANEYE_SAR_ONNX_PATH", "backend/ml/oceaneye_sar_resnet.onnx")
+        self.model_path = model_path or os.getenv("OCEANEYE SENTINEL 2.0_SAR_ONNX_PATH", "backend/ml/oceaneye_sar_resnet.onnx")
         self.ort_session = None
 
         if ONNX_AVAILABLE and os.path.exists(self.model_path):

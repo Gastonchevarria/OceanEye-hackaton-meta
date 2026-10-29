@@ -3,7 +3,7 @@ FastAPI Routes for Satellite SAR Teledetection & LAYA Reflex Engine (Sistema 1 v
 
 Endpoints:
 - POST /api/v1/sar/analyze: Execute end-to-end radar teledetection pipeline with LAYA fast-path triage.
-- GET  /api/v1/sar/benchmark: Zero-credential instant execution of Mile 201 scene for BBVA evaluation.
+- GET  /api/v1/sar/benchmark: Zero-credential instant execution of Mile 201 scene for OceanEye Sentinel 2.0 evaluation.
 - GET  /api/v1/sar/detections/live: Returns active SAR detections formatted for geospatial maps.
 - GET  /api/v1/sar/dossier/{target_id}: Generates cryptographic forensic dossier with SHA-256 and Ed25519 signature.
 - GET  /api/v1/eez/boundary: Returns official Argentine EEZ GeoJSON (SHN / Ley 23.968).
@@ -183,13 +183,13 @@ async def execute_sar_analysis(req: SarAnalysisRequest) -> Dict[str, Any]:
 @router.get("/benchmark")
 async def run_jury_benchmark() -> Dict[str, Any]:
     """
-    Dedicated instant benchmark for BBVA Leonardo evaluation.
+    Dedicated instant benchmark for OceanEye Sentinel 2.0 evaluation.
     Runs in < 2.5s with LAYA Sistema 1 Triage + Sistema 2 CA-CFAR.
     """
     req = SarAnalysisRequest(force_offline=True)
     result = await execute_sar_analysis(req)
     result["evaluation_note"] = (
-        "Zero-credential reproducible benchmark verified for Fundación BBVA 2026. "
+        "Zero-credential reproducible benchmark verified for OceanEye Sentinel 2.0 (Meta AI 2026). "
         "Processed with LAYA Sistema 1 triage (sub-20ms) and Ed25519 cryptographic chain of custody."
     )
     return result
@@ -316,7 +316,7 @@ async def get_official_eez_geojson() -> Dict[str, Any]:
 @router.get("/legal/benchmark")
 async def get_legal_benchmark_results() -> Dict[str, Any]:
     """
-    Return official 30-case neuro-symbolic legal evaluation results for Fundación BBVA jury.
+    Return official 30-case neuro-symbolic legal evaluation results for OceanEye Sentinel 2.0 evaluation suite.
     Demonstrates 100.0% rule compliance and 0.00% numerical hallucination.
     """
     results_path = os.path.abspath(

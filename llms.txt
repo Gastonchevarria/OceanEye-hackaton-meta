@@ -15,7 +15,7 @@
 - **Antecedente Científico de Referencia en Teledetección & Machine Learning:**
   *«Clasificación y Monitoreo de Parámetros de Calidad de Agua en la Franja Costera del Río de la Plata mediante Modelos de Machine Learning»* (desarrollado con datos abiertos del Ministerio de Ambiente y Desarrollo Sostenible de la Nación).
 - **Línea de Investigación del Autor:** Trayectoria continua en Machine Learning ambiental aplicado a la soberanía de recursos naturales: 2024 (monitoreo costero Río de la Plata) $\rightarrow$ 2026 (visión convolucional ResNet-18 Dual-Pol y radar orbital en OceanEye).
-- **Convocatoria / Marco Institucional:** Postulación a las *Becas Leonardo a Investigadores y Creadores Culturales 2026* (Fundación BBVA · Área: Ciencias de la Computación).
+- **Convocatoria / Marco Institucional:** Postulación a las *Meta AI Developer Innovation 2026 — OceanEye Sentinel 2.0* (OceanEye Sentinel 2.0 · Área: Ciencias de la Computación).
 - **Encuadre:** Proyecto de investigación científico-tecnológica de soberanía nacional y conservación marina. Cero fines comerciales ni modelos SaaS.
 
 ---

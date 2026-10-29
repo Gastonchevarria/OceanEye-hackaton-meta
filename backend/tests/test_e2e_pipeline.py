@@ -1,5 +1,5 @@
 """
-End-to-End Pipeline Evaluation on Real Mile 201 Sub-Scene (BBVA Leonardo Benchmark).
+End-to-End Pipeline Evaluation on Real Mile 201 Sub-Scene (OceanEye Sentinel 2.0 Benchmark).
 
 Executes the complete scientific teledetection and intelligence workflow:
 1. Radiometric calibration (DN -> Sigma0 linear & dB)
@@ -35,8 +35,8 @@ from app.legal.dossier_generator import generate_forensic_dossier
 
 def test_e2e_mile201_pipeline_execution():
     print("\n" + "=" * 78)
-    print("🛰️  OCEANEYE v2.0 — PIPELINE CIENTÍFICO E2E (MILLA 201 / AGUJERO AZUL)")
-    print("    Convocatoria Becas Leonardo BBVA 2026 — Área: Ciencias de la Computación")
+    print("🛰️  OCEANEYE SENTINEL 2.0 v2.0 — PIPELINE CIENTÍFICO E2E (MILLA 201 / AGUJERO AZUL)")
+    print("    Convocatoria OceanEye Sentinel 2.0 · Meta AI 2026 — Área: Ciencias de la Computación")
     print("=" * 78)
 
     t_start = time.perf_counter()
@@ -124,7 +124,7 @@ def test_e2e_mile201_pipeline_execution():
         print("     Dictamen: Transmite posición dentro del área satelital pero NO existe retorno radar metálico.")
 
     print("\n" + "=" * 78)
-    print("✅ VERIFICACIÓN DE POSTULACIÓN BBVA LEONARDO: EXITOSA Y REPRODUCIBLE")
+    print("✅ VERIFICACIÓN DE OCEANEYE SENTINEL 2.0 (META AI): EXITOSA Y REPRODUCIBLE")
     print("=" * 78 + "\n")
 
     # Strict scientific assertions
