@@ -997,6 +997,28 @@ async def complete_tour(request: Request):
         SEEN_TUTORIAL_IPS.add(client_ip)
     return {"client_ip": client_ip, "recorded": True}
 
+# ── Serve Frontend Static Views (`/app`, `/landing`, `/data`, `/assets`) ─────
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+
+FRONTEND_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend"))
+if os.path.isdir(FRONTEND_DIR):
+    if os.path.isdir(os.path.join(FRONTEND_DIR, "data")):
+        app.mount("/data", StaticFiles(directory=os.path.join(FRONTEND_DIR, "data")), name="frontend_data")
+    if os.path.isdir(os.path.join(FRONTEND_DIR, "assets")):
+        app.mount("/assets", StaticFiles(directory=os.path.join(FRONTEND_DIR, "assets")), name="frontend_assets")
+
+    @app.get("/app", include_in_schema=False)
+    @app.get("/app/", include_in_schema=False)
+    @app.get("/app/index.html", include_in_schema=False)
+    async def serve_tactical_console():
+        return FileResponse(os.path.join(FRONTEND_DIR, "app", "index.html"))
+
+    @app.get("/landing", include_in_schema=False)
+    @app.get("/index.html", include_in_schema=False)
+    async def serve_landing_page():
+        return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", 8000)))

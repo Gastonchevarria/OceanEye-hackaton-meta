@@ -2032,7 +2032,7 @@
     <script>
     const API_BASE = (window.location.protocol === 'file:' || !window.location.hostname || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
         ? 'http://localhost:8000'
-        : 'https://oceaneye-backend-29923645081.us-central1.run.app';
+        : (window.location.hostname.includes('oceaneye-meta-hackathon') ? window.location.origin : 'https://oceaneye-meta-hackathon-29923645081.us-central1.run.app');
 
     // Global State
     let map = null;
