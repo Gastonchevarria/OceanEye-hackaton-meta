@@ -1619,7 +1619,7 @@
                         </div>
                         <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
                             <button id="btnVerifyInBrowser" onclick="verifyInBrowserWebCrypto()" class="btn-primary" style="padding:4px 10px;font-size:9.5px;background:#10b981;color:#04130d;font-weight:800;border:none;">
-                                🔐 Verificar en Navegador (WebCrypto)
+                                🔐 Verificar en Navegador (solo SHA-256)
                             </button>
                             <button id="btnVerifySignature" onclick="verifyLiveLayaSignature()" class="btn-secondary" style="padding:4px 10px;font-size:9.5px;">
                                 🔍 Verificar en Servidor
@@ -3505,6 +3505,24 @@
         }
     }
 
+    function serializePythonCanonicalJson(obj) {
+        const floatKeys = new Set(['beam_meters', 'distance_to_eez_nm', 'lat', 'length_meters', 'lon', 'peak_rcs_db']);
+        const keys = Object.keys(obj).sort();
+        const parts = keys.map((k) => {
+            const v = obj[k];
+            let valStr;
+            if (Array.isArray(v)) {
+                valStr = '[' + v.map((item) => JSON.stringify(item)).join(', ') + ']';
+            } else if (typeof v === 'number' && floatKeys.has(k) && Number.isInteger(v)) {
+                valStr = v.toFixed(1);
+            } else {
+                valStr = JSON.stringify(v);
+            }
+            return JSON.stringify(k) + ': ' + valStr;
+        });
+        return '{' + parts.join(', ') + '}';
+    }
+
     async function verifyInBrowserWebCrypto() {
         const resBox = document.getElementById('layaVerificationResult');
         const resBoxPanel = document.getElementById('panelVerificationResult');
@@ -3515,32 +3533,35 @@
             const targetId = sel ? sel.value : 'SAR-TGT-001';
             const dEntry = bench?.forensic_dossiers_by_target?.[targetId] || Object.values(bench?.forensic_dossiers_by_target || {})[0];
             const cert = dEntry?.laya_ed25519_certificate || window.currentLoadedDossier?.laya_ed25519_certificate;
-            const payloadObj = cert?.canonical_payload || { target_id: targetId };
-            const canonicalKeys = Object.keys(payloadObj).sort();
-            const sortedObj = {};
-            canonicalKeys.forEach((k) => { sortedObj[k] = payloadObj[k]; });
-            const canonicalStr = JSON.stringify(sortedObj);
+            const payloadObj = cert?.canonical_payload;
+            if (!payloadObj) throw new Error('canonical_payload no disponible');
+            const canonicalStr = serializePythonCanonicalJson(payloadObj);
             const msgBytes = new TextEncoder().encode(canonicalStr);
             const hashBuf = await crypto.subtle.digest('SHA-256', msgBytes);
             const hashHex = Array.from(new Uint8Array(hashBuf)).map((b) => b.toString(16).padStart(2, '0')).join('');
+            const expectedHash = cert?.sha256_evidence_hash || '';
+            const hashMatch = Boolean(expectedHash && hashHex === expectedHash);
             const dt = (performance.now() - t0).toFixed(2);
-            const msg = `✅ SHA-256 + Ed25519 verificados en navegador (${dt} ms · clave demo: prueba mecanismo, no identidad)`;
+            const msg = hashMatch
+                ? `Verificado en navegador (solo SHA-256 · coincide ${hashHex.slice(0, 12)}… en ${dt} ms)`
+                : `Discrepancia SHA-256 en navegador (solo SHA-256 · calculado ${hashHex.slice(0, 12)}…)`;
+            const col = hashMatch ? '#10b981' : '#ef4444';
             if (resBox) {
                 resBox.style.display = 'inline-block';
-                resBox.style.color = '#10b981';
+                resBox.style.color = col;
                 resBox.textContent = msg;
             }
             if (resBoxPanel) {
                 resBoxPanel.style.display = 'inline-block';
-                resBoxPanel.style.color = '#10b981';
+                resBoxPanel.style.color = col;
                 resBoxPanel.textContent = msg;
             }
-            showToast(`Verificación WebCrypto completada en ${dt} ms (SHA-256: ${hashHex.slice(0, 12)}…)`, '🔐');
+            showToast(msg, '🔐');
         } catch (err) {
             if (resBox) {
                 resBox.style.display = 'inline-block';
                 resBox.style.color = '#f59e0b';
-                resBox.textContent = 'Verificación local completada (modo clave demo)';
+                resBox.textContent = 'Sin canonical_payload para verificar en navegador (solo SHA-256)';
             }
         }
     }
