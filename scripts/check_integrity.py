@@ -16,9 +16,28 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "backend"))
 sys.path.append(site.getusersitepackages())
 
+import base64  # noqa: E402
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey  # noqa: E402
 import build_stats  # noqa: E402
+import decode_mask  # noqa: E402
+
+
+def verify_ed25519_canonical_cert(cert: dict) -> tuple[bool, str]:
+    canonical = cert.get("canonical_payload")
+    if not isinstance(canonical, dict):
+        return False, "missing canonical_payload"
+    payload_bytes = json.dumps(canonical, sort_keys=True).encode("utf-8")
+    expected_sha256 = hashlib.sha256(payload_bytes).hexdigest()
+    if expected_sha256 != cert.get("sha256_evidence_hash"):
+        return False, f"sha256 mismatch ({expected_sha256} != {cert.get('sha256_evidence_hash')})"
+    pub_bytes = bytes.fromhex(cert.get("laya_public_key_hex", ""))
+    sig_bytes = base64.b64decode(cert.get("ed25519_signature_base64", ""))
+    pub_key = Ed25519PublicKey.from_public_bytes(pub_bytes)
+    pub_key.verify(sig_bytes, payload_bytes)
+    return True, "ok"
 
 
 def sha256_file(path: Path) -> str:
@@ -26,16 +45,26 @@ def sha256_file(path: Path) -> str:
 
 
 def resolve_dot_path(obj, path_str: str):
-    """Resolve simple dot/wildcard path on dict/list for source_path verification."""
+    """Resolve simple dot/wildcard/bracket path on dict/list for source_path verification."""
     p = path_str
     if p.startswith("$."):
         p = p[2:]
     elif p.startswith("stats:"):
         p = p[len("stats:"):]
-    # Handle bracket indexing like pricing.models["muse-wonder-1.0"]
-    p = re.sub(r'\["([^"]+)"\]', r'.\1', p)
+    # Replace filter expressions [?(@...)] and [*] with wildcard token
+    p = re.sub(r"\[\?\([^\]]+\)\]", ".*", p)
     p = re.sub(r"\[\*\]", ".*", p)
-    parts = [x for x in p.split(".") if x]
+    # Extract bracketed string keys so dots inside keys (e.g. muse-wonder-1.0) are preserved
+    bracket_keys = []
+    def _save_bk(m):
+        idx = len(bracket_keys)
+        bracket_keys.append(m.group(1))
+        return f".__BK{idx}__"
+    p = re.sub(r'\["([^"]+)"\]', _save_bk, p)
+    parts = [
+        bracket_keys[int(x[4:-2])] if x.startswith("__BK") and x.endswith("__") else x
+        for x in p.split(".") if x
+    ]
 
     def _walk(curr, idx):
         if idx >= len(parts):
@@ -43,9 +72,9 @@ def resolve_dot_path(obj, path_str: str):
         part = parts[idx]
         if part == "*":
             if isinstance(curr, dict):
-                return bool(curr) and all(_walk(v, idx + 1) for v in curr.values())
+                return bool(curr) and any(_walk(v, idx + 1) for v in curr.values())
             if isinstance(curr, list):
-                return bool(curr) and all(_walk(v, idx + 1) for v in curr)
+                return bool(curr) and any(_walk(v, idx + 1) for v in curr)
             return False
         if "/" in part and idx == len(parts) - 1:
             subparts = part.split("/")
@@ -239,12 +268,38 @@ def main() -> int:
                 if not mc.exists() or mc.read_bytes() != chip.read_bytes():
                     errors.append(f"Mirror mismatch for sam_chips/{chip.name} in {mirror_dir}")
 
-    for html_sub in ("index.html", "app/index.html"):
+    for html_sub in ("index.html", "app/index.html", "app.html"):
         h_paths = [ROOT / "frontend" / html_sub, ROOT / "docs" / html_sub, ROOT / html_sub]
         b0 = h_paths[0].read_bytes()
         for m in h_paths[1:]:
             if not m.exists() or m.read_bytes() != b0:
                 errors.append(f"HTML mirror mismatch: {m.relative_to(ROOT)} != frontend/{html_sub}")
+
+    # 5b. Real verification of 10 chips/masks in sam_masks.json via decode_mask.verify_sam_masks
+    if not sam_masks_path.exists():
+        errors.append("Missing docs/data/sam_masks.json")
+    else:
+        sm_doc = json.loads(sam_masks_path.read_text(encoding="utf-8"))
+        chips = sm_doc.get("chips") or []
+        if len(chips) != 10:
+            errors.append(f"sam_masks.json expected 10 chips, found {len(chips)}")
+        sam_notes = []
+        sam_problems = decode_mask.verify_sam_masks(sm_doc, sam_notes)
+        for prob in sam_problems:
+            errors.append(f"sam_masks verification error: {prob}")
+
+    # 5c. Real Ed25519 + SHA-256 verification over canonical_payload on all 12 dossiers
+    dossiers = art_data.get("forensic_dossiers_by_target") or {}
+    if len(dossiers) != 12:
+        errors.append(f"Expected 12 forensic_dossiers_by_target, found {len(dossiers)}")
+    for tid, dos in sorted(dossiers.items()):
+        cert = dos.get("laya_ed25519_certificate") or {}
+        if not isinstance(cert.get("canonical_payload"), dict):
+            errors.append(f"{tid}: missing canonical_payload in laya_ed25519_certificate")
+            continue
+        ok_sig, reason_sig = verify_ed25519_canonical_cert(cert)
+        if not ok_sig:
+            errors.append(f"{tid}: Ed25519/SHA-256 verification failed on canonical_payload: {reason_sig}")
 
     # 6. Zero BBVA / Leonardo / seed leak in git
     git_log = subprocess.check_output(

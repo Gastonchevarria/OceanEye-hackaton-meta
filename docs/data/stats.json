@@ -16,8 +16,8 @@
       "script": "scripts/build_stats.py",
       "version": "1.0.0"
     },
-    "generated_at": "2026-10-30T05:00:41Z",
-    "source_commit": null
+    "generated_at": "2026-10-30T04:08:00Z",
+    "source_commit": "4b7bf9a"
   },
   "scene": {
     "synthetic": {
@@ -110,30 +110,30 @@
         "description": "Declared scene seed equals the seed in the fixture source",
         "reported_path": "code:backend/app/ingestion/sentinel_fixtures.py:34",
         "reported": 1982,
-        "recomputed": null,
-        "ok": null,
+        "recomputed": 1982,
+        "ok": true,
         "severity": "warn",
-        "note": "not checked: pass --repo-root to verify"
+        "note": null
       },
       {
         "id": "scene_gt_targets_match_fixture",
         "description": "Declared ground-truth target count equals the fixture metadata (field and list length)",
         "reported_path": "code:backend/tests/fixtures/fixture_metadata.json:17",
         "reported": 15,
-        "recomputed": null,
-        "ok": null,
+        "recomputed": 15,
+        "ok": true,
         "severity": "warn",
-        "note": "not checked: pass --repo-root to verify"
+        "note": null
       },
       {
         "id": "scene_dark_targets_match_fixture",
         "description": "Declared dark target count equals the fixture metadata (field and count of has_active_ais false)",
         "reported_path": "code:backend/tests/fixtures/fixture_metadata.json:18",
         "reported": 12,
-        "recomputed": null,
-        "ok": null,
+        "recomputed": 12,
+        "ok": true,
         "severity": "warn",
-        "note": "not checked: pass --repo-root to verify"
+        "note": null
       },
       {
         "id": "scene_dark_equals_dossiers",
