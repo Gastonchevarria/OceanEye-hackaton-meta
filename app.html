@@ -1729,12 +1729,12 @@
                                     <span style="font-size:9.5px;font-weight:800;color:#38bdf8;font-family:'JetBrains Mono',monospace;">
                                         🎯 SAM-3.1 MASK INSPECTOR
                                     </span>
-                                    <span id="metaSamFileIdBadge" style="font-size:8px;color:#fbbf24;background:rgba(251,191,36,0.12);border:1px solid rgba(251,191,36,0.35);padding:1px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-weight:700;">
-                                        MODO PLANTILLA (PENDIENTE CAPTURA)
+                                    <span id="metaSamFileIdBadge" style="font-size:8px;color:#38bdf8;background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.35);padding:1px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-weight:700;">
+                                        CHIPS SINTÉTICOS · SAM-3.1
                                     </span>
                                 </div>
                                 <div style="display:flex;gap:4px;margin-bottom:6px;">
-                                    <button type="button" id="btnSamTabShip" onclick="selectSamInspectorView('ship')" style="flex:1;font-size:8.5px;padding:3px 4px;border-radius:4px;background:#0284c7;color:#fff;border:1px solid #38bdf8;cursor:pointer;font-weight:700;">Chip SAR (Plantilla)</button>
+                                    <button type="button" id="btnSamTabShip" onclick="selectSamInspectorView('ship')" style="flex:1;font-size:8.5px;padding:3px 4px;border-radius:4px;background:#0284c7;color:#fff;border:1px solid #38bdf8;cursor:pointer;font-weight:700;">Chips Sintéticos (GT vs SAM)</button>
                                     <button type="button" id="btnSamNegCtrl" onclick="selectSamInspectorView('empty')" style="flex:1;font-size:8.5px;padding:3px 4px;border-radius:4px;background:#0f172a;color:#38bdf8;border:1px solid rgba(56,189,248,0.35);cursor:pointer;font-weight:700;">🌊 Control Mar Vacío</button>
                                     <button type="button" id="btnSamTabIllust" onclick="selectSamInspectorView('illustrative')" style="flex:1;font-size:8.5px;padding:3px 4px;border-radius:4px;background:#0f172a;color:#94a3b8;border:1px solid rgba(148,163,184,0.3);cursor:pointer;font-weight:700;">Ilustración (No SAR)</button>
                                 </div>
@@ -1742,7 +1742,7 @@
                                     <canvas id="metaSam31Canvas" width="340" height="210" style="width:100%;height:100%;display:block;"></canvas>
                                 </div>
                                 <div id="samInspectorCaption" style="margin-top:5px;font-size:8.5px;color:#fbbf24;font-family:'JetBrains Mono',monospace;line-height:1.35;">
-                                    Chip SAR 64×64 (upsample 512×512) · Polígono GT inyectado (plantilla, SAM pendiente de Puerta A).
+                                    Chips sintéticos SAR 64×64 (upsample 512×512) · Polígono GT (verde) vs Polígono SAM (ámbar).
                                 </div>
                             </div>
                             <div>
@@ -3111,14 +3111,20 @@
 
         if (window._samInspectorView === 'illustrative') {
             const illust = samDoc?.illustrative_images?.items?.[0];
-            const imgUrl = illust?.image_data_url || samItem?.meta_muse_image_generation?.image_data_url;
+            const imgUrl = samItem?.meta_muse_image_generation?.image_data_url;
             if (badgeEl) badgeEl.textContent = 'ILUSTRACIÓN muse-image-1.0 (NO ES SAR)';
-            if (capEl) capEl.textContent = samDoc?.illustrative_images?.label || 'Imagen ilustrativa generada por muse-image-1.0 — no es una detección sobre SAR.';
+            if (capEl) capEl.textContent = illust?.label || samDoc?.illustrative_images?.label || 'Imagen ilustrativa generada por muse-image-1.0 — no es una detección sobre SAR.';
             if (bboxEl) {
-                const bb = illust?.sam_on_illustration?.bbox_xyxy || [409, 286, 1179, 1344];
-                bboxEl.textContent = `BBox [${bb.join(', ')}] (s/ 1600×1600)`;
+                const bbObj = illust?.segmentation?.bounding_boxes?.[0];
+                const bb = bbObj ? [bbObj.x1, bbObj.y1, bbObj.x2, bbObj.y2] : [606, 711, 1350, 870];
+                bboxEl.textContent = `BBox [${bb.join(', ')}] (s/ ${bbObj?.image_width || 1600}×${bbObj?.image_height || 1600})`;
             }
-            if (maskEl) maskEl.textContent = 'RLE truncado a 500 chars en artefacto';
+            if (maskEl) {
+                const mInfo = illust?.segmentation?.masks?.[0];
+                maskEl.textContent = mInfo?.preview_is_truncated
+                    ? `Preview truncado (${mInfo.raw_length_chars} chars totales, decodable=${mInfo.decodable})`
+                    : 'Ilustración muse-image-1.0';
+            }
             if (imgUrl) {
                 const im = new Image();
                 im.onload = () => {
@@ -3135,28 +3141,36 @@
         }
 
         const chipsList = samDoc?.chips || [];
+        const posChips = chipsList.filter(c => !c?.control?.is_negative_control);
+        const allIous = posChips
+            .map(c => c?.sam_response?.detections?.[0]?.metrics?.iou_vs_ground_truth?.value)
+            .filter(v => typeof v === 'number');
+        const meanIou = allIous.length ? (allIous.reduce((a, b) => a + b, 0) / allIous.length) : null;
+
         let chip = null;
         if (window._samInspectorView === 'empty') {
             chip = chipsList.find(c => c?.control?.is_negative_control) || chipsList[1];
         } else {
             const tidLower = (window._lastSamTargetId || 'SAR-TGT-001').toLowerCase();
-            chip = chipsList.find(c => !c?.control?.is_negative_control && c?.chip_id?.includes(tidLower))
-                || chipsList.find(c => !c?.control?.is_negative_control)
+            chip = posChips.find(c => c?.chip_id?.includes(tidLower) || (c?.prompt?.origin_cfar_detection_ids || []).includes(window._lastSamTargetId))
+                || posChips[0]
                 || chipsList[0];
         }
-        const chipRel = chip?.display_image?.path || chip?.image?.url || (window._samInspectorView === 'empty' ? 'sam_chips/fx-mile201-empty-sea-300-300.png' : 'sam_chips/fx-mile201-sar-tgt-001.png');
-        const imgCandidates = [`../data/${chipRel}`, `./data/${chipRel}`];
+        const chipRel = chip?.display_image?.path || (window._samInspectorView === 'empty' ? 'sam_chips/fx-mile201-empty-sea-300-300.png' : 'sam_chips/fx-mile201-sar-tgt-001.png');
+        const imgCandidates = [`${DATA_PREFIX}/${chipRel}`, `../data/${chipRel}`, `./data/${chipRel}`];
 
         if (badgeEl) {
             const respId = chip?.sam_response?.response_id;
             badgeEl.textContent = mode === 'template'
-                ? 'MODO PLANTILLA (PENDIENTE CAPTURA SAM)'
-                : `SINTÉTICO · SAM-3.1 (${mode.toUpperCase()}${respId ? ' · ' + respId.slice(0, 14) : ''})`;
+                ? 'CHIPS SINTÉTICOS · PLANTILLA'
+                : `CHIPS SINTÉTICOS · SAM-3.1 (${mode.toUpperCase()}${respId ? ' · ' + respId.slice(0, 14) : ''})`;
         }
 
         const renderChipOverlay = () => {
-            const sx = W / 512;
-            const sy = H / 512;
+            const gw = chip?.geometry?.width || 512;
+            const gh = chip?.geometry?.height || 512;
+            const sx = W / gw;
+            const sy = H / gh;
             const gtObjs = chip?.ground_truth?.objects || [];
             const dets = (chip?.sam_response?.detections || []).filter(d => {
                 if (d?.score === null || d?.score === undefined) return true;
@@ -3175,15 +3189,20 @@
                             else ctx.lineTo(px, py);
                         });
                         ctx.closePath();
-                        ctx.fillStyle = 'rgba(16, 185, 129, 0.22)';
+                        ctx.fillStyle = 'rgba(16, 185, 129, 0.25)';
                         ctx.fill();
                         ctx.strokeStyle = '#10b981';
-                        ctx.lineWidth = 1.5;
+                        ctx.lineWidth = 1.6;
                         ctx.stroke();
+                        const gx = poly[0][0] * sx;
+                        const gy = poly[0][1] * sy;
+                        ctx.fillStyle = '#10b981';
+                        ctx.font = 'bold 9px "JetBrains Mono", monospace';
+                        ctx.fillText('GT', Math.max(4, gx - 18), Math.max(12, gy - 4));
                     }
                 });
                 const bObj = chip?.prompt?.objects?.[0]?.box_px;
-                const promptBox = bObj ? [bObj.x1, bObj.y1, bObj.x2, bObj.y2] : chip?.prompts?.box?.box_xyxy;
+                const promptBox = bObj ? [bObj.x1, bObj.y1, bObj.x2, bObj.y2] : null;
                 if (promptBox) {
                     ctx.strokeStyle = 'rgba(56, 189, 248, 0.75)';
                     ctx.setLineDash([4, 3]);
@@ -3210,28 +3229,35 @@
                         ctx.strokeStyle = '#f59e0b';
                         ctx.lineWidth = 1.6;
                         ctx.stroke();
+                        const firstPt = polys[0]?.points?.[0];
+                        if (firstPt) {
+                            ctx.fillStyle = '#f59e0b';
+                            ctx.font = 'bold 9px "JetBrains Mono", monospace';
+                            ctx.fillText('SAM', Math.min(W - 30, firstPt[0] * sx + 10), Math.min(H - 28, firstPt[1] * sy + 12));
+                        }
                     }
                 });
                 const gtBbox = gtObjs[0].bbox_chip_px
                     ? [gtObjs[0].bbox_chip_px.x1, gtObjs[0].bbox_chip_px.y1, gtObjs[0].bbox_chip_px.x2, gtObjs[0].bbox_chip_px.y2]
-                    : (gtObjs[0].bbox_xyxy || [256, 232, 263, 287]);
+                    : [256, 232, 263, 287];
                 const firstDet = dets[0];
                 const iouVal = firstDet?.metrics?.iou_vs_ground_truth?.value;
                 const areaPx = firstDet?.mask?.decoded?.area_px;
                 if (bboxEl) bboxEl.textContent = `Prompt [${(promptBox || gtBbox).join(', ')}] · GT [${gtBbox.join(', ')}]`;
                 if (maskEl) {
+                    const meanStr = meanIou != null ? ` (media 8 chips=${meanIou.toFixed(3)})` : '';
                     maskEl.textContent = firstDet
-                        ? `SAM-3.1 IoU=${iouVal != null ? iouVal.toFixed(3) : 'n/a'} · área=${areaPx ?? 0} px · ${chip?.sam_response?.latency_ms ?? 0} ms`
+                        ? `IoU=${iouVal != null ? iouVal.toFixed(4) : 'n/a'}${meanStr} · área=${areaPx ?? 0} px`
                         : (mode === 'template' ? 'Plantilla (IoU: null)' : '0 máscaras sobre umbral');
                 }
                 if (capEl) {
-                    capEl.textContent = `SINTÉTICO — Chip SAR 64×64 (upsample 512×512) · Verde: GT (${gtObjs[0].gt_id}) · Ámbar: máscara SAM-3.1 (${chip?.sam_response?.response_id || mode}).`;
+                    capEl.textContent = `Chips sintéticos SAR (${chip?.chip_id}) · Polígono GT (${gtObjs[0].gt_id}, verde) vs Polígono SAM (ámbar, score=${firstDet?.score != null ? firstDet.score.toFixed(3) : 'n/a'}, IoU=${iouVal != null ? iouVal.toFixed(4) : 'n/a'}).`;
                 }
             } else {
                 const obsFp = chip?.control?.observed_detections ?? dets.length;
-                if (bboxEl) bboxEl.textContent = '0 blancos en GT (Control Negativo Mar Vacío)';
+                if (bboxEl) bboxEl.textContent = `0 blancos en GT (Control Negativo · prompt '${chip?.prompt?.input_text || 'ship'}')`;
                 if (maskEl) maskEl.textContent = `${obsFp} detecciones observadas (passed=${chip?.control?.passed}) · ${chip?.sam_response?.latency_ms ?? 0} ms`;
-                if (capEl) capEl.textContent = `SINTÉTICO — Control negativo de mar vacío (${chip?.chip_id}) · prompt 'ship' · ${obsFp} falsos positivos.`;
+                if (capEl) capEl.textContent = `Chips sintéticos — Control negativo de mar vacío (${chip?.chip_id}) · prompt '${chip?.prompt?.input_text || 'ship'}' · ${obsFp} detecciones.`;
             }
             ctx.fillStyle = 'rgba(4, 8, 16, 0.88)';
             ctx.fillRect(6, H - 24, W - 12, 18);
@@ -3239,8 +3265,8 @@
             ctx.font = 'bold 8.5px "JetBrains Mono", monospace';
             ctx.fillText(
                 window._samInspectorView === 'empty'
-                    ? `🌊 SINTÉTICO · CONTROL NEGATIVO MAR VACÍO (${chip?.control?.observed_detections ?? 0} FP)`
-                    : `🛰️ SINTÉTICO · ${chip?.chip_id || 'SAR-TGT-001'} · IoU=${dets[0]?.metrics?.iou_vs_ground_truth?.value?.toFixed(3) || 'n/a'}`,
+                    ? `🌊 CHIPS SINTÉTICOS · MAR VACÍO (${chip?.control?.observed_detections ?? 0} det.)`
+                    : `🛰️ CHIPS SINTÉTICOS · GT vs SAM · IoU=${dets[0]?.metrics?.iou_vs_ground_truth?.value?.toFixed(4) || 'n/a'}`,
                 10,
                 H - 12
             );
