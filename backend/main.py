@@ -377,6 +377,19 @@ async def health():
         "ais": "stream_active",
     }
 
+@app.get("/api/v1/stats")
+async def get_stats_json():
+    """Return canonical benchmark statistics from backend/data/stats.json."""
+    candidates = [
+        os.path.join(os.path.dirname(__file__), "data", "stats.json"),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend", "data", "stats.json")),
+    ]
+    for path in candidates:
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as fh:
+                return json.load(fh)
+    raise HTTPException(status_code=404, detail="stats.json not found")
+
 # ── /sar_detections — Sentinel-1 SAR Radar Dark Vessel Layer ───────────────────
 @app.get("/sar_detections")
 async def get_sar_detections():

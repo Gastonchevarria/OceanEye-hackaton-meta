@@ -21,6 +21,10 @@ def main():
             s = os.path.join(src_data, fn)
             if os.path.isfile(s):
                 shutil.copyfile(s, os.path.join(full_dst, fn))
+    stats_src = os.path.join(src_data, "stats.json")
+    backend_data_dir = os.path.join(REPO, "backend", "data")
+    if os.path.isfile(stats_src) and os.path.isdir(backend_data_dir):
+        shutil.copyfile(stats_src, os.path.join(backend_data_dir, "stats.json"))
     print("Synced frontend/ -> docs/ and root bundle successfully.")
 
 if __name__ == "__main__":
