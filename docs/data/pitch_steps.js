@@ -33,7 +33,9 @@
  *   pitch:verify {}                    #5 runs the in-browser Ed25519 / SHA-256 verification
  */
 
-const PITCH_STATS_URL = '../data/stats.json';
+const PITCH_STATS_URL = (typeof location !== 'undefined' && /\/app\/(?:index\.html)?$/i.test(location.pathname))
+    ? '../data/stats.json'
+    : './data/stats.json';
 const PITCH_TOTAL_MS = 90000;
 
 const pitchReduceMotion = () =>
@@ -337,10 +339,15 @@ const PITCH_UI = {
 };
 
 async function startPitchMode({ lang = 'en', startAt = 0 } = {}) {
+    if (typeof window !== 'undefined' && typeof window._activePitchExit === 'function') {
+        window._activePitchExit();
+    }
     let stats = null;
     try {
-        const r = await fetch(PITCH_STATS_URL, { cache: 'no-store' });
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        let r = await fetch(PITCH_STATS_URL, { cache: 'no-store' }).catch(() => null);
+        if (!r || !r.ok) r = await fetch('../data/stats.json', { cache: 'no-store' }).catch(() => null);
+        if (!r || !r.ok) r = await fetch('./data/stats.json', { cache: 'no-store' }).catch(() => null);
+        if (!r || !r.ok) throw new Error(`HTTP ${r ? r.status : 'offline'}`);
         stats = await r.json();
     } catch (e) {
         console.warn('pitch: stats.json unavailable, using captions without numbers', e);
@@ -386,6 +393,7 @@ async function startPitchMode({ lang = 'en', startAt = 0 } = {}) {
     function exitPitch() {
         clock.stop();
         window.removeEventListener('keydown', onKey, true);
+        if (typeof window !== 'undefined') window._activePitchExit = null;
         tourSteps.splice(0, tourSteps.length, ...saved.steps);
         window.nextTourStep = saved.next;
         window.prevTourStep = saved.prev;
@@ -398,6 +406,7 @@ async function startPitchMode({ lang = 'en', startAt = 0 } = {}) {
         prevBtn.textContent = savedLabels.prev;
         if (skipBtn) skipBtn.textContent = savedLabels.skip;
     }
+    if (typeof window !== 'undefined') window._activePitchExit = exitPitch;
     function onKey(e) {
         if (e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
         if (e.target && e.target.closest && e.target.closest('input, textarea, select, [contenteditable]:not([contenteditable="false"])')) return;
@@ -415,15 +424,25 @@ async function startPitchMode({ lang = 'en', startAt = 0 } = {}) {
     clock.start(startAt, { startPaused: pitchReduceMotion() });
 }
 
-function maybeAutoStartPitch() {
+function startPitch90s() {
     const q = new URLSearchParams(location.search);
-    if (q.get('pitch') !== '1') return false;
     const step = Number.parseInt(q.get('step') || '1', 10);
-    startPitchMode({
+    return startPitchMode({
         lang: pickPitchLang(q, navigator.language),
         startAt: Number.isFinite(step) ? Math.min(Math.max(step - 1, 0), pitchStepsSource.length - 1) : 0,
     });
+}
+
+function maybeAutoStartPitch() {
+    const q = new URLSearchParams(location.search);
+    if (q.get('pitch') !== '1') return false;
+    startPitch90s();
     return true;
+}
+
+if (typeof window !== 'undefined') {
+    window.startPitch90s = startPitch90s;
+    window.startMetaPitch90s = startPitch90s;
 }
 
 if (typeof module !== 'undefined' && module.exports) {

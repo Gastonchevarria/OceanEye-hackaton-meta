@@ -2101,10 +2101,11 @@
     <!-- ════════════════════════════════════════════════════════════════════════
          JAVASCRIPT ENGINE
          ════════════════════════════════════════════════════════════════════════ -->
+    <script src="../data/pitch_steps.js"></script>
     <script>
-    const API_BASE = (window.location.protocol === 'file:' || !window.location.hostname || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-        ? 'http://localhost:8000'
-        : 'https://oceaneye-backend-29923645081.us-central1.run.app';
+    const HAS_LIVE_BACKEND = (window.location.port === '8000' || new URLSearchParams(window.location.search).get('api') === '1');
+    const API_BASE = HAS_LIVE_BACKEND ? 'http://localhost:8000' : '';
+    const DATA_PREFIX = /\/app\/(?:index\.html)?$/i.test(window.location.pathname) ? '../data' : './data';
 
     // Global State
     let map = null;
@@ -2240,6 +2241,7 @@
     // ── LOAD EEZ & BLUE HOLE POLYGONS (ELECTRIC CYAN GLOW) ──
     async function loadEezAndBlueHolePolygons() {
         try {
+            if (!HAS_LIVE_BACKEND) throw new Error("Static mode");
             const res = await fetch(`${API_BASE}/api/v1/sar/eez/boundary`);
             if (res.ok) {
                 const geo = await res.json();
@@ -2261,10 +2263,9 @@
                 }).addTo(map);
             }
         } catch(e) {
-            console.warn("Fetching remote EEZ failed, using local static GeoJSON fallback:", e);
             try {
-                const staticRes = await fetch('../data/argentina_eez.geojson').catch(() => fetch('./data/argentina_eez.geojson'));
-                if (staticRes.ok) {
+                const staticRes = await fetch(`${DATA_PREFIX}/argentina_eez.geojson`).catch(() => fetch('../data/argentina_eez.geojson')).catch(() => fetch('./data/argentina_eez.geojson'));
+                if (staticRes && staticRes.ok) {
                     const geo = await staticRes.json();
                     L.geoJSON(geo, {
                         style: function(feature) {
@@ -2292,6 +2293,7 @@
     // ── DYNAMIC FLEET FEED (ZERO HARDCODED VESSEL ARRAYS) ──
     async function loadVessels() {
         try {
+            if (!HAS_LIVE_BACKEND) throw new Error("Static mode");
             const controller = new AbortController();
             const tid = setTimeout(() => controller.abort(), 8000);
             const res = await fetch(`${API_BASE}/api/v1/fleet/live`, { signal: controller.signal });
@@ -2308,9 +2310,8 @@
                 throw new Error("Empty live fleet list");
             }
         } catch(e) {
-            console.warn("Could not fetch /api/v1/fleet/live, attempting static real Patagonia dataset:", e);
             try {
-                const staticRes = await fetch('../data/real_patagonia_fleet_2026.json').catch(() => fetch('./data/real_patagonia_fleet_2026.json'));
+                const staticRes = await fetch(`${DATA_PREFIX}/real_patagonia_fleet_2026.json`).catch(() => fetch('../data/real_patagonia_fleet_2026.json')).catch(() => fetch('./data/real_patagonia_fleet_2026.json'));
                 const staticData = await staticRes.json();
                 vessels = staticData.vessels || [];
             } catch(err) {
@@ -2670,16 +2671,16 @@
     // ── RADAR SAR BENCHMARK & LAYER TOGGLE ──
     async function loadSarDetections() {
         try {
+            if (!HAS_LIVE_BACKEND) throw new Error("Static mode");
             const res = await fetch(`${API_BASE}/api/v1/sar/benchmark`);
             if (res.ok) {
                 sarBenchmarkCache = await res.json();
                 renderSarLayer(sarBenchmarkCache);
             }
         } catch(e) {
-            console.warn("Could not fetch remote SAR benchmark, trying local static fallback:", e);
             try {
-                const staticRes = await fetch('../data/sar_benchmark_2026.json').catch(() => fetch('./data/sar_benchmark_2026.json'));
-                if (staticRes.ok) {
+                const staticRes = await fetch(`${DATA_PREFIX}/sar_benchmark_2026.json`).catch(() => fetch('../data/sar_benchmark_2026.json')).catch(() => fetch('./data/sar_benchmark_2026.json'));
+                if (staticRes && staticRes.ok) {
                     sarBenchmarkCache = await staticRes.json();
                     renderSarLayer(sarBenchmarkCache);
                 }
@@ -2923,13 +2924,33 @@
         const targetMatch = darks.find(d => d.id === targetId) || darks[0];
 
         let dossierData = null;
-        try {
-            const res = await fetch(`${API_BASE}/api/v1/sar/dossier/${targetId}`);
-            if (res.ok) {
-                dossierData = await res.json();
+        if (HAS_LIVE_BACKEND) {
+            try {
+                const res = await fetch(`${API_BASE}/api/v1/sar/dossier/${targetId}`);
+                if (res.ok) {
+                    dossierData = await res.json();
+                }
+            } catch(e) {}
+        }
+
+        if (!dossierData) {
+            const bench = await loadMetaHackathonBenchmark();
+            const bDos = bench?.forensic_dossiers_by_target?.[targetId];
+            if (bDos && bDos.laya_ed25519_certificate) {
+                const cert = bDos.laya_ed25519_certificate;
+                dossierData = {
+                    chain_of_custody_hash_sha256: bDos.chain_of_custody_hash_sha256 || cert.sha256_evidence_hash,
+                    wgs84_coordinates: bDos.wgs84_coordinates || { latitude: cert.wgs84_latitude, longitude: cert.wgs84_longitude },
+                    distance_to_eez_nm: bDos.distance_to_eez_nm ?? cert.distance_to_eez_nm ?? 0,
+                    estimated_dimensions: {
+                        length_meters: cert.length_meters ?? targetMatch?.length_m ?? 58.4,
+                        beam_meters: cert.beam_meters ?? targetMatch?.beam_m ?? 9.8,
+                        heading_degrees: targetMatch?.heading_deg || 184
+                    },
+                    radar_cross_section_db: cert.peak_rcs_db ?? targetMatch?.peak_rcs_db ?? 51.4,
+                    laya_ed25519_certificate: cert
+                };
             }
-        } catch(e) {
-            console.warn("Could not fetch remote dossier:", e);
         }
 
         if (!dossierData) {
@@ -2997,8 +3018,11 @@
     window.arenaReplayCache = null;
 
     async function fetchJsonWithFallback(relPath) {
-        const candidates = [`../data/${relPath}`, `./data/${relPath}`, `/data/${relPath}`];
+        const candidates = [`${DATA_PREFIX}/${relPath}`, `../data/${relPath}`, `./data/${relPath}`];
+        const seen = new Set();
         for (const p of candidates) {
+            if (seen.has(p)) continue;
+            seen.add(p);
             try {
                 const r = await fetch(p, { cache: 'no-store' });
                 if (r.ok) return await r.json();
@@ -3972,6 +3996,9 @@
     let currentTourStep = 0;
 
     function startGuidedTour() {
+        if (typeof window._activePitchExit === 'function') {
+            window._activePitchExit();
+        }
         currentTourStep = 0;
         const backdrop = document.getElementById('oceaneyeTourBackdrop');
         const modal = document.getElementById('oceaneyeTourModal');
@@ -4064,7 +4091,7 @@
         if (backdrop) backdrop.style.display = 'none';
         try {
             localStorage.setItem('oceaneye_tour_completed', 'true');
-            fetch(`${API_BASE}/api/v1/tour/complete`, { method: 'POST' }).catch(() => {});
+            if (HAS_LIVE_BACKEND) fetch(`${API_BASE}/api/v1/tour/complete`, { method: 'POST' }).catch(() => {});
         } catch(e){}
     }
 
@@ -4075,13 +4102,15 @@
             if (localSeen) return;
 
             let shouldShow = true;
-            try {
-                const res = await fetch(`${API_BASE}/api/v1/tour/status`).then(r => r.json());
-                if (res && res.should_show_tour === false) {
-                    localStorage.setItem('oceaneye_tour_completed', 'true');
-                    shouldShow = false;
-                }
-            } catch(e) {}
+            if (HAS_LIVE_BACKEND) {
+                try {
+                    const res = await fetch(`${API_BASE}/api/v1/tour/status`).then(r => r.json());
+                    if (res && res.should_show_tour === false) {
+                        localStorage.setItem('oceaneye_tour_completed', 'true');
+                        shouldShow = false;
+                    }
+                } catch(e) {}
+            }
 
             if (shouldShow) {
                 setTimeout(() => {
@@ -4143,7 +4172,7 @@
         await loadVessels();
         await loadSarDetections();
         // Check auto-start tour on first visit
-        if (new URLSearchParams(window.location.search).get('pitch') === '1') { setTimeout(startMetaPitch90s, 900); } else { checkAutoStartTour(); }
+        if (new URLSearchParams(window.location.search).get('pitch') === '1') { setTimeout(startPitch90s, 900); } else { checkAutoStartTour(); }
         // Live polling every 15s to fetch real-time AIS updates from backend & Supabase
         setInterval(loadVessels, 15000);
     }
