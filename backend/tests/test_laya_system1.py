@@ -43,12 +43,12 @@ def test_laya_ais_guardian_rules():
     t_now = datetime(2026, 4, 15, 14, 0, 0, tzinfo=timezone.utc)
 
     # 1. Test Rule 1: Proximity to EEZ (< 5 NM)
-    # At Lat -45.0, Lon -55.80 is the boundary. Lat -45.0, Lon -55.75 is ~2.1 NM outside.
+    # At Lat -45.20, Lon -59.20 is the unified EEZ vertex (argentina_eez.geojson). Lon -59.15 is ~2.1 NM outside.
     report_prox = {
         "mmsi": "413000111",
         "name": "NEAR BORDER JIGGER",
-        "lat": -45.0,
-        "lon": -55.75,
+        "lat": -45.20,
+        "lon": -59.15,
         "sog": 2.0,
         "cog": 270.0,
         "last_seen": t_now.isoformat()

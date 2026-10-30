@@ -523,6 +523,76 @@ async def reconstruct_and_segment_vessel_meta(
         }
 
 
+def build_sam31_box_prompt_payload(
+    file_id: str,
+    bbox_xyxy: Optional[List[int]] = None,
+    text_prompt: Optional[str] = "ship",
+    mask_encoding: str = "lossless",
+    stream: bool = True,
+) -> Dict[str, Any]:
+    """
+    Build the `sam-3.1` `/v1/responses` payload directly on a Dual-Pol SAR chip
+    with optional CFAR box prompt `[x1, y1, x2, y2]` and text prompt, without
+    invoking `muse-image-1.0`.
+    """
+    content: List[Dict[str, Any]] = []
+    if text_prompt:
+        content.append({"type": "input_text", "text": text_prompt})
+    img_item: Dict[str, Any] = {"type": "input_image", "file_id": file_id}
+    content.append(img_item)
+    metadata: Dict[str, Any] = {"mask_encoding": mask_encoding}
+    if bbox_xyxy and len(bbox_xyxy) == 4:
+        metadata["box_prompt_xyxy"] = [int(x) for x in bbox_xyxy]
+    return {
+        "model": "sam-3.1",
+        "input": [
+            {
+                "type": "message",
+                "role": "user",
+                "content": content,
+            }
+        ],
+        "stream": stream,
+        "metadata": metadata,
+    }
+
+
+async def segment_sar_chip_with_box_prompt(
+    chip_png_path: str,
+    bbox_xyxy: Optional[List[int]] = None,
+    text_prompt: Optional[str] = "ship",
+    dry_run: bool = True,
+) -> Dict[str, Any]:
+    """
+    Pipeline CFAR -> SAR chip PNG -> `sam-3.1` box prompt (no `muse-image-1.0`).
+    Defaults to `dry_run=True` (zero API cost unless explicitly authorized under Puerta A).
+    """
+    import hashlib
+
+    with open(chip_png_path, "rb") as fh:
+        raw_bytes = fh.read()
+    chip_sha256 = hashlib.sha256(raw_bytes).hexdigest()
+
+    if dry_run:
+        payload = build_sam31_box_prompt_payload(
+            file_id="file-dryrun-placeholder",
+            bbox_xyxy=bbox_xyxy,
+            text_prompt=text_prompt,
+        )
+        return {
+            "mode": "dry_run",
+            "api_calls_made": 0,
+            "cost_usd": 0.0,
+            "chip_path": chip_png_path,
+            "chip_sha256": chip_sha256,
+            "request_payload": payload,
+        }
+
+    raise RuntimeError(
+        "Live SAM 3.1 execution on SAR chips requires explicit Puerta A spend authorization."
+    )
+
+
 def get_meta_telemetry_snapshot() -> Dict[str, Any]:
     return {
         **META_TELEMETRY_LEDGER,

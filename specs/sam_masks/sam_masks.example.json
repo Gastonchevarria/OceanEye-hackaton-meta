@@ -1,0 +1,453 @@
+{
+  "$schema": "./sam_masks.schema.json",
+  "schema_version": "sam_masks/1.0.0",
+  "run": {
+    "run_id": "template-0000",
+    "mode": "template",
+    "generated_at": null,
+    "generator": {
+      "name": "TEMPLATE - no pipeline has run",
+      "version": null,
+      "git_commit": null
+    },
+    "model_requested": "sam-3.1",
+    "model_served": null,
+    "model_served_source": null,
+    "endpoint": "https://api.meta.ai/v1/responses",
+    "request_options": {
+      "stream": true,
+      "include_confidence": "true",
+      "mask_encoding_requested": null
+    },
+    "price_source": {
+      "url": "https://dev.meta.ai/docs/pricing-rate-limits",
+      "retrieved_on": "2026-10-29",
+      "sam_usd_per_1000_images": 2.5,
+      "muse_image_usd_per_image": 0.01
+    },
+    "cost": {
+      "billed_images": 0,
+      "estimated_usd": null,
+      "multi_object_billing": "unknown_VERIFY"
+    },
+    "parsing": {
+      "reference_decoder": {
+        "name": "meta-sam-parser",
+        "version": null
+      },
+      "cross_check_decoder": {
+        "name": "decode_mask.py",
+        "sha256": null
+      },
+      "rasters_decoded": 0,
+      "rasters_disagreeing": 0
+    }
+  },
+  "chips": [
+    {
+      "chip_id": "fx-mile201-sar-tgt-001-box",
+      "title": "Mile 201 fixture, SAR-TGT-001 (GT-TGT-04), box prompt (TEMPLATE - not measured)",
+      "status": "pending",
+      "placeholder_fields": [
+        "/display_image/sha256",
+        "/display_image/normalisation/low",
+        "/display_image/normalisation/high",
+        "/transport",
+        "/prompt/input_text",
+        "/prompt/objects/0/box_px",
+        "/prompt/objects/0/cfar/heading_deg",
+        "/prompt/objects/0/cfar/area_pixels",
+        "/prompt/objects/0/cfar/bbox_native_px",
+        "/sam_response",
+        "/control/observed_detections",
+        "/control/passed"
+      ],
+      "source": {
+        "kind": "synthetic_fixture",
+        "synthetic": true,
+        "scene_id": "S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA",
+        "product_id": null,
+        "product_url": null,
+        "acquisition_time_utc": "2026-04-15T14:02:30+00:00",
+        "polarisation": "fused_vv_vh",
+        "calibration": "linear power; VV and VH fused with processing/dual_pol_fusion.py fuse_dual_polarization(vv, vh, alpha=0.75); dB for display (VERIFY units against the CFAR input)",
+        "fixture": {
+          "generator": "backend/app/ingestion/sentinel_fixtures.py::generate_mile201_fixture",
+          "seed": 1982,
+          "shape": [
+            600,
+            600
+          ],
+          "nominal_resolution_m": 10.0
+        },
+        "stac": null
+      },
+      "geometry": {
+        "width": 512,
+        "height": 512,
+        "upsample_factor": 8,
+        "resample": "nearest",
+        "scene_window": {
+          "x0": 388,
+          "y0": 48,
+          "width": 64,
+          "height": 64
+        },
+        "pixel_spacing_m": 10.0,
+        "pixel_spacing_basis": "fixture_nominal_resolution_m",
+        "chip_pixel_spacing_m": 1.25,
+        "corners_wgs84": {
+          "top_left": [
+            -60.0237062,
+            -45.0951586
+          ],
+          "top_right": [
+            -59.8954925,
+            -45.0951586
+          ],
+          "bottom_right": [
+            -59.8954925,
+            -45.2233723
+          ],
+          "bottom_left": [
+            -60.0237062,
+            -45.2233723
+          ]
+        },
+        "geotransform": {
+          "convention": "linear_degrees_from_chip_corner_xy",
+          "origin_lon": -60.0237062,
+          "origin_lat": -45.0951586,
+          "d_lon_per_chip_px": 0.00025041736227044987,
+          "d_lat_per_chip_px": -0.00025041736227045133
+        },
+        "geotransform_implied_spacing_m": {
+          "x_m": 157.3,
+          "y_m": 222.6,
+          "method": "degrees per native pixel * 111320*cos(lat) and * 111132 (spherical approximation)"
+        },
+        "spacing_consistent_with_geotransform": false
+      },
+      "display_image": {
+        "path": "sam_chips/fx-mile201-sar-tgt-001.png",
+        "media_type": "image/png",
+        "width": 512,
+        "height": 512,
+        "channels": 3,
+        "bit_depth": 8,
+        "sha256": null,
+        "normalisation": {
+          "method": "percentile_clip_linear",
+          "input_domain": "dB",
+          "low": null,
+          "high": null,
+          "low_percentile": 1.0,
+          "high_percentile": 99.5,
+          "gamma": 1.0
+        }
+      },
+      "transport": null,
+      "prompt": {
+        "type": "box",
+        "coordinate_space": "chip_pixels_top_left_origin_inclusive",
+        "media_width": 512,
+        "media_height": 512,
+        "input_text": null,
+        "text": null,
+        "objects": [
+          {
+            "object_id": 1,
+            "box_px": null,
+            "point_px": null,
+            "origin_cfar_detection_id": "SAR-TGT-001",
+            "cfar": {
+              "detection_id": "SAR-TGT-001",
+              "pixel_r": 80.0,
+              "pixel_c": 420.0,
+              "length_m": 80.0,
+              "beam_m": 5.0,
+              "heading_deg": null,
+              "area_pixels": null,
+              "peak_rcs_db": 51.4,
+              "snr_db": 21.4,
+              "bbox_native_px": null,
+              "provenance": "length_m, beam_m, peak_rcs_db, snr_db copied from backend/ml/meta_muse_sam31_benchmark_2026.json (sam31_multimodal_reconstructions.SAR-TGT-001). pixel_r/pixel_c back-computed from its lat/lon with the fixture formula (80.0, 420.0, to within 0.01 px); re-extract all of them from SarVesselDetection. heading_deg, area_pixels and bbox_native_px are placeholders (null)."
+            }
+          }
+        ],
+        "origin_cfar_detection_ids": [
+          "SAR-TGT-001"
+        ],
+        "box_derivation": {
+          "method": "connected-component extent (scipy.ndimage.label of the CFAR mask) + margin, minus scene_window origin, times upsample_factor, clipped to the chip, inclusive",
+          "margin_native_px": 1.0
+        }
+      },
+      "ground_truth": {
+        "kind": "synthetic_injected_ellipse_footprint",
+        "derivation": "Native pixels (r+rr, c+cc) where ellipse_norm <= 1 in sentinel_fixtures.py (a_px=max(length/2/10,2.0), b_px=max(beam/2/10,0.7)), restricted to scene_window, each scaled by upsample_factor and traced with decode_mask.trace_rings (epsilon 0). Exact, not a measurement.",
+        "objects": [
+          {
+            "gt_id": "GT-TGT-04",
+            "name": "DARK POTERO 01",
+            "has_active_ais": false,
+            "center_native_px": {
+              "r": 80.0,
+              "c": 420.0
+            },
+            "length_m": 65.0,
+            "beam_m": 11.0,
+            "heading_deg": 180.0,
+            "footprint_native_px_count": 7,
+            "polygons_chip_px": [
+              [
+                [
+                  256,
+                  232
+                ],
+                [
+                  264,
+                  232
+                ],
+                [
+                  264,
+                  288
+                ],
+                [
+                  256,
+                  288
+                ]
+              ]
+            ],
+            "area_chip_px": 448.0,
+            "bbox_chip_px": {
+              "x1": 256,
+              "y1": 232,
+              "x2": 263,
+              "y2": 287
+            },
+            "matches_prompt_object_id": 1
+          }
+        ]
+      },
+      "sam_response": null,
+      "control": {
+        "is_negative_control": false,
+        "kind": "none",
+        "expected": null,
+        "confidence_threshold": null,
+        "observed_detections": null,
+        "passed": null
+      },
+      "error": null
+    },
+    {
+      "chip_id": "fx-mile201-ghost-ais-empty-sea",
+      "title": "Mile 201 fixture, empty sea at the AIS ghost position (300,300), text prompt 'ship' (TEMPLATE - not measured)",
+      "status": "pending",
+      "placeholder_fields": [
+        "/display_image/sha256",
+        "/display_image/normalisation/low",
+        "/display_image/normalisation/high",
+        "/transport",
+        "/prompt/input_text",
+        "/sam_response",
+        "/control/observed_detections",
+        "/control/passed"
+      ],
+      "source": {
+        "kind": "synthetic_fixture",
+        "synthetic": true,
+        "scene_id": "S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA",
+        "product_id": null,
+        "product_url": null,
+        "acquisition_time_utc": "2026-04-15T14:02:30+00:00",
+        "polarisation": "fused_vv_vh",
+        "calibration": "linear power; VV and VH fused with processing/dual_pol_fusion.py fuse_dual_polarization(vv, vh, alpha=0.75); dB for display (VERIFY units against the CFAR input)",
+        "fixture": {
+          "generator": "backend/app/ingestion/sentinel_fixtures.py::generate_mile201_fixture",
+          "seed": 1982,
+          "shape": [
+            600,
+            600
+          ],
+          "nominal_resolution_m": 10.0
+        },
+        "stac": null
+      },
+      "geometry": {
+        "width": 512,
+        "height": 512,
+        "upsample_factor": 8,
+        "resample": "nearest",
+        "scene_window": {
+          "x0": 268,
+          "y0": 268,
+          "width": 64,
+          "height": 64
+        },
+        "pixel_spacing_m": 10.0,
+        "pixel_spacing_basis": "fixture_nominal_resolution_m",
+        "chip_pixel_spacing_m": 1.25,
+        "corners_wgs84": {
+          "top_left": [
+            -60.2641068,
+            -45.5358932
+          ],
+          "top_right": [
+            -60.1358932,
+            -45.5358932
+          ],
+          "bottom_right": [
+            -60.1358932,
+            -45.6641068
+          ],
+          "bottom_left": [
+            -60.2641068,
+            -45.6641068
+          ]
+        },
+        "geotransform": {
+          "convention": "linear_degrees_from_chip_corner_xy",
+          "origin_lon": -60.2641068,
+          "origin_lat": -45.5358932,
+          "d_lon_per_chip_px": 0.00025041736227044987,
+          "d_lat_per_chip_px": -0.00025041736227045133
+        },
+        "geotransform_implied_spacing_m": {
+          "x_m": 156.0,
+          "y_m": 222.6,
+          "method": "degrees per native pixel * 111320*cos(lat) and * 111132 (spherical approximation)"
+        },
+        "spacing_consistent_with_geotransform": false
+      },
+      "display_image": {
+        "path": "sam_chips/fx-mile201-empty-sea-300-300.png",
+        "media_type": "image/png",
+        "width": 512,
+        "height": 512,
+        "channels": 3,
+        "bit_depth": 8,
+        "sha256": null,
+        "normalisation": {
+          "method": "percentile_clip_linear",
+          "input_domain": "dB",
+          "low": null,
+          "high": null,
+          "low_percentile": 1.0,
+          "high_percentile": 99.5,
+          "gamma": 1.0
+        }
+      },
+      "transport": null,
+      "prompt": {
+        "type": "text",
+        "coordinate_space": "chip_pixels_top_left_origin_inclusive",
+        "media_width": 512,
+        "media_height": 512,
+        "input_text": null,
+        "text": "ship",
+        "objects": [],
+        "origin_cfar_detection_ids": [],
+        "box_derivation": null
+      },
+      "ground_truth": {
+        "kind": "synthetic_injected_ellipse_footprint",
+        "derivation": "No vessel footprint intersects scene_window (checked against all 15 vessels_spec entries). The generator also places an AIS-only 'PHANTOM TRANSMITTER' at pixel (300,300) with no radar target.",
+        "objects": []
+      },
+      "sam_response": null,
+      "control": {
+        "is_negative_control": true,
+        "kind": "ais_only_ghost",
+        "expected": "no_detection",
+        "confidence_threshold": null,
+        "observed_detections": null,
+        "passed": null
+      },
+      "error": null
+    }
+  ],
+  "illustrative_images": {
+    "label": "Imagen ilustrativa generada por muse-image-1.0 — no es una detección sobre SAR",
+    "purpose": "Keep the legacy muse-image-1.0 pictures visible, labelled as illustrations and separate from the SAR chips.",
+    "source_inventory": {
+      "file": "backend/ml/meta_muse_sam31_benchmark_2026.json",
+      "records_total": 12,
+      "records_with_decodable_mask": 0,
+      "reason_not_decodable": "Each record stores only the first 120 characters of the mask string plus '...' (rle_preview). The base85 length prefix declares the full size, so the stored text is a small fraction of the payload and cannot be decoded. They need a new run with the full string stored."
+    },
+    "items": [
+      {
+        "illustration_id": "ill-sar-tgt-001",
+        "label": "Imagen ilustrativa generada por muse-image-1.0 — no es una detección sobre SAR",
+        "target_id": "SAR-TGT-001",
+        "wgs84": {
+          "lat": -45.16027,
+          "lon": -59.9586
+        },
+        "radar_metrics": {
+          "estimated_length_m": 80.0,
+          "estimated_beam_m": 5.0,
+          "peak_rcs_db": 51.4,
+          "snr_db": 21.4
+        },
+        "image": {
+          "media_type": "image/jpeg",
+          "preview_width": 512,
+          "preview_height": 512,
+          "sam_input_width": 1600,
+          "sam_input_height": 1600,
+          "sam_input_bytes": 600397,
+          "location": "sam31_multimodal_reconstructions.SAR-TGT-001.meta_muse_image_generation.image_data_url (embedded data URL, not copied)"
+        },
+        "generator": {
+          "model": "muse-image-1.0",
+          "endpoint": "/v1/images/generations",
+          "prompt": "Top-down nadir satellite surveillance optical and synthetic aperture radar composite view of an industrial dark vessel vessel (80m length, 5m beam, radar cross section 51.4 dB) operating in the South Atlantic ocean near Mile 201 with visible white hydrodynamic wake, high contrast scientific maritime imagery.",
+          "latency_ms": 20667.13,
+          "usd_per_image": 0.01,
+          "usd_per_image_source": "pricing_page_list_price_not_in_legacy_artifact"
+        },
+        "segmentation": {
+          "model": "sam-3.1",
+          "prompt_type": "text",
+          "prompt_target": "ship",
+          "response_id": "resp_6ae3941f04e40d52ad90479c",
+          "latency_ms": 1197.43,
+          "detections_count": 1,
+          "bounding_boxes": [
+            {
+              "x1": 606,
+              "y1": 711,
+              "x2": 1350,
+              "y2": 870,
+              "image_width": 1600,
+              "image_height": 1600,
+              "bbox_width_px_legacy": 744,
+              "bbox_height_px_legacy": 159,
+              "legacy_size_convention": "x2_minus_x1_exclusive_one_pixel_short_of_inclusive_mask_size"
+            }
+          ],
+          "masks": [
+            {
+              "declared_height": 160,
+              "declared_width": 745,
+              "marker": "~",
+              "legacy_encoding_label": "lossless_rle",
+              "raw_length_chars": 12989,
+              "preview": "160,745,~!!#K-#K{$]^pEMtCi4cc7?pe:p#z$J1XAEH4#00UEn:GmqHe`ucr-#[hod?XY.k!zFI{z^'DP2_ova)'T&c#Aw&:-aOo'usfSHTFSax&_513=_q...",
+              "preview_is_truncated": true,
+              "decodable": false
+            }
+          ],
+          "raw_token_length": 13067
+        },
+        "source_record": {
+          "file": "backend/ml/meta_muse_sam31_benchmark_2026.json",
+          "json_path": "sam31_multimodal_reconstructions.SAR-TGT-001"
+        }
+      }
+    ]
+  }
+}

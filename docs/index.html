@@ -956,24 +956,24 @@
         <!-- ── LIVE MARQUEE TICKER (ATLÁNTICO SUR STREAM) ── -->
         <div class="marquee-strip">
             <div class="marquee-track">
-                <div class="marquee-item"><span class="dot-crimson"></span> <strong>ALERTA CRÍTICA:</strong> Incursión detectada LU RONG YU 588 (-45.16°S, -59.95°W) · AIS APAGADO · RESNET-18 P(V): 0.923</div>
-                <div class="marquee-item"><span class="dot-cyan"></span> <strong>SENTINEL-1 C-BAND:</strong> Pasada orbital IW GRD sobre Agujero Azul completada · Fusión Dual-Pol VV/VH</div>
+                <div class="marquee-item"><span class="dot-crimson"></span> <strong>ALERTA CRÍTICA:</strong> Incursión detectada LU RONG YU 588 (-45.16°S, -59.95°W) · AIS APAGADO · ESCENA SINTÉTICA DE EVALUACIÓN</div>
+                <div class="marquee-item"><span class="dot-cyan"></span> <strong>SENTINEL-1 C-BAND:</strong> Escena sintética IW GRD sobre Agujero Azul (seed 1982) · Fusión Dual-Pol VV/VH</div>
                 <div class="marquee-item"><span class="dot-emerald"></span> <strong>TRIAGE LAYA:</strong> Descarte de mar vacío ejecutado en 9.12ms · Ahorro 44% cómputo</div>
-                <div class="marquee-item"><span class="dot-emerald"></span> <strong>PRECISIÓN LEGAL:</strong> 100% s/ 30 Casos en Ley 24.922 & CONVEMAR · 98.0% adherencia media verificada</div>
-                <div class="marquee-item"><span class="dot-cyan"></span> <strong>CADENA DE CUSTODIA:</strong> Sellado SHA-256 + Firma Ed25519 con verificación en Cloud Run</div>
-                <div class="marquee-item"><span class="dot-indigo"></span> <strong>INTERCEPTOR NAVAL:</strong> ARA Bouchard (P-51) navegando rumbo 148° a 15.2 NM</div>
+                <div class="marquee-item"><span class="dot-emerald"></span> <strong>COMPARATIVA MUSE (n=30, indicativo):</strong> Wonder 26/30 (86.7%) vs Spark 19/30 (63.3%) sin marcas pre-validador · Adherencia media 98.0% vs 92.0%</div>
+                <div class="marquee-item"><span class="dot-cyan"></span> <strong>CADENA DE CUSTODIA:</strong> Sellado SHA-256 + Firma Ed25519 (clave de demostración verificable en navegador)</div>
+                <div class="marquee-item"><span class="dot-indigo"></span> <strong>INTERCEPTOR NAVAL:</strong> ARA Bouchard (P-51) navegando rumbo 148° a 15.2 NM (simulación operativa)</div>
                 
                 <!-- Loop Seamless Duplication -->
-                <div class="marquee-item"><span class="dot-crimson"></span> <strong>ALERTA CRÍTICA:</strong> Incursión detectada LU RONG YU 588 (-45.16°S, -59.95°W) · AIS APAGADO · RESNET-18 P(V): 0.923</div>
-                <div class="marquee-item"><span class="dot-cyan"></span> <strong>SENTINEL-1 C-BAND:</strong> Pasada orbital IW GRD sobre Agujero Azul completada · Fusión Dual-Pol VV/VH</div>
+                <div class="marquee-item"><span class="dot-crimson"></span> <strong>ALERTA CRÍTICA:</strong> Incursión detectada LU RONG YU 588 (-45.16°S, -59.95°W) · AIS APAGADO · ESCENA SINTÉTICA DE EVALUACIÓN</div>
+                <div class="marquee-item"><span class="dot-cyan"></span> <strong>SENTINEL-1 C-BAND:</strong> Escena sintética IW GRD sobre Agujero Azul (seed 1982) · Fusión Dual-Pol VV/VH</div>
                 <div class="marquee-item"><span class="dot-emerald"></span> <strong>TRIAGE LAYA:</strong> Descarte de mar vacío ejecutado en 9.12ms · Ahorro 44% cómputo</div>
-                <div class="marquee-item"><span class="dot-emerald"></span> <strong>PRECISIÓN LEGAL:</strong> 100% s/ 30 Casos en Ley 24.922 & CONVEMAR · 98.0% adherencia media verificada</div>
-                <div class="marquee-item"><span class="dot-cyan"></span> <strong>CADENA DE CUSTODIA:</strong> Sellado SHA-256 + Firma Ed25519 con verificación en Cloud Run</div>
-                <div class="marquee-item"><span class="dot-indigo"></span> <strong>INTERCEPTOR NAVAL:</strong> ARA Bouchard (P-51) navegando rumbo 148° a 15.2 NM</div>
+                <div class="marquee-item"><span class="dot-emerald"></span> <strong>COMPARATIVA MUSE (n=30, indicativo):</strong> Wonder 26/30 (86.7%) vs Spark 19/30 (63.3%) sin marcas pre-validador · Adherencia media 98.0% vs 92.0%</div>
+                <div class="marquee-item"><span class="dot-cyan"></span> <strong>CADENA DE CUSTODIA:</strong> Sellado SHA-256 + Firma Ed25519 (clave de demostración verificable en navegador)</div>
+                <div class="marquee-item"><span class="dot-indigo"></span> <strong>INTERCEPTOR NAVAL:</strong> ARA Bouchard (P-51) navegando rumbo 148° a 15.2 NM (simulación operativa)</div>
             </div>
         </div>
 
-        <!-- ── LIVE BENCHMARK STATS TICKER (CONTEO DINÁMICO SUAVE) ── -->
+        <!-- ── LIVE BENCHMARK STATS TICKER (CONTEO DINÁMICO DESDE stats.json) ── -->
         <div class="stats-strip-container" id="benchmarks">
             <div class="stats-strip">
                 <div class="stat-item">
@@ -981,28 +981,28 @@
                         <span id="counterLaya">9.12</span> <span>ms</span>
                     </div>
                     <span class="stat-label">Latencia Triage LAYA</span>
-                    <span class="stat-sub">Descarta mar vacío antes de CNN (Ahorro 44% cómputo)</span>
+                    <span class="stat-sub">Descarta mar vacío antes de inferencia (Ahorro 44% cómputo)</span>
                 </div>
                 <div class="stat-item">
                     <div class="stat-number">
                         <span id="counterDarks">12</span> <span>Oscuros</span>
                     </div>
-                    <span class="stat-label">Buques Aislados en M201</span>
-                    <span class="stat-sub">Cruce electromagnético SAR vs AIS en Agujero Azul</span>
+                    <span class="stat-label">Buques Aislados (Escena Sintética)</span>
+                    <span class="stat-sub">15 buques SAR inyectados vs 3 AIS + 1 fantasma (seed 1982)</span>
                 </div>
                 <div class="stat-item">
                     <div class="stat-number">
-                        <span id="counterPrecision">100.0</span> <span>%</span>
+                        <span id="counterWonderPass">86.7</span> <span>%</span>
                     </div>
-                    <span class="stat-label">Precisión Motor Legal</span>
-                    <span class="stat-sub">Validación formal neuro-simbólica s/ 30 Casos</span>
+                    <span class="stat-label">Wonder Sin Marcas (26/30)</span>
+                    <span class="stat-sub" id="counterWonderSub">Pre-validador vs 63.3% Spark (19/30) · n=1 indicativo</span>
                 </div>
                 <div class="stat-item">
                     <div class="stat-number" style="color:#10b981;">
-                        <span id="counterHallucination">0.00</span> <span>%</span>
+                        <span id="counterWonderAdh">98.0</span> <span>%</span>
                     </div>
-                    <span class="stat-label">Alucinación Certificada</span>
-                    <span class="stat-sub">Cero desvíos normativos en Ley 24.922 y CONVEMAR</span>
+                    <span class="stat-label">Adherencia Media Pre-Validador</span>
+                    <span class="stat-sub" id="counterAdhSub">Wonder 98.0% vs Spark 92.0% (penalización 100 - 15n)</span>
                 </div>
             </div>
         </div>
@@ -1031,7 +1031,7 @@
                         <span class="spec-chip">λ = 5.54 cm</span>
                         <span class="spec-chip">Dual-Pol VV/VH</span>
                         <span class="spec-chip">Filtro Lee Despeckle</span>
-                        <span class="spec-chip">ESA Copernicus Open Access</span>
+                        <span class="spec-chip">Escena Sintética Calibrada (Seed 1982)</span>
                     </div>
                 </div>
 
@@ -1059,28 +1059,28 @@
                         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
                             <div class="card-icon" style="margin-bottom:0;">🧠</div>
                             <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#10b981;background:rgba(16,185,129,0.12);padding:2px 8px;border-radius:4px;border:1px solid rgba(16,185,129,0.3);font-weight:700;">
-                                ONNX RUNTIME · 14ms CPU
+                                CLASIFICADOR DUAL-POL + VALIDADOR
                             </span>
                         </div>
-                        <h3 class="card-title">03. Visión Artificial Profunda: ResNet-18 Dual-Pol (ONNX)</h3>
+                        <h3 class="card-title">03. Visión Dual-Pol + Validador Neuro-Simbólico</h3>
                         <p class="card-body">
                             <strong>El Desafío Físico:</strong> El umbral CA-CFAR detecta anomalías de retrodispersión, pero las crestas de olas de 6 metros en el Atlántico Sur provocan falsas alarmas (<em>sea clutter</em>).<br><br>
-                            <strong>Nuestra Solución ML:</strong> Red convolucional profunda ResNet-18 Dual-Stream (canales normalizados VV + VH) con atención cruzada, entrenada sobre el dataset satelital abierto <strong>LS-SSDD</strong> (1.542 muestras de prueba):
+                            <strong>Nuestra Solución:</strong> Pipeline de detección CA-CFAR + segmentación SAM 3.1 y validador determinista de reglas sobre narrativas de <code>muse-wonder-1.0</code> y <code>muse-spark-1.3</code>:
                         </p>
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0;background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:10px;font-size:11.5px;">
                             <div>
-                                <span style="color:#94a3b8;font-size:9.5px;text-transform:uppercase;font-weight:700;display:block;">Cabeza Clasificación</span>
-                                <span style="color:#10b981;font-weight:800;">is_vessel (F1: 96.63%)</span>
-                                <div style="font-size:9.5px;color:#cbd5e1;">Prec: 97.22% · Rec: 96.05%</div>
+                                <span style="color:#94a3b8;font-size:9.5px;text-transform:uppercase;font-weight:700;display:block;">Comparativa 30 Casos</span>
+                                <span style="color:#10b981;font-weight:800;">Wonder 26/30 (86.7%)</span>
+                                <div style="font-size:9.5px;color:#cbd5e1;">vs Spark 19/30 (63.3%) · Indicativo</div>
                             </div>
                             <div>
-                                <span style="color:#94a3b8;font-size:9.5px;text-transform:uppercase;font-weight:700;display:block;">Cabeza Regresión</span>
-                                <span style="color:#38bdf8;font-weight:800;">Eslora Naval (Metros)</span>
-                                <div style="font-size:9.5px;color:#cbd5e1;">Smooth L1 Loss · Casco 2D</div>
+                                <span style="color:#94a3b8;font-size:9.5px;text-transform:uppercase;font-weight:700;display:block;">Adherencia Pre-Validador</span>
+                                <span style="color:#38bdf8;font-weight:800;">98.0% vs 92.0%</span>
+                                <div style="font-size:9.5px;color:#cbd5e1;">Latencia media: 28.6s vs 11.7s</div>
                             </div>
                         </div>
                         <p class="card-body" style="font-size:12px;color:#94a3b8;margin-bottom:0;">
-                            Arquitectura neuro-simbólica: la red convolucional valida el blanco físico en 14 ms y el motor de reglas aplica la Ley 24.922 con <strong>0.00% de alucinación legal</strong>.
+                            Arquitectura neuro-simbólica: el validador contrasta coordenadas, eslora, RCS y distancia ZEE contra el vector de evidencia antes de sellar el borrador técnico.
                         </p>
                     </div>
                     <div class="card-specs">
@@ -1098,36 +1098,36 @@
                         <div class="card-icon">🔐</div>
                         <h3 class="card-title">04. Cadena de Custodia Criptográfica (Ed25519)</h3>
                         <p class="card-body">
-                            Cada buque oscuro aislado se sella criptográficamente con un hash SHA-256 inmutable y firma digital asimétrica con llave protegida en Google Cloud Secret Manager. Los informes periciales son inalterables y aptos como prueba documental ante el Fuero Federal y la Prefectura Naval.
+                            Cada detección se sella criptográficamente con un hash SHA-256 canónico y firma digital asimétrica Ed25519 (clave de demostración verificable en el navegador con WebCrypto). Prueba el mecanismo criptográfico e integridad del borrador técnico frente a cualquier alteración.
                         </p>
                     </div>
                     <div class="card-specs">
-                        <span class="spec-chip">SHA-256 Inmutable</span>
+                        <span class="spec-chip">SHA-256 Canónico</span>
                         <span class="spec-chip">Firma Ed25519 RFC 8032</span>
-                        <span class="spec-chip">Ley 25.506 Firma Digital</span>
+                        <span class="spec-chip">Verificable en Navegador</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ── DEMOSTRADOR INTERACTIVO DE PERITAJE REAL ── -->
+        <!-- ── DEMOSTRADOR INTERACTIVO DE PERITAJE SIMULADO ── -->
         <section class="section-container" id="marco-legal">
             <div class="section-header">
-                <span class="section-tag">EVIDENCIA TÉCNICA CERTIFICADA</span>
-                <h2 class="section-title">Caso Pericial en Vivo: LU RONG YU 588 (DARK-001)</h2>
+                <span class="section-tag">BORRADOR TÉCNICO DE SIMULACIÓN OPERATIVA</span>
+                <h2 class="section-title">Caso de Estudio (Escena Sintética): LU RONG YU 588 (SAR-TGT-001)</h2>
                 <p class="section-desc">
-                    Telemetría satelital real de un contacto de radar detectado a 15.2 NM en el interior de la Zona Económica Exclusiva Argentina sin transmitir señal AIS.
+                    Escena sintética calibrada (seed 1982) de un contacto de radar sin señal AIS en el escenario de evaluación del Atlántico Sur.
                 </p>
             </div>
 
             <div class="peritaje-demo-box">
                 <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;border-bottom:1px solid var(--border);padding-bottom:16px;">
                     <div>
-                        <span style="font-size:11px;font-weight:800;color:#00d2fe;letter-spacing:1.2px;text-transform:uppercase;" class="mono">EXP-SAR-2026-M201-8841/CCM</span>
-                        <h3 style="font-size:20px;font-weight:900;color:#ffffff;margin:2px 0;">Contacto Ilícito: Potero Calamarero LU RONG YU 588</h3>
+                        <span style="font-size:11px;font-weight:800;color:#00d2fe;letter-spacing:1.2px;text-transform:uppercase;" class="mono">EXP-SAR-2026-M201-8841/CCM (SIMULACIÓN)</span>
+                        <h3 style="font-size:20px;font-weight:900;color:#ffffff;margin:2px 0;">Contacto bajo Análisis: Potero Calamarero LU RONG YU 588</h3>
                     </div>
                     <button onclick="downloadForensicPdfLanding()" class="nav-cta-btn" style="padding:10px 20px;">
-                        📥 Descargar Acta Oficial en PDF Certificado
+                        📥 Descargar Borrador Técnico en PDF
                     </button>
                 </div>
 
@@ -1376,16 +1376,21 @@
         window.requestAnimationFrame(step);
     }
 
-    // Trigger on intersection with live API benchmark sync
+    // Trigger on intersection with live stats.json sync
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(async (entry) => {
             if (entry.isIntersecting) {
                 let layaMs = 4.66;
                 let darkCount = 12;
+                let wonderPassPct = 86.7;
+                let wonderAdhPct = 98.0;
                 try {
-                    const resp = await fetch('./data/sar_benchmark_2026.json');
-                    if (resp.ok) {
-                        const d = await resp.json();
+                    const [sarResp, statsResp] = await Promise.all([
+                        fetch('./data/sar_benchmark_2026.json').catch(() => null),
+                        fetch('./data/stats.json').catch(() => null)
+                    ]);
+                    if (sarResp && sarResp.ok) {
+                        const d = await sarResp.json();
                         if (d.laya_system1_triage?.triage_latency_ms) {
                             layaMs = Number(d.laya_system1_triage.triage_latency_ms);
                         }
@@ -1393,13 +1398,25 @@
                             darkCount = Number(d.metrics.total_dark_vessels);
                         }
                     }
+                    if (statsResp && statsResp.ok) {
+                        const st = await statsResp.json();
+                        const w = st?.comparative_30_cases?.models?.["muse-wonder-1.0"];
+                        const s = st?.comparative_30_cases?.models?.["muse-spark-1.3"];
+                        const pMc = st?.comparative_30_cases?.head_to_head?.pass_rate?.mcnemar_exact_two_sided_p;
+                        if (w?.pass_rate_raw?.percent != null) wonderPassPct = Number(w.pass_rate_raw.percent);
+                        if (w?.adherence_raw_percent?.mean != null) wonderAdhPct = Number(w.adherence_raw_percent.mean);
+                        const wSub = document.getElementById('counterWonderSub');
+                        if (wSub && w && s) {
+                            wSub.textContent = `Pre-validador (${w.pass_rate_raw.passed}/${w.n}) vs ${s.pass_rate_raw.percent}% Spark (${s.pass_rate_raw.passed}/${s.n})${pMc != null ? ' · McNemar p=' + pMc.toFixed(4) : ''}`;
+                        }
+                    }
                 } catch(e) {
-                    console.debug("Benchmark fallback active");
+                    console.debug("Stats fallback active");
                 }
                 animateValue("counterLaya", 0.0, layaMs, 1200, 2);
                 animateValue("counterDarks", 0, darkCount, 1000, 0);
-                animateValue("counterPrecision", 0.0, 100.0, 1400, 1);
-                animateValue("counterHallucination", 12.5, 0.00, 1000, 2);
+                animateValue("counterWonderPass", 0.0, wonderPassPct, 1200, 1);
+                animateValue("counterWonderAdh", 0.0, wonderAdhPct, 1200, 1);
                 observer.unobserve(entry.target);
             }
         });
@@ -1412,7 +1429,7 @@
     function downloadForensicPdfLanding() {
         const { jsPDF } = window.jspdf || {};
         if (!jsPDF) {
-            window.location.href = '/app';
+            window.location.href = './app/';
             return;
         }
 
@@ -1609,20 +1626,20 @@
         doc.text("VALIDACIÓN FORMAL DE REGLAS NEURO-SIMBÓLICAS", 112, 247);
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(71, 85, 105);
-        doc.text("Exactitud de reglas periciales: 100.0% s/ 30 Casos", 112, 252);
-        doc.text("Tasa de alucinación certificada: 0.00%", 112, 256);
+        doc.text("Comparativa 30 casos: Wonder 26/30 (86.7%) vs Spark 19/30 (63.3%)", 112, 252);
+        doc.text("Adherencia media pre-validador: 98.0% vs 92.0% (indicativo)", 112, 256);
         doc.setTextColor(16, 185, 129);
         doc.setFont('helvetica', 'bold');
-        doc.text("ESTADO: EVIDENCIA JURÍDICA VÁLIDA Y CERTIFICADA", 112, 262);
+        doc.text("ESTADO: BORRADOR TÉCNICO CON SELLO DEMO ED25519", 112, 262);
 
         // FOOTER
         doc.setFont('helvetica', 'italic');
         doc.setFontSize(6.5);
         doc.setTextColor(100, 116, 139);
-        doc.text("OceanEye Platform · Meta AI Hackathon 2026 · OceanEye Sentinel 2.0 · Generado conforme Ley de Firma Digital 25.506.", 14, 276);
-        doc.text("Página 1 de 1 · Ejemplar Oficial Inalterable", 146, 276);
+        doc.text("OceanEye Platform · Meta AI Hackathon 2026 · OceanEye Sentinel 2.0 · Simulación Operativa.", 14, 276);
+        doc.text("Página 1 de 1 · Borrador Técnico de Muestra", 146, 276);
 
-        const filename = `OceanEye_Peritaje_Oficial_DARK-001.pdf`;
+        const filename = `OceanEye_Borrador_Tecnico_SAR-TGT-001.pdf`;
         doc.save(filename);
     }
     </script>

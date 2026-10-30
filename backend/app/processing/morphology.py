@@ -36,6 +36,12 @@ class SarVesselDetection(BaseModel):
     dl_vessel_prob: Optional[float] = Field(default=None, description="Deep Learning probability of marine vessel vs clutter")
     dl_fishing_prob: Optional[float] = Field(default=None, description="Deep Learning probability of fishing activity/potero")
     dl_predicted_type: Optional[str] = Field(default=None, description="Deep Learning morphological label")
+    bbox_crop_px: Optional[List[int]] = Field(default=None, description="Bounding box [x1, y1, x2, y2] in crop pixel coordinates")
+    crop_origin_rc: Optional[List[int]] = Field(default=None, description="Origin [r0, c0] of the crop window in scene pixels")
+    bbox_native_px: Optional[Dict[str, int]] = Field(
+        default=None,
+        description="Connected-component bounding box {c_min, r_min, c_max, r_max} in native scene pixels"
+    )
 
 
 def pixel_to_wgs84(
@@ -201,6 +207,13 @@ def extract_sar_targets(
         chip_crop = np.zeros((64, 64), dtype=np.float32)
         chip_crop[:(r1 - r0), :(c1 - c0)] = intensity_linear[r0:r1, c0:c1]
 
+        bbox_crop_px = [
+            max(0, int(np.min(c_coords)) - c0),
+            max(0, int(np.min(r_coords)) - r0),
+            min(c1 - c0, int(np.max(c_coords)) - c0 + 1),
+            min(r1 - r0, int(np.max(r_coords)) - r0 + 1),
+        ]
+
         dl_pred = None
         try:
             from ml.model import SarChipInference
@@ -214,6 +227,13 @@ def extract_sar_targets(
             )
         except Exception:
             dl_pred = None
+
+        bbox_native_px = {
+            "c_min": int(np.min(c_coords)),
+            "r_min": int(np.min(r_coords)),
+            "c_max": int(np.max(c_coords)),
+            "r_max": int(np.max(r_coords)),
+        }
 
         det = SarVesselDetection(
             id=f"SAR-TGT-{target_idx:03d}",
@@ -231,7 +251,10 @@ def extract_sar_targets(
             classification="UNMATCHED_SAR",
             dl_vessel_prob=dl_pred.get("is_vessel_prob") if dl_pred else None,
             dl_fishing_prob=dl_pred.get("is_fishing_prob") if dl_pred else None,
-            dl_predicted_type=dl_pred.get("classification_label") if dl_pred else None
+            dl_predicted_type=dl_pred.get("classification_label") if dl_pred else None,
+            bbox_crop_px=bbox_crop_px,
+            crop_origin_rc=[r0, c0],
+            bbox_native_px=bbox_native_px,
         )
         detections.append(det)
         target_idx += 1
@@ -239,3 +262,52 @@ def extract_sar_targets(
     # Sort descending by peak RCS (brightest targets first)
     detections.sort(key=lambda d: d.peak_rcs_db, reverse=True)
     return detections
+
+
+def export_sar_chip_png(
+    vv_db: np.ndarray,
+    vh_db: Optional[np.ndarray],
+    r0: int,
+    r1: int,
+    c0: int,
+    c1: int,
+    out_path: str,
+    normalize_range: Tuple[float, float] = (-25.0, 5.0),
+) -> Dict[str, Any]:
+    """
+    Export a Dual-Pol SAR crop (VV, VH, (VV+VH)/2) as a 3-channel 8-bit PNG without
+    intermediate generative reconstruction, returning file metadata and SHA-256.
+    """
+    import hashlib
+    import os
+    from PIL import Image
+
+    lo, hi = normalize_range
+    span = max(hi - lo, 1e-6)
+
+    vv_crop = np.asarray(vv_db[r0:r1, c0:c1], dtype=np.float32)
+    if vh_db is not None:
+        vh_crop = np.asarray(vh_db[r0:r1, c0:c1], dtype=np.float32)
+    else:
+        vh_crop = vv_crop - 6.0
+    mean_crop = 0.5 * (vv_crop + vh_crop)
+
+    def to_u8(arr: np.ndarray) -> np.ndarray:
+        scaled = np.clip((arr - lo) / span, 0.0, 1.0) * 255.0
+        return np.round(scaled).astype(np.uint8)
+
+    rgb = np.stack([to_u8(vv_crop), to_u8(vh_crop), to_u8(mean_crop)], axis=-1)
+    os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
+    im = Image.fromarray(rgb, mode="RGB")
+    im.save(out_path, format="PNG")
+    with open(out_path, "rb") as fh:
+        sha256_hex = hashlib.sha256(fh.read()).hexdigest()
+    h, w = rgb.shape[:2]
+    return {
+        "path": out_path,
+        "sha256": sha256_hex,
+        "width": int(w),
+        "height": int(h),
+        "channels": ["VV_dB", "VH_dB", "mean_VV_VH_dB"],
+        "normalize_range_db": [float(lo), float(hi)],
+    }
