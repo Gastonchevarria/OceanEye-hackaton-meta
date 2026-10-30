@@ -3317,25 +3317,38 @@
 
         const policyEl = document.getElementById('arenaRedPenPolicyNote');
         if (policyEl) {
-            const pol = arena.ui_policy || {};
+            const pol = arena.data_quality?.ui_policy || arena.ui_policy || {};
             policyEl.textContent = pol.red_pen_enabled
                 ? 'Lápiz rojo activo (hallazgos verificados con spans).'
-                : `Lápiz rojo desactivado en v0: ${pol.red_pen_reason || 'validador pendiente'}`;
+                : 'Lápiz rojo desactivado en v0 (narrativa truncada a 240 chars en artefacto; validador pendiente de recaptura v1).';
         }
 
         const cases = arena.cases || [];
+        const sel = document.getElementById('arenaCaseSelect');
+        if (sel && cases.length > 0) {
+            const wanted = (opts && opts.caseId) ? opts.caseId : (window._arenaCurrentCaseId || arena.replay?.featured_case_id || cases[0].case_id);
+            sel.innerHTML = '';
+            cases.forEach((c) => {
+                const opt = document.createElement('option');
+                opt.value = c.case_id;
+                opt.textContent = `${c.case_id} (${c.scenario?.title || c.case_id})`;
+                sel.appendChild(opt);
+            });
+            window._arenaCurrentCaseId = cases.some((c) => c.case_id === wanted) ? wanted : cases[0].case_id;
+            sel.value = window._arenaCurrentCaseId;
+        }
         const cItem = cases.find((c) => c.case_id === window._arenaCurrentCaseId) || cases[0];
         if (!cItem) return;
 
         const tbl = document.getElementById('arenaScenarioTable');
-        if (tbl && cItem.scenario_inputs) {
-            const inp = cItem.scenario_inputs;
+        const gt = cItem.scenario?.ground_truth || cItem.scenario_inputs;
+        if (tbl && gt) {
             tbl.innerHTML = '';
             const cells = [
-                ['Coordenadas', `${inp.lat}°, ${inp.lon}°`],
-                ['Escenario de prueba: valor dado, no medido', `${inp.distance_to_eez_nm} NM (${ARENA_ENUM_LABELS.boundary_status[inp.boundary_status] || inp.boundary_status})`],
-                ['Eslora / Vel.', `${inp.length_m} m · ${inp.speed_knots} kn · ${inp.peak_rcs_db} dB`],
-                ['Estado AIS / Bandera', `${ARENA_ENUM_LABELS.ais_status[inp.ais_status] || inp.ais_status} · ${ARENA_ENUM_LABELS.flag_state[inp.flag_state] || inp.flag_state}`]
+                ['Caso / Categoría', `${cItem.case_id} · Cat. ${cItem.scenario?.category || 'A'}`],
+                ['Coordenadas (Escenario)', `${gt.lat}°, ${gt.lon}°`],
+                ['Eslora / RCS (Dado)', `${gt.length_m} m · ${gt.peak_rcs_db} dB`],
+                ['Clasificación / Regla', `${gt.classification || 'DARK_VESSEL'} · ${cItem.scenario?.expected_rule_id || 'RULE'}`]
             ];
             cells.forEach(([k, v]) => {
                 const box = document.createElement('div');
@@ -3351,8 +3364,8 @@
             });
         }
 
-        const wRun = cItem.runs?.muse_wonder_1_0;
-        const sRun = cItem.runs?.muse_spark_1_3;
+        const wRun = cItem.runs?.['muse-wonder-1.0'] || cItem.runs?.muse_wonder_1_0;
+        const sRun = cItem.runs?.['muse-spark-1.3'] || cItem.runs?.muse_spark_1_3;
         if (!wRun || !sRun) return;
 
         const wHdr = document.getElementById('arenaWonderHeader');
@@ -3362,28 +3375,37 @@
         const wTxt = document.getElementById('arenaWonderText');
         const sTxt = document.getElementById('arenaSparkText');
 
+        const wLatMs = wRun.latency_ms ?? wRun.timing?.latency_ms ?? 0;
+        const sLatMs = sRun.latency_ms ?? sRun.timing?.latency_ms ?? 0;
+        const wCost = wRun.cost_usd_estimate ?? wRun.usage?.estimated_cost_usd ?? 0;
+        const sCost = sRun.cost_usd_estimate ?? sRun.usage?.estimated_cost_usd ?? 0;
+        const wReas = wRun.usage?.reasoning ?? wRun.usage?.reasoning_tokens ?? 0;
+        const sReas = sRun.usage?.reasoning ?? sRun.usage?.reasoning_tokens ?? 0;
+
         if (wHdr) {
-            wHdr.textContent = `muse-wonder-1.0 · ${(wRun.timing.latency_ms / 1000).toFixed(1)}s · $${wRun.usage.estimated_cost_usd.toFixed(4)} (${wRun.usage.reasoning_tokens} reas. tok)`;
+            wHdr.textContent = `muse-wonder-1.0 · ${(wLatMs / 1000).toFixed(2)}s · $${wCost.toFixed(4)} (${wReas} reas. tok)`;
         }
         if (sHdr) {
-            sHdr.textContent = `muse-spark-1.3 · ${(sRun.timing.latency_ms / 1000).toFixed(1)}s · $${sRun.usage.estimated_cost_usd.toFixed(4)} (${sRun.usage.reasoning_tokens} reas. tok)`;
+            sHdr.textContent = `muse-spark-1.3 · ${(sLatMs / 1000).toFixed(2)}s · $${sCost.toFixed(4)} (${sReas} reas. tok)`;
         }
 
         if (window._arenaRafId) cancelAnimationFrame(window._arenaRafId);
         const startWall = performance.now();
         const speed = window._arenaSpeed || 8;
-        const maxMs = Math.max(wRun.timing.latency_ms, sRun.timing.latency_ms);
+        const maxMs = Math.max(wLatMs, sLatMs);
 
         const stepFrame = (now) => {
             const simMs = (now - startWall) * speed;
             [
-                [wRun, wSt, wTxt],
-                [sRun, sSt, sTxt]
-            ].forEach(([run, stEl, txtEl]) => {
+                [wRun, wSt, wTxt, wLatMs],
+                [sRun, sSt, sTxt, sLatMs]
+            ].forEach(([run, stEl, txtEl, total]) => {
                 if (!stEl || !txtEl) return;
-                const ttft = run.timing.estimated_ttft_ms;
-                const total = run.timing.latency_ms;
-                const full = run.narrative_text || '';
+                const ttft = run.interpolation?.estimated_ttft_ms ?? run.timing?.estimated_ttft_ms ?? (total * 0.9);
+                const full = run.narrative_full ?? run.narrative_text ?? '';
+                const isTrunc = Boolean(run.narrative_truncated ?? run.narrative_is_truncated);
+                const adh = run.validator?.adherence_percent ?? 100;
+                const isValid = run.validator?.is_valid !== false;
                 if (simMs < ttft) {
                     stEl.textContent = `⏳ razonando (${(simMs / 1000).toFixed(1)}s / TTFT est. ${(ttft / 1000).toFixed(1)}s · x${speed})`;
                     txtEl.textContent = '';
@@ -3393,8 +3415,8 @@
                     stEl.textContent = `✍️ emitiendo (${(simMs / 1000).toFixed(1)}s / ${(total / 1000).toFixed(1)}s · x${speed})`;
                     txtEl.textContent = full.slice(0, chars);
                 } else {
-                    const suffix = run.narrative_is_truncated ? ` [Preview truncado a ${run.narrative_stored_chars} chars en v0]` : '';
-                    stEl.textContent = `✓ completado en ${(total / 1000).toFixed(2)}s (pre-validador: ${run.validation.discrepancy_count} marcas, indicativo)`;
+                    const suffix = isTrunc ? ` [Preview truncado a ${full.length} chars en v0]` : '';
+                    stEl.textContent = `✓ completado en ${(total / 1000).toFixed(2)}s (adherencia cruda: ${adh.toFixed(1)}% · raw_valid=${isValid} · indicativo)`;
                     txtEl.textContent = full + suffix;
                 }
             });
@@ -3450,7 +3472,10 @@
             }
 
             const elMod = document.getElementById('metaModelNameVal');
-            if (elMod) elMod.textContent = tel.model || 'muse-wonder-1.0';
+            if (elMod) {
+                const latSec = tel.latency_ms ? ` (${(tel.latency_ms / 1000).toFixed(2)}s)` : '';
+                elMod.textContent = `${tel.model || 'muse-wonder-1.0'}${latSec}`;
+            }
             const elReas = document.getElementById('metaReasoningTokensVal');
             if (elReas) elReas.textContent = `${(tel.usage?.reasoning_tokens || 0).toLocaleString()} tok`;
             const elTot = document.getElementById('metaTotalTokensVal');
