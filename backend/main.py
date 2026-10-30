@@ -44,7 +44,7 @@ AIS_STREAM_KEY  = os.getenv("AIS_STREAM_KEY", "")
 DATABASE_URL    = os.getenv("DATABASE_URL", "").replace(
                     "postgresql+asyncpg://", "postgresql://"
                   )
-FRONTEND_URL    = os.getenv("FRONTEND_URL", "https://oceaneye-three.vercel.app")
+FRONTEND_URL    = os.getenv("FRONTEND_URL", "https://gastonchevarria.github.io")
 INTERNAL_API_KEY = os.getenv("INTERNAL_API_KEY", "")
 ENVIRONMENT     = os.getenv("ENVIRONMENT", "development")
 GFW_BASE_URL    = "https://gateway.api.globalfishingwatch.org/v3"
@@ -137,11 +137,9 @@ if HAS_SLOWAPI:
 
 allowed_origins = [
     FRONTEND_URL,
-    "https://oceaneye-two.vercel.app",
-    "https://oceaneye-three.vercel.app",
+    "https://gastonchevarria.github.io",
     "http://localhost:3000",
     "http://localhost:8000",
-    "*"
 ]
 
 app.add_middleware(
