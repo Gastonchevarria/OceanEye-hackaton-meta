@@ -1,0 +1,72 @@
+# OceanEye — Memoria Técnica Extendida y Especificación de Sistema (llms-full.txt)
+
+## Proyecto de Investigación Científica, Teledetección y Soberanía Tecnológica del Mar Argentino
+- Investigador Principal: Ing. Químico Gastón Chevarria
+- Filiación: Investigador Independiente · Especialista en Arquitectura de Sistemas de IA (UTN FRVM · UNSAM)
+- Contacto Investigador: gaston@oceaneye-ai.com
+- Correspondencia Institucional: contacto@oceaneye-ai.com
+- Antecedente: «Clasificación y Monitoreo de Parámetros de Calidad de Agua en la Franja Costera del Río de la Plata mediante Modelos de Machine Learning (Ministerio de Ambiente y Desarrollo Sostenible)»
+- Repositorio Público de Evaluación: https://github.com/Gastonchevarria/oceaneye-evaluation
+- Consola Táctica Operativa: https://oceaneye-ai.com/app
+
+---
+
+### 1. Marco Jurídico y Soberanía Nacional
+1. **CONVEMAR (Convención de las Naciones Unidas sobre el Derecho del Mar):**
+   - Artículo 56: Derechos de soberanía para los fines de exploración y explotación, conservación y administración de los recursos naturales vivos y no vivos en la Zona Económica Exclusiva (ZEE).
+   - Artículo 73: Ejecución de leyes y reglamentos del Estado ribereño (visita, inspección, apresamiento e iniciación de procedimientos judiciales).
+2. **Ley Nacional N° 24.922 (Régimen Federal de Pesca):**
+   - Artículo 51: Prohibición absoluta de pesca de buques de bandera extranjera en aguas de jurisdicción argentina sin permiso oficial.
+3. **Ley Nacional N° 25.506 de Firma Digital:**
+   - Validez de la prueba electrónica y cadena pericial inmutable mediante firma asimétrica y funciones hash criptográficas.
+
+---
+
+### 2. Ecuaciones del Pipeline Físico y Teledetección
+
+#### A. Calibración Radiométrica
+sigma0 = (DN^2) / (A_DN^2)
+
+#### B. Fusión Polarimétrica Dual-Pol
+I_fused = (1 - alpha) * sigma0_VV + alpha * sigma0_VH
+con alpha = 0.75, optimizado para suprimir el oleaje oceánico (dispersión de Bragg) en el Atlántico Sur.
+
+#### C. Filtro Despeckle Lee Vectorizado
+I_filtrado = I_media + W * (I - I_media)
+W = max(0, 1 - (Cv^2 / Ci^2)), Cv = 1 / sqrt(ENL), ENL = 4.4
+
+#### D. 2D CA-CFAR con Anti-Enmascaramiento
+Umbral = alpha_cfar * P_clutter
+alpha_cfar = N * (P_fa^(-1/N) - 1), P_fa = 10^-5
+
+#### E. Momentos de Segundo Orden (Tensor de Inercia)
+J = [[mu_20, mu_11], [mu_11, mu_02]]
+Eslora = 4 * sqrt(lambda_major) * Delta_res
+Manga = 4 * sqrt(lambda_minor) * Delta_res
+Rumbo = 0.5 * atan2(2*mu_11, mu_20 - mu_02)
+
+#### F. Correlación Cinemática Dead Reckoning
+x_proy(t_sar) = x_ais(t_ais) + v_sog * (t_sar - t_ais)
+Matriz de costo C_ij = distancia_haversine(x_i, y_j) con radio de compuerta = 3.0 NM.
+
+#### G. Firma Asimétrica Ed25519 (RFC 8032)
+Hash = SHA-256(canonical_evidence_json)
+Signature = Ed25519_Sign(Private_Key, Hash)
+Clave Pública Oficial: 585ea4596b1cf29c3f1221793ed34ab6f56e4a3d9b97a9f967d3b16d6e3e062a
+
+#### H. Visión Artificial Profunda: ResNet-18 Dual-Stream (ONNX)
+- Entrada Bicanal: Canales normalizados sigma0_VV y sigma0_VH (64x64 px).
+- Dataset de Entrenamiento: LS-SSDD (4.466 escenas Sentinel-1, 1.542 muestras independientes de test).
+- Métricas Empíricas de Test: Precision 97.22% · Recall 96.05% · F1-Score 96.63% · Accuracy 94.94%.
+- Doble Cabeza: is_vessel vs sea_clutter (Binary Cross-Entropy) + Regresión de eslora del buque (Smooth L1 Loss).
+- Despliegue: ONNX Runtime en CPU, latencia 14 ms por blanco en Cloud Run ($0.00 en reposo).
+
+---
+
+### 3. Resultados Cuantitativos del Benchmark de Referencia
+- Total Blancos Físicos SAR: 15
+- Buques Cooperativos Confirmados con AIS: 3 (LU RONG YU 588, FU YUAN YU 7881, ZHONG YU 218)
+- Buques Oscuros Detectados (Dark Vessels): 12 (Esloras entre 48m y 103m, Mangas entre 5m y 21m)
+- Suplantación de Identidad (Ghost AIS): 1 (PHANTOM TRANSMITTER, emite AIS pero carece de retorno radar)
+- Triage LAYA: 44.0% de océano vacío descartado en 3.12 ms
+- Validación Legal: 30 casos de prueba verificados al 100% frente a Ley 24.922 y CONVEMAR
