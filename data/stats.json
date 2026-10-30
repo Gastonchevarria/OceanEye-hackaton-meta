@@ -3,7 +3,7 @@
   "provenance": {
     "artifact": {
       "file_name": "meta_muse_sam31_benchmark_2026.json",
-      "sha256": "011a7510af5b980b4158e0baf513050105c72df8e41e6b4a7df30cd31618a9f9",
+      "sha256": "3001297acac85bde94a5be9c661e1a832553a75a5fcab397294b581b084cc946",
       "benchmark_id": "OCEANEYE-META-MUSE-SAM31-2026",
       "generated_at_utc": "2026-10-29T18:45:55.483026+00:00",
       "updated_at_utc": "2026-10-29T19:20:13.999560+00:00",
@@ -16,8 +16,8 @@
       "script": "scripts/build_stats.py",
       "version": "1.0.0"
     },
-    "generated_at": "2026-10-30T04:06:48Z",
-    "source_commit": "4b7bf9ae83eda52fd7e8a54fb6d2dfbddd471947"
+    "generated_at": "2026-10-30T05:00:41Z",
+    "source_commit": null
   },
   "scene": {
     "synthetic": {
@@ -110,30 +110,30 @@
         "description": "Declared scene seed equals the seed in the fixture source",
         "reported_path": "code:backend/app/ingestion/sentinel_fixtures.py:34",
         "reported": 1982,
-        "recomputed": 1982,
-        "ok": true,
+        "recomputed": null,
+        "ok": null,
         "severity": "warn",
-        "note": null
+        "note": "not checked: pass --repo-root to verify"
       },
       {
         "id": "scene_gt_targets_match_fixture",
         "description": "Declared ground-truth target count equals the fixture metadata (field and list length)",
         "reported_path": "code:backend/tests/fixtures/fixture_metadata.json:17",
         "reported": 15,
-        "recomputed": 15,
-        "ok": true,
+        "recomputed": null,
+        "ok": null,
         "severity": "warn",
-        "note": null
+        "note": "not checked: pass --repo-root to verify"
       },
       {
         "id": "scene_dark_targets_match_fixture",
         "description": "Declared dark target count equals the fixture metadata (field and count of has_active_ais false)",
         "reported_path": "code:backend/tests/fixtures/fixture_metadata.json:18",
         "reported": 12,
-        "recomputed": 12,
-        "ok": true,
+        "recomputed": null,
+        "ok": null,
         "severity": "warn",
-        "note": null
+        "note": "not checked: pass --repo-root to verify"
       },
       {
         "id": "scene_dark_equals_dossiers",
@@ -219,8 +219,8 @@
         "id": "dossier_valid_matches_discrepancies:SAR-TGT-010",
         "description": "is_valid == (no discrepancies)",
         "reported_path": "$.forensic_dossiers_by_target.SAR-TGT-010.meta_muse_forensic_analysis.neuro_symbolic_validation",
-        "reported": false,
-        "recomputed": false,
+        "reported": true,
+        "recomputed": true,
         "ok": true,
         "severity": "error",
         "note": null
@@ -279,8 +279,8 @@
         "id": "summary_valid_dossiers",
         "description": "summary_metrics.neuro_symbolic_valid_dossiers == count(is_valid)",
         "reported_path": "$.summary_metrics.neuro_symbolic_valid_dossiers",
-        "reported": 11,
-        "recomputed": 11,
+        "reported": 12,
+        "recomputed": 12,
         "ok": true,
         "severity": "error",
         "note": null
@@ -289,8 +289,8 @@
         "id": "summary_mean_adherence",
         "description": "summary_metrics.average_ground_truth_adherence_percent == mean(adherence)",
         "reported_path": "$.summary_metrics.average_ground_truth_adherence_percent",
-        "reported": 98.75,
-        "recomputed": 98.75,
+        "reported": 100.0,
+        "recomputed": 100.0,
         "ok": true,
         "severity": "error",
         "note": null
@@ -299,8 +299,8 @@
         "id": "summary_hallucination_is_deficit",
         "description": "summary_metrics.numerical_hallucination_rate_percent == 100 - mean adherence (a penalty deficit, not a claim-level rate)",
         "reported_path": "$.summary_metrics.numerical_hallucination_rate_percent",
-        "reported": 1.25,
-        "recomputed": 1.25,
+        "reported": 0.0,
+        "recomputed": 0.0,
         "ok": true,
         "severity": "error",
         "note": "Consistente pero semanticamente debil: no es una tasa sobre afirmaciones numericas."
@@ -570,62 +570,62 @@
       "caveat": null
     },
     "valid": {
-      "value": 11,
+      "value": 12,
       "unit": "count",
       "display": {
-        "es": "11/12",
-        "en": "11/12"
+        "es": "12/12",
+        "en": "12/12"
       },
       "n": 12,
       "source_path": [
         "$.forensic_dossiers_by_target.*.meta_muse_forensic_analysis.neuro_symbolic_validation.is_valid"
       ],
       "formula": "count(is_valid == true)",
-      "caveat": "Indicativo: n=12 blancos de una escena sintetica, una sola corrida. Cifra tal como la emite el artefacto: SAR-TGT-010 esta marcado invalido por un falso positivo conocido del validador (id de escena leido como latitud); regenerar el artefacto con el validador corregido.",
-      "caveat_en": "Indicative: n=12 targets of a synthetic scene, single run. Figure as emitted by the artifact: SAR-TGT-010 is flagged invalid by a known validator false positive (scene id read as latitude); regenerate the artifact with the fixed validator.",
+      "caveat": "Indicativo: n=12 blancos de una escena sintetica, una sola corrida.",
+      "caveat_en": "Indicative: n=12 targets of a synthetic scene, single run.",
       "indicative": true
     },
     "valid_rate_percent": {
-      "value": 91.67,
+      "value": 100.0,
       "unit": "percent",
       "display": {
-        "es": "91,7%",
-        "en": "91.7%"
+        "es": "100,0%",
+        "en": "100.0%"
       },
       "n": 12,
       "source_path": [
         "$.forensic_dossiers_by_target.*.meta_muse_forensic_analysis.neuro_symbolic_validation.is_valid"
       ],
       "formula": "100 * valid / total",
-      "caveat": "Indicativo: n=12 blancos de una escena sintetica, una sola corrida. Cifra tal como la emite el artefacto: SAR-TGT-010 esta marcado invalido por un falso positivo conocido del validador (id de escena leido como latitud); regenerar el artefacto con el validador corregido.",
-      "caveat_en": "Indicative: n=12 targets of a synthetic scene, single run. Figure as emitted by the artifact: SAR-TGT-010 is flagged invalid by a known validator false positive (scene id read as latitude); regenerate the artifact with the fixed validator.",
+      "caveat": "Indicativo: n=12 blancos de una escena sintetica, una sola corrida.",
+      "caveat_en": "Indicative: n=12 targets of a synthetic scene, single run.",
       "indicative": true,
       "ci95": {
-        "low": 64.61,
-        "high": 98.51,
+        "low": 75.75,
+        "high": 100.0,
         "method": "wilson"
       }
     },
     "mean_adherence_percent": {
-      "value": 98.75,
+      "value": 100.0,
       "unit": "percent",
       "display": {
-        "es": "98,75%",
-        "en": "98.75%"
+        "es": "100,00%",
+        "en": "100.00%"
       },
       "n": 12,
       "source_path": "$.forensic_dossiers_by_target.*.meta_muse_forensic_analysis.neuro_symbolic_validation.ground_truth_adherence_percent",
       "formula": "mean of ground_truth_adherence_percent; validator scores 100 - 15 * discrepancies",
-      "caveat": "Indicativo: n=12 blancos de una escena sintetica, una sola corrida. Cifra tal como la emite el artefacto: SAR-TGT-010 esta marcado invalido por un falso positivo conocido del validador (id de escena leido como latitud); regenerar el artefacto con el validador corregido.",
-      "caveat_en": "Indicative: n=12 targets of a synthetic scene, single run. Figure as emitted by the artifact: SAR-TGT-010 is flagged invalid by a known validator false positive (scene id read as latitude); regenerate the artifact with the fixed validator.",
+      "caveat": "Indicativo: n=12 blancos de una escena sintetica, una sola corrida.",
+      "caveat_en": "Indicative: n=12 targets of a synthetic scene, single run.",
       "indicative": true
     },
     "adherence_deficit_percent": {
-      "value": 1.25,
+      "value": 0.0,
       "unit": "percent",
       "display": {
-        "es": "1,25%",
-        "en": "1.25%"
+        "es": "0,00%",
+        "en": "0.00%"
       },
       "n": 12,
       "source_path": [
@@ -637,43 +637,43 @@
       "indicative": true
     },
     "flagged_count": {
-      "value": 1,
+      "value": 0,
       "unit": "count",
       "display": {
-        "es": "1/12",
-        "en": "1/12"
+        "es": "0/12",
+        "en": "0/12"
       },
       "n": 12,
       "source_path": [
         "$.forensic_dossiers_by_target.*.meta_muse_forensic_analysis.neuro_symbolic_validation.is_valid"
       ],
       "formula": "count(is_valid == false)",
-      "caveat": "Indicativo: n=12 blancos de una escena sintetica, una sola corrida. Cifra tal como la emite el artefacto: SAR-TGT-010 esta marcado invalido por un falso positivo conocido del validador (id de escena leido como latitud); regenerar el artefacto con el validador corregido.",
-      "caveat_en": "Indicative: n=12 targets of a synthetic scene, single run. Figure as emitted by the artifact: SAR-TGT-010 is flagged invalid by a known validator false positive (scene id read as latitude); regenerate the artifact with the fixed validator.",
+      "caveat": "Indicativo: n=12 blancos de una escena sintetica, una sola corrida.",
+      "caveat_en": "Indicative: n=12 targets of a synthetic scene, single run.",
       "indicative": true
     },
     "flagged_rate_percent": {
-      "value": 8.33,
+      "value": 0.0,
       "unit": "percent",
       "display": {
-        "es": "8,3%",
-        "en": "8.3%"
+        "es": "0,0%",
+        "en": "0.0%"
       },
       "n": 12,
       "source_path": [
         "$.forensic_dossiers_by_target.*.meta_muse_forensic_analysis.neuro_symbolic_validation.is_valid"
       ],
       "formula": "100 * flagged / total",
-      "caveat": "Indicativo: n=12 blancos de una escena sintetica, una sola corrida. Cifra tal como la emite el artefacto: SAR-TGT-010 esta marcado invalido por un falso positivo conocido del validador (id de escena leido como latitud); regenerar el artefacto con el validador corregido.",
-      "caveat_en": "Indicative: n=12 targets of a synthetic scene, single run. Figure as emitted by the artifact: SAR-TGT-010 is flagged invalid by a known validator false positive (scene id read as latitude); regenerate the artifact with the fixed validator.",
+      "caveat": "Indicativo: n=12 blancos de una escena sintetica, una sola corrida.",
+      "caveat_en": "Indicative: n=12 targets of a synthetic scene, single run.",
       "indicative": true
     },
     "suspected_false_positive_count": {
-      "value": 1,
+      "value": 0,
       "unit": "count",
       "display": {
-        "es": "1",
-        "en": "1"
+        "es": "0",
+        "en": "0"
       },
       "n": 12,
       "source_path": "$.forensic_dossiers_by_target.*.meta_muse_forensic_analysis.neuro_symbolic_validation.discrepancies",
@@ -696,21 +696,7 @@
       "caveat_en": "Sensitivity, not a result: show only as a footnote until the artifact is regenerated with the fixed validator.",
       "indicative": true
     },
-    "known_issues": [
-      {
-        "id": "validator-scene-id-as-latitude:SAR-TGT-010",
-        "target_id": "SAR-TGT-010",
-        "status": "open_pending_validator_fix",
-        "description": {
-          "es": "SAR-TGT-010 figura como invalido por un falso positivo del validador: el id de escena (p. ej. 1SDV) se interpreta como latitud 1 S, aunque la narrativa declara la latitud correcta. Detalle: valor atribuido -1.0 coincide con '1' + letra dentro del id de escena 'S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA', y la narrativa contiene el valor correcto (-45.8214).",
-          "en": "SAR-TGT-010 is flagged invalid by a validator false positive: the scene id (e.g. 1SDV) is parsed as latitude 1 S although the narrative states the correct latitude. Detail: valor atribuido -1.0 coincide con '1' + letra dentro del id de escena 'S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA', y la narrativa contiene el valor correcto (-45.8214)."
-        },
-        "evidence": [
-          "$.forensic_dossiers_by_target.SAR-TGT-010.meta_muse_forensic_analysis.neuro_symbolic_validation.discrepancies",
-          "code:backend/app/legal/neuro_symbolic_validator.py:53-66"
-        ]
-      }
-    ],
+    "known_issues": [],
     "items": [
       {
         "target_id": "SAR-TGT-001",
@@ -826,20 +812,18 @@
       },
       {
         "target_id": "SAR-TGT-010",
-        "is_valid": false,
-        "adherence_percent": 85.0,
-        "discrepancy_count": 1,
+        "is_valid": true,
+        "adherence_percent": 100.0,
+        "discrepancy_count": 0,
         "latency_ms": 34852.32,
         "prompt_tokens": 296,
         "completion_tokens": 3422,
         "reasoning_tokens": 3216,
         "total_tokens": 3718,
         "request_id": "chatcmpl-01a188f9-a0e2-738a-8cb8-a958d19614e2",
-        "discrepancy_metrics": [
-          "latitude_wgs84"
-        ],
-        "suspected_false_positive": true,
-        "false_positive_reason": "valor atribuido -1.0 coincide con '1' + letra dentro del id de escena 'S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA', y la narrativa contiene el valor correcto (-45.8214).",
+        "discrepancy_metrics": [],
+        "suspected_false_positive": false,
+        "false_positive_reason": null,
         "source_path": "$.forensic_dossiers_by_target.SAR-TGT-010.meta_muse_forensic_analysis"
       },
       {

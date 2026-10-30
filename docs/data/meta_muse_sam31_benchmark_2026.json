@@ -11,9 +11,9 @@
   ],
   "summary_metrics": {
     "total_dark_vessels_evaluated": 12,
-    "neuro_symbolic_valid_dossiers": 11,
-    "average_ground_truth_adherence_percent": 98.75,
-    "numerical_hallucination_rate_percent": 1.25,
+    "neuro_symbolic_valid_dossiers": 12,
+    "average_ground_truth_adherence_percent": 100.0,
+    "numerical_hallucination_rate_percent": 0.0,
     "total_sam31_reconstructions": 12,
     "total_meta_api_requests": 83,
     "total_prompt_tokens": 16712,
@@ -718,7 +718,7 @@
       },
       "distance_to_eez_nm": -86.47,
       "boundary_status": "EEZ_INTRUSION_CONFIRMED",
-      "chain_of_custody_hash_sha256": "be0b5438697ce513313756ecce21c39ff8438d9e387a5053711315face328b17",
+      "chain_of_custody_hash_sha256": "9487c2ca56e82407dfa4b64a174c17a5472008e6b4a0e343413ae83033459c1c",
       "laya_ed25519_certificate": {
         "dossier_id": "LAYA-SEAL-SAR-TGT-001-1793299354",
         "target_id": "SAR-TGT-001",
@@ -732,11 +732,33 @@
         "beam_meters": 5.0,
         "peak_rcs_db": 51.4,
         "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
-        "sha256_evidence_hash": "0a043f9b2fe5f3078b22bc502a7614205a715843c4c54a9f243e4752e24f6808",
-        "ed25519_signature_base64": "Tl32zLYFK6qaUZafBGHLPH/W8+vGgUMvcJqfAbmbk2V6TNAsd9lCNL9uih9tArJ+U6HyWajTa6sTJCtXbJEKDg==",
-        "laya_public_key_hex": "585ea4596b1cf29c3f1221793ed34ab6f56e4a3d9b97a9f967d3b16d6e3e062a",
+        "sha256_evidence_hash": "9487c2ca56e82407dfa4b64a174c17a5472008e6b4a0e343413ae83033459c1c",
+        "ed25519_signature_base64": "TVzN2QMiyBVOVouDcjG3HOUSGolozhfyKbJUEQvycxm3VBzi9QxS4s+0hRcV+ML3pDk51sYuMsXLM0NPIkF0Dg==",
+        "laya_public_key_hex": "e3ebf959fa6258d070999d2da37fbf34891dd048fb1647890c2d53e2d0e4a573",
         "sealing_latency_ms": 0.46,
-        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID"
+        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID",
+        "narrative_sha256": "87361c5c59feeb7e27e86b6f1c4cf9529a54b72449596b169201455c65282106",
+        "canonical_payload": {
+          "dossier_id": "LAYA-SEAL-SAR-TGT-001-1793299354",
+          "target_id": "SAR-TGT-001",
+          "scene_id": "S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA",
+          "satellite_sensor": "Sentinel-1A SAR C-Band",
+          "timestamp_utc": "2026-10-29T18:42:34.324261+00:00",
+          "lat": -45.16027,
+          "lon": -59.9586,
+          "distance_to_eez_nm": -86.47,
+          "boundary_status": "EEZ_INTRUSION_CONFIRMED",
+          "length_meters": 80.0,
+          "beam_meters": 5.0,
+          "peak_rcs_db": 51.4,
+          "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
+          "narrative_sha256": "87361c5c59feeb7e27e86b6f1c4cf9529a54b72449596b169201455c65282106",
+          "legal_framework": [
+            "Ley Federal de Pesca 24.922 (Art. 51)",
+            "CONVEMAR Art. 56 y 73",
+            "Resolucion OMI A.1106(29)"
+          ]
+        }
       },
       "meta_muse_forensic_analysis": {
         "meta_api_telemetry": {
@@ -774,7 +796,7 @@
       },
       "distance_to_eez_nm": -79.3,
       "boundary_status": "EEZ_INTRUSION_CONFIRMED",
-      "chain_of_custody_hash_sha256": "9890b501dfa1c359e3a0b1baaaeea2d42b30994d6e06396b41c676889bf7c95b",
+      "chain_of_custody_hash_sha256": "6b8bb5d760c5d723043cc14a906cc998e4197203f62001f97510c3c9843b70bf",
       "laya_ed25519_certificate": {
         "dossier_id": "LAYA-SEAL-SAR-TGT-003-1793299354",
         "target_id": "SAR-TGT-003",
@@ -788,11 +810,33 @@
         "beam_meters": 21.4,
         "peak_rcs_db": 51.4,
         "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
-        "sha256_evidence_hash": "036efb68dcdec2c8687190a93a581215c58eb65cf6596a278d075482528f34d3",
-        "ed25519_signature_base64": "GHgQ9/zcUEkc4Q3DvG592q6+dGLBEhZ9vZL2CoDDnOJv0jvWlW/rTgjAzBAs1lBHdrPdCqPgIwkfHP0ym0fQDQ==",
-        "laya_public_key_hex": "585ea4596b1cf29c3f1221793ed34ab6f56e4a3d9b97a9f967d3b16d6e3e062a",
+        "sha256_evidence_hash": "6b8bb5d760c5d723043cc14a906cc998e4197203f62001f97510c3c9843b70bf",
+        "ed25519_signature_base64": "TbVogvctJoIHFhGktsNQsSh+4+lidGLdgNL3XCdVXqoeOPMG0FqtVlb9XCNYexICZzDKKyySOV2HzHjMxBnACw==",
+        "laya_public_key_hex": "e3ebf959fa6258d070999d2da37fbf34891dd048fb1647890c2d53e2d0e4a573",
         "sealing_latency_ms": 0.19,
-        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID"
+        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID",
+        "narrative_sha256": "570d66c89adec5f652825fd01007c9592305193af5dfe67387863efefbec9325",
+        "canonical_payload": {
+          "dossier_id": "LAYA-SEAL-SAR-TGT-003-1793299354",
+          "target_id": "SAR-TGT-003",
+          "scene_id": "S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA",
+          "satellite_sensor": "Sentinel-1A SAR C-Band",
+          "timestamp_utc": "2026-10-29T18:42:34.398627+00:00",
+          "lat": -45.28047,
+          "lon": -59.92855,
+          "distance_to_eez_nm": -79.3,
+          "boundary_status": "EEZ_INTRUSION_CONFIRMED",
+          "length_meters": 47.8,
+          "beam_meters": 21.4,
+          "peak_rcs_db": 51.4,
+          "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
+          "narrative_sha256": "570d66c89adec5f652825fd01007c9592305193af5dfe67387863efefbec9325",
+          "legal_framework": [
+            "Ley Federal de Pesca 24.922 (Art. 51)",
+            "CONVEMAR Art. 56 y 73",
+            "Resolucion OMI A.1106(29)"
+          ]
+        }
       },
       "meta_muse_forensic_analysis": {
         "meta_api_telemetry": {
@@ -830,7 +874,7 @@
       },
       "distance_to_eez_nm": -73.26,
       "boundary_status": "EEZ_INTRUSION_CONFIRMED",
-      "chain_of_custody_hash_sha256": "2a7ce25fc71bde50dbd9c1d2ab52411ba03b956112173626f6a6a17ca5ace014",
+      "chain_of_custody_hash_sha256": "295e6ccb931ff4472c6ae296a70976f16b726b9cdf812c4b1240ae6b982b1e04",
       "laya_ed25519_certificate": {
         "dossier_id": "LAYA-SEAL-SAR-TGT-004-1793299354",
         "target_id": "SAR-TGT-004",
@@ -844,11 +888,33 @@
         "beam_meters": 21.4,
         "peak_rcs_db": 50.4,
         "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
-        "sha256_evidence_hash": "7dcfb29cd90e0a6bd1255ab62b7675831c633ef5614ab072c7366ed3d5da040b",
-        "ed25519_signature_base64": "X31A4XOQrtiY/QoYvymA2QQhvBloKM03lIx4GcdTVGJiy2vWcP8VyiJdrBxqQnCzHb4dEChYAOgRzuHMBdZfCg==",
-        "laya_public_key_hex": "585ea4596b1cf29c3f1221793ed34ab6f56e4a3d9b97a9f967d3b16d6e3e062a",
+        "sha256_evidence_hash": "295e6ccb931ff4472c6ae296a70976f16b726b9cdf812c4b1240ae6b982b1e04",
+        "ed25519_signature_base64": "kza7xEkofhIm0q7VQcwxTouIXyJ995Nw6F5nDXp6L+Kuit4ndmTQnjlElo73GPIhRZC7cuD6aqDE6vz08BTBDQ==",
+        "laya_public_key_hex": "e3ebf959fa6258d070999d2da37fbf34891dd048fb1647890c2d53e2d0e4a573",
         "sealing_latency_ms": 0.18,
-        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID"
+        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID",
+        "narrative_sha256": "2bd137936e8a274114c5964fcd7a8814c081e0d545c5794e50dac23c0554a54f",
+        "canonical_payload": {
+          "dossier_id": "LAYA-SEAL-SAR-TGT-004-1793299354",
+          "target_id": "SAR-TGT-004",
+          "scene_id": "S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA",
+          "satellite_sensor": "Sentinel-1A SAR C-Band",
+          "timestamp_utc": "2026-10-29T18:42:34.431057+00:00",
+          "lat": -45.38063,
+          "lon": -59.8985,
+          "distance_to_eez_nm": -73.26,
+          "boundary_status": "EEZ_INTRUSION_CONFIRMED",
+          "length_meters": 47.8,
+          "beam_meters": 21.4,
+          "peak_rcs_db": 50.4,
+          "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
+          "narrative_sha256": "2bd137936e8a274114c5964fcd7a8814c081e0d545c5794e50dac23c0554a54f",
+          "legal_framework": [
+            "Ley Federal de Pesca 24.922 (Art. 51)",
+            "CONVEMAR Art. 56 y 73",
+            "Resolucion OMI A.1106(29)"
+          ]
+        }
       },
       "meta_muse_forensic_analysis": {
         "meta_api_telemetry": {
@@ -886,7 +952,7 @@
       },
       "distance_to_eez_nm": -66.15,
       "boundary_status": "EEZ_INTRUSION_CONFIRMED",
-      "chain_of_custody_hash_sha256": "3c0188c303d9141b14a13c95a06882dfeff4cf804572794c9aa54216fd7fe6fa",
+      "chain_of_custody_hash_sha256": "38eafec565d95830c4c4a24b70266da1f215ee4cb29bb8cba1d4bee22e2285cd",
       "laya_ed25519_certificate": {
         "dossier_id": "LAYA-SEAL-SAR-TGT-006-1793299354",
         "target_id": "SAR-TGT-006",
@@ -900,11 +966,33 @@
         "beam_meters": 19.9,
         "peak_rcs_db": 50.1,
         "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
-        "sha256_evidence_hash": "dcf0fa436ec8447f466fe7f90a40019c80f258d54100ed368a408e76b176626c",
-        "ed25519_signature_base64": "aU6fHOkb/pe0zroHPLzhowQGfCDHMUevaHFum0h/sd2lFx9HKoM/4+pDuMFVJQnQwbrYT6WNzgxFVdas1yh1Dg==",
-        "laya_public_key_hex": "585ea4596b1cf29c3f1221793ed34ab6f56e4a3d9b97a9f967d3b16d6e3e062a",
+        "sha256_evidence_hash": "38eafec565d95830c4c4a24b70266da1f215ee4cb29bb8cba1d4bee22e2285cd",
+        "ed25519_signature_base64": "KDqubwH292D0aAdNcI234wLMPYaxjX9+If3oqllVt1qWDm2xsSpuxER8N7mY3A2P+XhICNZUOn56zvAGSacdBg==",
+        "laya_public_key_hex": "e3ebf959fa6258d070999d2da37fbf34891dd048fb1647890c2d53e2d0e4a573",
         "sealing_latency_ms": 0.17,
-        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID"
+        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID",
+        "narrative_sha256": "922612d972326c6aeaa6622eaaa8d1213bb325723b23d86f6dd288cf5ef79118",
+        "canonical_payload": {
+          "dossier_id": "LAYA-SEAL-SAR-TGT-006-1793299354",
+          "target_id": "SAR-TGT-006",
+          "scene_id": "S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA",
+          "satellite_sensor": "Sentinel-1A SAR C-Band",
+          "timestamp_utc": "2026-10-29T18:42:34.463185+00:00",
+          "lat": -45.50083,
+          "lon": -59.86845,
+          "distance_to_eez_nm": -66.15,
+          "boundary_status": "EEZ_INTRUSION_CONFIRMED",
+          "length_meters": 71.6,
+          "beam_meters": 19.9,
+          "peak_rcs_db": 50.1,
+          "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
+          "narrative_sha256": "922612d972326c6aeaa6622eaaa8d1213bb325723b23d86f6dd288cf5ef79118",
+          "legal_framework": [
+            "Ley Federal de Pesca 24.922 (Art. 51)",
+            "CONVEMAR Art. 56 y 73",
+            "Resolucion OMI A.1106(29)"
+          ]
+        }
       },
       "meta_muse_forensic_analysis": {
         "meta_api_telemetry": {
@@ -942,7 +1030,7 @@
       },
       "distance_to_eez_nm": -47.7,
       "boundary_status": "EEZ_INTRUSION_CONFIRMED",
-      "chain_of_custody_hash_sha256": "80074c738d19e62b71ec3a25f4e9fc0168a8279d4d62562b6eb1f1250191f9d0",
+      "chain_of_custody_hash_sha256": "33a6673a79716855770ed835144887fd48f5158ecd46dc1619c14dba9277030a",
       "laya_ed25519_certificate": {
         "dossier_id": "LAYA-SEAL-SAR-TGT-014-1793299382",
         "target_id": "SAR-TGT-014",
@@ -956,11 +1044,33 @@
         "beam_meters": 5.0,
         "peak_rcs_db": 49.7,
         "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
-        "sha256_evidence_hash": "02ddc9c820e64d3c000dc7d133c738c80ef3e8c1f87aa9493240b70f85f325fd",
-        "ed25519_signature_base64": "6BrK8eOx8IA3GTbCqgBJkswos0+rQWN7xWCiFevHmVv49DKB8QmaKeY2JkarW0svuuI/yq9mHat0FZqUhjTKDQ==",
-        "laya_public_key_hex": "585ea4596b1cf29c3f1221793ed34ab6f56e4a3d9b97a9f967d3b16d6e3e062a",
+        "sha256_evidence_hash": "33a6673a79716855770ed835144887fd48f5158ecd46dc1619c14dba9277030a",
+        "ed25519_signature_base64": "vf1ZXesDPFQ8S78nNSUaXAr6r1wr5XUiffHbgNHcmxO3ejYcEBNFQJjluRmQC6n9wc+McIkSZN7kqM/15FKGCA==",
+        "laya_public_key_hex": "e3ebf959fa6258d070999d2da37fbf34891dd048fb1647890c2d53e2d0e4a573",
         "sealing_latency_ms": 0.22,
-        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID"
+        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID",
+        "narrative_sha256": "2dc7937397211acfa5f7b1fb52e701823d945f4d53aee9704f7bffb56eab8529",
+        "canonical_payload": {
+          "dossier_id": "LAYA-SEAL-SAR-TGT-014-1793299382",
+          "target_id": "SAR-TGT-014",
+          "scene_id": "S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA",
+          "satellite_sensor": "Sentinel-1A SAR C-Band",
+          "timestamp_utc": "2026-10-29T18:43:02.011956+00:00",
+          "lat": -46.06177,
+          "lon": -60.15893,
+          "distance_to_eez_nm": -47.7,
+          "boundary_status": "EEZ_INTRUSION_CONFIRMED",
+          "length_meters": 80.0,
+          "beam_meters": 5.0,
+          "peak_rcs_db": 49.7,
+          "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
+          "narrative_sha256": "2dc7937397211acfa5f7b1fb52e701823d945f4d53aee9704f7bffb56eab8529",
+          "legal_framework": [
+            "Ley Federal de Pesca 24.922 (Art. 51)",
+            "CONVEMAR Art. 56 y 73",
+            "Resolucion OMI A.1106(29)"
+          ]
+        }
       },
       "meta_muse_forensic_analysis": {
         "meta_api_telemetry": {
@@ -998,7 +1108,7 @@
       },
       "distance_to_eez_nm": -76.47,
       "boundary_status": "EEZ_INTRUSION_CONFIRMED",
-      "chain_of_custody_hash_sha256": "c4fccaddff44f50d790aed14f14064856fad82973102772a0419cfcfe3b66637",
+      "chain_of_custody_hash_sha256": "d1a738c70cfc89b94e2f0038a08edf0bfc24f7cafed58476ca7f3bacc63238c3",
       "laya_ed25519_certificate": {
         "dossier_id": "LAYA-SEAL-SAR-TGT-007-1793299383",
         "target_id": "SAR-TGT-007",
@@ -1012,11 +1122,33 @@
         "beam_meters": 21.4,
         "peak_rcs_db": 49.6,
         "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
-        "sha256_evidence_hash": "bfb69a748a2394b0eae42de6a80943373188509e877c54746b088cc43cb59388",
-        "ed25519_signature_base64": "TWPrzonJ/fYH6+j/ji0Mw5m4U5KKo3CcsQ1GwFPPd4ctRHsZ3D2KiKigb+JdtWa03EW5EMJs8TC1udbFMC5eAQ==",
-        "laya_public_key_hex": "585ea4596b1cf29c3f1221793ed34ab6f56e4a3d9b97a9f967d3b16d6e3e062a",
+        "sha256_evidence_hash": "d1a738c70cfc89b94e2f0038a08edf0bfc24f7cafed58476ca7f3bacc63238c3",
+        "ed25519_signature_base64": "9yzyPL7bZoIo9QOKR5jEfVTR9hF0nSBfei7wRTsjzf+PFdCa+omBHJvqSV2U5a3JDLSETb87lA3tpPIZEJhOCA==",
+        "laya_public_key_hex": "e3ebf959fa6258d070999d2da37fbf34891dd048fb1647890c2d53e2d0e4a573",
         "sealing_latency_ms": 0.25,
-        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID"
+        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID",
+        "narrative_sha256": "6bd4d59cffc7a8d51936eddeaecefd5fdd0d903a7722d3b9a25002482b66a666",
+        "canonical_payload": {
+          "dossier_id": "LAYA-SEAL-SAR-TGT-007-1793299383",
+          "target_id": "SAR-TGT-007",
+          "scene_id": "S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA",
+          "satellite_sensor": "Sentinel-1A SAR C-Band",
+          "timestamp_utc": "2026-10-29T18:43:03.936379+00:00",
+          "lat": -45.56093,
+          "lon": -60.4394,
+          "distance_to_eez_nm": -76.47,
+          "boundary_status": "EEZ_INTRUSION_CONFIRMED",
+          "length_meters": 47.8,
+          "beam_meters": 21.4,
+          "peak_rcs_db": 49.6,
+          "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
+          "narrative_sha256": "6bd4d59cffc7a8d51936eddeaecefd5fdd0d903a7722d3b9a25002482b66a666",
+          "legal_framework": [
+            "Ley Federal de Pesca 24.922 (Art. 51)",
+            "CONVEMAR Art. 56 y 73",
+            "Resolucion OMI A.1106(29)"
+          ]
+        }
       },
       "meta_muse_forensic_analysis": {
         "meta_api_telemetry": {
@@ -1054,7 +1186,7 @@
       },
       "distance_to_eez_nm": -70.35,
       "boundary_status": "EEZ_INTRUSION_CONFIRMED",
-      "chain_of_custody_hash_sha256": "c08bfebbcb644d542fc0529a71f0f6b51e1e49aeb3b83e64e853bc1cfbb3fb32",
+      "chain_of_custody_hash_sha256": "a68cec0e654d83f81d528e2ee9f77c25e9936b5153a1934af0e56bcb13a609e6",
       "laya_ed25519_certificate": {
         "dossier_id": "LAYA-SEAL-SAR-TGT-008-1793299388",
         "target_id": "SAR-TGT-008",
@@ -1068,11 +1200,33 @@
         "beam_meters": 21.4,
         "peak_rcs_db": 47.5,
         "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
-        "sha256_evidence_hash": "55f612e937aa8646875decb5650441d5bf0b8412a5554b723abda923a86c4096",
-        "ed25519_signature_base64": "j9KfpVF6nYJPDbsUJWrLtR9RSekf0F6mBT5Rhad3bnwrHH7mZ7Dms0nMDGQDbUT5YHRluuIub4tfXwrKPH7OAw==",
-        "laya_public_key_hex": "585ea4596b1cf29c3f1221793ed34ab6f56e4a3d9b97a9f967d3b16d6e3e062a",
+        "sha256_evidence_hash": "a68cec0e654d83f81d528e2ee9f77c25e9936b5153a1934af0e56bcb13a609e6",
+        "ed25519_signature_base64": "BpKQsWv9ROlr3VUnXTFFgLlajOmjwCUQJ2xofNb91d9EnlYm2qsl/I0ZvxM6JlGSPTTk7CpCOio6CqSnSf46CA==",
+        "laya_public_key_hex": "e3ebf959fa6258d070999d2da37fbf34891dd048fb1647890c2d53e2d0e4a573",
         "sealing_latency_ms": 0.19,
-        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID"
+        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID",
+        "narrative_sha256": "b72770b6b7aa50e08513b5fcae410abddfcceccc9d11afc9f7f1e8a3d35415b2",
+        "canonical_payload": {
+          "dossier_id": "LAYA-SEAL-SAR-TGT-008-1793299388",
+          "target_id": "SAR-TGT-008",
+          "scene_id": "S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA",
+          "satellite_sensor": "Sentinel-1A SAR C-Band",
+          "timestamp_utc": "2026-10-29T18:43:08.205338+00:00",
+          "lat": -45.6611,
+          "lon": -60.3793,
+          "distance_to_eez_nm": -70.35,
+          "boundary_status": "EEZ_INTRUSION_CONFIRMED",
+          "length_meters": 47.8,
+          "beam_meters": 21.4,
+          "peak_rcs_db": 47.5,
+          "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
+          "narrative_sha256": "b72770b6b7aa50e08513b5fcae410abddfcceccc9d11afc9f7f1e8a3d35415b2",
+          "legal_framework": [
+            "Ley Federal de Pesca 24.922 (Art. 51)",
+            "CONVEMAR Art. 56 y 73",
+            "Resolucion OMI A.1106(29)"
+          ]
+        }
       },
       "meta_muse_forensic_analysis": {
         "meta_api_telemetry": {
@@ -1110,7 +1264,7 @@
       },
       "distance_to_eez_nm": -51.53,
       "boundary_status": "EEZ_INTRUSION_CONFIRMED",
-      "chain_of_custody_hash_sha256": "72d23752f7e97a5f834f0e3bf9830bd40186a1fb310d8c3585439d5f2139bd65",
+      "chain_of_custody_hash_sha256": "ec2064f9eaf14814598d319fa5317f48afcd29eadcede0f13277d93ee53198ca",
       "laya_ed25519_certificate": {
         "dossier_id": "LAYA-SEAL-SAR-TGT-010-1793299388",
         "target_id": "SAR-TGT-010",
@@ -1124,11 +1278,33 @@
         "beam_meters": 5.0,
         "peak_rcs_db": 47.1,
         "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
-        "sha256_evidence_hash": "551d46312b491918178b6963f06a7d343aa55ad9440f7ee6391040d4785cfc7c",
-        "ed25519_signature_base64": "CN+DP5CiWJ/1WhBmBqlXxFxa5tSxX+5aY3aJxg9CGvNKdyNhyq0oOXXxlu3fkJD4nxQcfdCaoXXYX7ARG3HaAA==",
-        "laya_public_key_hex": "585ea4596b1cf29c3f1221793ed34ab6f56e4a3d9b97a9f967d3b16d6e3e062a",
+        "sha256_evidence_hash": "ec2064f9eaf14814598d319fa5317f48afcd29eadcede0f13277d93ee53198ca",
+        "ed25519_signature_base64": "wWVlKSFjDHjBucev7bhpb5dLOFD5iBNC7rvRJQ35bjYRkuj3J+E3KL95ZpzVpFvK7w7sF9IsgkrvPITwcZiABA==",
+        "laya_public_key_hex": "e3ebf959fa6258d070999d2da37fbf34891dd048fb1647890c2d53e2d0e4a573",
         "sealing_latency_ms": 0.19,
-        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID"
+        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID",
+        "narrative_sha256": "eea6e8bf47f74ec11446962438c73b05aee7ec979937aa59463667161b22396f",
+        "canonical_payload": {
+          "dossier_id": "LAYA-SEAL-SAR-TGT-010-1793299388",
+          "target_id": "SAR-TGT-010",
+          "scene_id": "S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA",
+          "satellite_sensor": "Sentinel-1A SAR C-Band",
+          "timestamp_utc": "2026-10-29T18:43:08.674624+00:00",
+          "lat": -45.82137,
+          "lon": -59.9586,
+          "distance_to_eez_nm": -51.53,
+          "boundary_status": "EEZ_INTRUSION_CONFIRMED",
+          "length_meters": 80.0,
+          "beam_meters": 5.0,
+          "peak_rcs_db": 47.1,
+          "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
+          "narrative_sha256": "eea6e8bf47f74ec11446962438c73b05aee7ec979937aa59463667161b22396f",
+          "legal_framework": [
+            "Ley Federal de Pesca 24.922 (Art. 51)",
+            "CONVEMAR Art. 56 y 73",
+            "Resolucion OMI A.1106(29)"
+          ]
+        }
       },
       "meta_muse_forensic_analysis": {
         "meta_api_telemetry": {
@@ -1146,20 +1322,12 @@
         "raw_muse_narrative": "En mi carácter de Auditor Forense Naval de OceanEye, dictamino que el objetivo radar SAR-TGT-010, detectado en la escena S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA, se localizó en la latitud -45.8214 y la longitud -59.9586. El objetivo se ubicó a 51.53 NM del límite de la Zona Económica Exclusiva, con eslora estimada de 80.0 metros y firma radar RCS de 47.1 dB, correspondiendo su clasificación morfológica a DARK_VESSEL. Por lo expuesto, se confirma EEZ_INTRUSION_CONFIRMED y se tipifica el hecho como INCURSION_IUU_ZEE_ART51 conforme a CONVEMAR y a la Ley Federal de Pesca, a los fines del Tribunal Marítimo Internacional y de la Prefectura Naval Argentina.",
         "sanitized_verified_narrative": "En mi carácter de Auditor Forense Naval de OceanEye, dictamino que el objetivo radar SAR-TGT-010, detectado en la escena S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA, se localizó en la latitud -45.8214 y la longitud -59.9586. El objetivo se ubicó a 51.53 NM del límite de la Zona Económica Exclusiva, con eslora estimada de 80.0 metros y firma radar RCS de 47.1 dB, correspondiendo su clasificación morfológica a DARK_VESSEL. Por lo expuesto, se confirma EEZ_INTRUSION_CONFIRMED y se tipifica el hecho como INCURSION_IUU_ZEE_ART51 conforme a CONVEMAR y a la Ley Federal de Pesca, a los fines del Tribunal Marítimo Internacional y de la Prefectura Naval Argentina.\n\n[CERTIFICACIÓN NEURO-SIMBÓLICA DE INTEGRIDAD PROBATORIA]:\n- Posición Certificada: Lat -45.82137°, Lon -59.95860° WGS84\n- Distancia a Línea Oficial ZEE: -51.53 NM (EEZ_INTRUSION_CONFIRMED)\n- Dimensiones Físicas SAR: Eslora 80.0 m, Manga 5.0 m\n- RCS Pico: 47.1 dB (Firma de estructura de acero pesada)\n- Tipificación Legal Determinista: Pesca Ilegal No Declarada No Reglamentada en ZEE Soberana (INCURSION_IUU_ZEE_ART51)\n- Fundamento Normativo Formal: Ley Federal de Pesca 24.922 - Art. 3, 21 y 51 (Prohibición absoluta de pesca a buques extranjeros sin permiso), Ley 27.564 - Régimen Sancionatorio Pesquero (Actualización de unidades de pesca UO), CONVEMAR (UNCLOS) - Art. 56.1.a y Art. 73 (Facultad de aprensión, fianza y decomiso del Estado ribereño), Código Procesal Penal Federal - Delito flagrante contra recursos soberanos de la Nación",
         "neuro_symbolic_validation": {
-          "is_valid": false,
-          "hallucination_detected": true,
-          "discrepancies": [
-            {
-              "metric_name": "latitude_wgs84",
-              "llm_stated_value": -1.0,
-              "ground_truth_value": -45.82137,
-              "absolute_error": 44.8214,
-              "error_severity": "CRITICAL_COORDINATE_HALLUCINATION"
-            }
-          ],
-          "discrepancy_count": 1,
-          "ground_truth_adherence_percent": 85.0,
-          "sanitized_legal_text": "En mi carácter de Auditor Forense Naval de OceanEye, dictamino que el objetivo radar SAR-TGT-010, detectado en la escena S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA, se localizó en la latitud -45.8214 y la longitud -59.9586. El objetivo se ubicó a 51.53 NM del límite de la Zona Económica Exclusiva, con eslora estimada de 80.0 metros y firma radar RCS de 47.1 dB, correspondiendo su clasificación morfológica a DARK_VESSEL. Por lo expuesto, se confirma EEZ_INTRUSION_CONFIRMED y se tipifica el hecho como INCURSION_IUU_ZEE_ART51 conforme a CONVEMAR y a la Ley Federal de Pesca, a los fines del Tribunal Marítimo Internacional y de la Prefectura Naval Argentina.\n\n[CERTIFICACIÓN NEURO-SIMBÓLICA DE INTEGRIDAD PROBATORIA]:\n- Posición Certificada: Lat -45.82137°, Lon -59.95860° WGS84\n- Distancia a Línea Oficial ZEE: -51.53 NM (EEZ_INTRUSION_CONFIRMED)\n- Dimensiones Físicas SAR: Eslora 80.0 m, Manga 5.0 m\n- RCS Pico: 47.1 dB (Firma de estructura de acero pesada)\n- Tipificación Legal Determinista: Pesca Ilegal No Declarada No Reglamentada en ZEE Soberana (INCURSION_IUU_ZEE_ART51)\n- Fundamento Normativo Formal: Ley Federal de Pesca 24.922 - Art. 3, 21 y 51 (Prohibición absoluta de pesca a buques extranjeros sin permiso), Ley 27.564 - Régimen Sancionatorio Pesquero (Actualización de unidades de pesca UO), CONVEMAR (UNCLOS) - Art. 56.1.a y Art. 73 (Facultad de aprensión, fianza y decomiso del Estado ribereño), Código Procesal Penal Federal - Delito flagrante contra recursos soberanos de la Nación",
+          "is_valid": true,
+          "hallucination_detected": false,
+          "discrepancies": [],
+          "discrepancy_count": 0,
+          "ground_truth_adherence_percent": 100.0,
+          "sanitized_legal_text": "En mi carácter de Auditor Forense Naval de OceanEye, dictamino que el objetivo radar SAR-TGT-010, detectado en la escena S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA, se localizó en la latitud -45.8214 y la longitud -59.9586. El objetivo se ubicó a 51.53 NM del límite de la Zona Económica Exclusiva, con eslora estimada de 80.0 metros y firma radar RCS de 47.1 dB, correspondiendo su clasificación morfológica a DARK_VESSEL. Por lo expuesto, se confirma EEZ_INTRUSION_CONFIRMED y se tipifica el hecho como INCURSION_IUU_ZEE_ART51 conforme a CONVEMAR y a la Ley Federal de Pesca, a los fines del Tribunal Marítimo Internacional y de la Prefectura Naval Argentina.",
           "validation_latency_ms": 0.396,
           "certifying_authority": "OceanEye Neuro-Symbolic Legal Validator v2.0"
         }
@@ -1174,7 +1342,7 @@
       },
       "distance_to_eez_nm": -56.89,
       "boundary_status": "EEZ_INTRUSION_CONFIRMED",
-      "chain_of_custody_hash_sha256": "732d498085644e170683bf006e575776dfa0fdb7dc065afe031eff4433e6f0d7",
+      "chain_of_custody_hash_sha256": "bb99c697d6848d2bf720d94949c26fa0f2946c88b709bf23a5e9c85217293d62",
       "laya_ed25519_certificate": {
         "dossier_id": "LAYA-SEAL-SAR-TGT-009-1793299410",
         "target_id": "SAR-TGT-009",
@@ -1188,11 +1356,33 @@
         "beam_meters": 13.0,
         "peak_rcs_db": 46.9,
         "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
-        "sha256_evidence_hash": "d147703caec27115aacaccff45b2a8d9638d28ead8464b716ef14b27295e2647",
-        "ed25519_signature_base64": "FLmqGHaKPQ5UbjRHll5Puo30+7bNEsVUYnL5WoP5UQCBPmBtKeN94Y/ja+AWX1I93Ou5bn6HeOVsQG37Ex3cDg==",
-        "laya_public_key_hex": "585ea4596b1cf29c3f1221793ed34ab6f56e4a3d9b97a9f967d3b16d6e3e062a",
+        "sha256_evidence_hash": "bb99c697d6848d2bf720d94949c26fa0f2946c88b709bf23a5e9c85217293d62",
+        "ed25519_signature_base64": "P/UuIo8EAI30oy8tKD89UN/7MCiPfnkhJItT4xYzewzLAc1arIYr89tq2yNhkdrrw7hpwr1sTXuF4/N6Z3z8AQ==",
+        "laya_public_key_hex": "e3ebf959fa6258d070999d2da37fbf34891dd048fb1647890c2d53e2d0e4a573",
         "sealing_latency_ms": 0.18,
-        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID"
+        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID",
+        "narrative_sha256": "f724081ebcde7a5ccdd76b3e4f88be7abecf27ed17662123bcb347bfced5325c",
+        "canonical_payload": {
+          "dossier_id": "LAYA-SEAL-SAR-TGT-009-1793299410",
+          "target_id": "SAR-TGT-009",
+          "scene_id": "S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA",
+          "satellite_sensor": "Sentinel-1A SAR C-Band",
+          "timestamp_utc": "2026-10-29T18:43:30.398820+00:00",
+          "lat": -45.74124,
+          "lon": -60.0187,
+          "distance_to_eez_nm": -56.89,
+          "boundary_status": "EEZ_INTRUSION_CONFIRMED",
+          "length_meters": 102.9,
+          "beam_meters": 13.0,
+          "peak_rcs_db": 46.9,
+          "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
+          "narrative_sha256": "f724081ebcde7a5ccdd76b3e4f88be7abecf27ed17662123bcb347bfced5325c",
+          "legal_framework": [
+            "Ley Federal de Pesca 24.922 (Art. 51)",
+            "CONVEMAR Art. 56 y 73",
+            "Resolucion OMI A.1106(29)"
+          ]
+        }
       },
       "meta_muse_forensic_analysis": {
         "meta_api_telemetry": {
@@ -1230,7 +1420,7 @@
       },
       "distance_to_eez_nm": -49.44,
       "boundary_status": "EEZ_INTRUSION_CONFIRMED",
-      "chain_of_custody_hash_sha256": "dea72b2723fe78775c61b8e1a825c82f082342e7952c529070477a754a2431e5",
+      "chain_of_custody_hash_sha256": "49653aa758c4a263b5025375aa857de85966a8d111748324bf8c0e1f425abf06",
       "laya_ed25519_certificate": {
         "dossier_id": "LAYA-SEAL-SAR-TGT-015-1793299420",
         "target_id": "SAR-TGT-015",
@@ -1244,11 +1434,33 @@
         "beam_meters": 20.8,
         "peak_rcs_db": 46.6,
         "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
-        "sha256_evidence_hash": "a0891343bf06edf3a684938855d86fa98b0db9a07f6dacdbde82bf54e266b3da",
-        "ed25519_signature_base64": "Wkc5GAWbxMgr/WaNUkQIeqjvU3b2Yos7oExx97LsVbtGLKzOPfklMWcTtaUvujUr4EXZR6zp6iAGyj72+GuAAA==",
-        "laya_public_key_hex": "585ea4596b1cf29c3f1221793ed34ab6f56e4a3d9b97a9f967d3b16d6e3e062a",
+        "sha256_evidence_hash": "49653aa758c4a263b5025375aa857de85966a8d111748324bf8c0e1f425abf06",
+        "ed25519_signature_base64": "KnB1q2bglPCTuV5NHMd+RNPzhCZ75x2XRCQxwjta6xsks5VKp66A7Wvmo6Q84JniW6tdaxn1thwJCcnKVs9eAw==",
+        "laya_public_key_hex": "e3ebf959fa6258d070999d2da37fbf34891dd048fb1647890c2d53e2d0e4a573",
         "sealing_latency_ms": 0.19,
-        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID"
+        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID",
+        "narrative_sha256": "10704450ba361e4351926b39728f8c8ea113b1f0c60720a0abed04a4d7641a8d",
+        "canonical_payload": {
+          "dossier_id": "LAYA-SEAL-SAR-TGT-015-1793299420",
+          "target_id": "SAR-TGT-015",
+          "scene_id": "S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA",
+          "satellite_sensor": "Sentinel-1A SAR C-Band",
+          "timestamp_utc": "2026-10-29T18:43:40.541090+00:00",
+          "lat": -46.12187,
+          "lon": -60.2591,
+          "distance_to_eez_nm": -49.44,
+          "boundary_status": "EEZ_INTRUSION_CONFIRMED",
+          "length_meters": 75.3,
+          "beam_meters": 20.8,
+          "peak_rcs_db": 46.6,
+          "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
+          "narrative_sha256": "10704450ba361e4351926b39728f8c8ea113b1f0c60720a0abed04a4d7641a8d",
+          "legal_framework": [
+            "Ley Federal de Pesca 24.922 (Art. 51)",
+            "CONVEMAR Art. 56 y 73",
+            "Resolucion OMI A.1106(29)"
+          ]
+        }
       },
       "meta_muse_forensic_analysis": {
         "meta_api_telemetry": {
@@ -1286,7 +1498,7 @@
       },
       "distance_to_eez_nm": -65.56,
       "boundary_status": "EEZ_INTRUSION_CONFIRMED",
-      "chain_of_custody_hash_sha256": "75b0afcad6055761db3642c3caa0dfdff453de8e569e90888d42aa035390f00c",
+      "chain_of_custody_hash_sha256": "ec8766babeccfa31c017459ae73b5302129eb9012a5552f8542387ba655ce207",
       "laya_ed25519_certificate": {
         "dossier_id": "LAYA-SEAL-SAR-TGT-011-1793299422",
         "target_id": "SAR-TGT-011",
@@ -1300,11 +1512,33 @@
         "beam_meters": 14.9,
         "peak_rcs_db": 46.2,
         "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
-        "sha256_evidence_hash": "234982dc008b44f9807c24432b6d9f487577904af8161763e08ae749b7b34448",
-        "ed25519_signature_base64": "5LxaLfaI2sFKLYD7GBSdpMZoLDvRFJLFZ6pKLcMqpPotsnCwZomSWMSvhYI6Z4Q2QQK6mEfhUfF0y0bMUAmfCg==",
-        "laya_public_key_hex": "585ea4596b1cf29c3f1221793ed34ab6f56e4a3d9b97a9f967d3b16d6e3e062a",
+        "sha256_evidence_hash": "ec8766babeccfa31c017459ae73b5302129eb9012a5552f8542387ba655ce207",
+        "ed25519_signature_base64": "o22AbGXLqY0Yb1OdU6c+GCbaZ47EzXzm7IBj8u7sTURHuyiz0Hfj+7d+gbQXCNcM3ZOUE6CS2YmUns0nWqWYBw==",
+        "laya_public_key_hex": "e3ebf959fa6258d070999d2da37fbf34891dd048fb1647890c2d53e2d0e4a573",
         "sealing_latency_ms": 0.18,
-        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID"
+        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID",
+        "narrative_sha256": "6ffdaf29773f53ff1b9bc87f7a4450d68045e50baa64640bfacb53ce76622550",
+        "canonical_payload": {
+          "dossier_id": "LAYA-SEAL-SAR-TGT-011-1793299422",
+          "target_id": "SAR-TGT-011",
+          "scene_id": "S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA",
+          "satellite_sensor": "Sentinel-1A SAR C-Band",
+          "timestamp_utc": "2026-10-29T18:43:42.581870+00:00",
+          "lat": -45.88147,
+          "lon": -60.49983,
+          "distance_to_eez_nm": -65.56,
+          "boundary_status": "EEZ_INTRUSION_CONFIRMED",
+          "length_meters": 51.6,
+          "beam_meters": 14.9,
+          "peak_rcs_db": 46.2,
+          "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
+          "narrative_sha256": "6ffdaf29773f53ff1b9bc87f7a4450d68045e50baa64640bfacb53ce76622550",
+          "legal_framework": [
+            "Ley Federal de Pesca 24.922 (Art. 51)",
+            "CONVEMAR Art. 56 y 73",
+            "Resolucion OMI A.1106(29)"
+          ]
+        }
       },
       "meta_muse_forensic_analysis": {
         "meta_api_telemetry": {
@@ -1342,7 +1576,7 @@
       },
       "distance_to_eez_nm": -40.88,
       "boundary_status": "EEZ_INTRUSION_CONFIRMED",
-      "chain_of_custody_hash_sha256": "b23130eed5376ad73f531d70aecb8d29ef609414996e00b88a08880517a4e74a",
+      "chain_of_custody_hash_sha256": "830a5a47b922076abfac2661560907e96406f359b6ceefaa1b0b8a570e6ca3b3",
       "laya_ed25519_certificate": {
         "dossier_id": "LAYA-SEAL-SAR-TGT-013-1793299423",
         "target_id": "SAR-TGT-013",
@@ -1356,11 +1590,33 @@
         "beam_meters": 5.0,
         "peak_rcs_db": 45.5,
         "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
-        "sha256_evidence_hash": "ac5be60f5aeb502401951d808a87fb0d57867710d76c952fafd6cb6ca31627d1",
-        "ed25519_signature_base64": "B+wnJNO90teeW/SX3FU5OToGMEfZYnU1tmKCu8sVb0/Hnqt3TtQzaLOqBmF9mXTaU5G+luKLMUQcmbMdjHiTAQ==",
-        "laya_public_key_hex": "585ea4596b1cf29c3f1221793ed34ab6f56e4a3d9b97a9f967d3b16d6e3e062a",
+        "sha256_evidence_hash": "830a5a47b922076abfac2661560907e96406f359b6ceefaa1b0b8a570e6ca3b3",
+        "ed25519_signature_base64": "3lu+HHIW0Ndi+7tyfqWgt4FimN0hy/hFrlz2Vke1GXXBykknQWBuQ1CyD0kVYLHTcJcRXNWz394dgCrp/0aqCQ==",
+        "laya_public_key_hex": "e3ebf959fa6258d070999d2da37fbf34891dd048fb1647890c2d53e2d0e4a573",
         "sealing_latency_ms": 0.18,
-        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID"
+        "evidentiary_status": "CRYPTOGRAPHICALLY_SEALED_VALID",
+        "narrative_sha256": "27a4951970051151d2193b2307ff5ec4feda2b2fe561cbb3877e596cda3d63e7",
+        "canonical_payload": {
+          "dossier_id": "LAYA-SEAL-SAR-TGT-013-1793299423",
+          "target_id": "SAR-TGT-013",
+          "scene_id": "S1A_IW_GRDH_1SDV_20260415T140230_MILE201_ARGENTINA",
+          "satellite_sensor": "Sentinel-1A SAR C-Band",
+          "timestamp_utc": "2026-10-29T18:43:43.528279+00:00",
+          "lat": -45.98164,
+          "lon": -59.8384,
+          "distance_to_eez_nm": -40.88,
+          "boundary_status": "EEZ_INTRUSION_CONFIRMED",
+          "length_meters": 80.0,
+          "beam_meters": 5.0,
+          "peak_rcs_db": 45.5,
+          "legal_infraction": "UNAUTHORIZED_IUU_FISHING_INSIDE_ARGENTINE_EEZ",
+          "narrative_sha256": "27a4951970051151d2193b2307ff5ec4feda2b2fe561cbb3877e596cda3d63e7",
+          "legal_framework": [
+            "Ley Federal de Pesca 24.922 (Art. 51)",
+            "CONVEMAR Art. 56 y 73",
+            "Resolucion OMI A.1106(29)"
+          ]
+        }
       },
       "meta_muse_forensic_analysis": {
         "meta_api_telemetry": {
