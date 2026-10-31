@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "name": "OceanEye Sentinel AI",
+  "description": "Autonomous satellite & physics-informed neural network (PINN) water quality, algal bloom, and environmental telemetry platform.",
+  "url": "https://oceaneye-ai.com",
+  "sentinel_url": "https://sentinel.oceaneye-ai.com",
+  "documentation": "https://oceaneye-ai.com/llms.txt",
+  "security_verified_by": "https://stealthmark.io/verify/sentinel.oceaneye-ai.com"
+}
